@@ -1,0 +1,121 @@
+<head>
+  <meta charset="UTF-8" />
+  <title>Návrh a implementace virtualizačního clusteru pro izolované testovací prostředí katedry informatiky</title>
+</head>
+<body>
+  <p>
+    <strong>Vedoucí práce:</strong><br />
+    (Mgr. Květuše Sýkorová)
+  </p>
+
+  <p>
+    <strong>Studijní program:</strong><br />
+    Aplikovaná informatika (Bc.)
+  </p>
+
+  <p>
+    <strong>Název práce v češtině</strong><br />
+    Návrh a implementace virtualizačního clusteru pro izolované testovací prostředí katedry informatiky
+  </p>
+
+  <p>
+    <strong>Název práce v angličtině</strong><br />
+    Design and Implementation of a Virtualization Cluster for the Isolated Testing Environment of the Department of Informatics
+  </p>
+
+  <p><strong>Anotace tématu</strong></p>
+  <p>
+    <strong>Motivace tématu</strong><br />
+    Katedra informatiky v současnosti postrádá izolované prostředí pro bezpečné testování aplikací a experimentování s různými softwarovými
+    technologiemi. Laboratoř počítačových sítí a infrastruktury však disponuje výkonným serverovým hardwarem, který není pro tyto účely
+    momentálně využíván. Dostupnost tohoto vybavení vytvořila příležitost navrhnout a sestavit nový virtualizační a kontejnerizační cluster,
+    který tento hardware efektivně zužitkuje a poskytne chybějící zázemí pro studentské projekty.
+  </p>
+
+  <p>
+    <strong>Hlavní cíl práce a dílčí cíle</strong><br />
+    Hlavním cílem práce je navrhnout a zprovoznit virtualizační prostředí na specifickém hardwaru (Mellanox/InfiniBand). Práce se primárně
+    soustředí na sestavení a pokročilou konfiguraci infrastrukturní vrstvy, která bude sloužit jako robustní podklad pro izolované testování
+    aplikací. Jádrem práce je nalezení a ověření funkční kombinace softwarových technologií efektivně pracujících nad protokolem IP over
+    InfiniBand (IPoIB). Práce se dále zaměřuje na srovnání standardních řešení (Proxmox/Ceph) s alternativními přístupy (OpenNebula nad Ceph
+    nebo BeeGFS) a implementaci výkonnější varianty.
+  </p>
+
+  <p>Dílčí cíle práce jsou:</p>
+  <ul>
+    <li>analyzovat možnosti konfigurace IPoIB na podnikových distribucích Linuxu (např. Rocky Linux),</li>
+    <li>ověřit limity nasazení platformy Proxmox VE a úložiště Ceph v prostředí s vysokou latencí či specifickým síťovým stackem,</li>
+    <li>
+      navrhnout a implementovat optimalizované řešení postavené na OS Rocky Linux, paralelním souborovém systému BeeGFS a platformě
+      OpenNebula,
+    </li>
+    <li>prokázat stabilitu a výkon finálního řešení v kontextu izolovaného testovacího prostředí.</li>
+  </ul>
+
+  <p><strong>Výstupy práce</strong></p>
+  <p>Výstupy práce budou:</p>
+  <ul>
+    <li>funkční prototyp virtualizačního clusteru (Rocky Linux + OpenNebula + BeeGFS),</li>
+    <li>srovnávací analýza nevhodnosti nasazení Proxmox/Ceph a OpenNebula/Ceph na daném hardwaru oproti zvolenému řešení,</li>
+    <li>technická dokumentace a zpráva o měření výkonu.</li>
+  </ul>
+
+  <p><strong>Osnova práce</strong></p>
+
+  <p><strong>Teoretická část</strong></p>
+  <ol>
+    <li>principy, standardy a best practices tvorby infrastruktury pro testování aplikací (sandbox)</li>
+    <li>analýza síťových protokolů a specifika IPoIB</li>
+    <li>porovnání technologií Ethernet a InfiniBand</li>
+    <li>analýza dostupných open-source technologií pro virtualizaci, kontejnery a clusterovou infrastrukturu</li>
+    <li>architektura a limity distribuovaných úložišť (Ceph vs. BeeGFS)</li>
+  </ol>
+
+  <p><strong>Praktická část</strong></p>
+  <ol>
+    <li>testování vybraných technologií na dostupném hardware a následná volba řešení určeného k finálnímu nasazení</li>
+    <li>konfigurace sítě a implementace protokolu IPoIB na OS Rocky Linux</li>
+    <li>testování a analýza problémů při nasazení Proxmox VE a Ceph</li>
+    <li>implementace paralelního souborového systému BeeGFS</li>
+    <li>nasazení a integrace cloudové platformy OpenNebula</li>
+    <li>finální měření výkonu a zhodnocení výsledků</li>
+  </ol>
+
+  <p><strong>Literatura</strong></p>
+  <ol>
+    <li>
+      IETF. <i>Transmission of IP over InfiniBand (IPoIB) (RFC 4391)</i> [online]. 2006 [cit. 2025-11-20]. Dostupné z:
+      <a href="https://datatracker.ietf.org/doc/html/rfc4391">https://datatracker.ietf.org/doc/html/rfc4391</a>
+    </li>
+
+    <li>
+      MELLANOX TECHNOLOGIES. <i>Introduction to InfiniBand Whitepaper</i> [online]. 2003 [cit. 2025-11-20]. Dostupné z:
+      <a href="https://network.nvidia.com/pdf/whitepapers/IB_Intro_WP_190.pdf"
+        >https://network.nvidia.com/pdf/whitepapers/IB_Intro_WP_190.pdf</a
+      >
+    </li>
+
+    <li>
+      RED HAT, INC. <i>Configuring InfiniBand and RDMA Networks</i> [online]. 2024 [cit. 2025-11-20]. Dostupné z:
+      <a
+        href="https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/9/pdf/configuring_infiniband_and_rdma_networks/Red_Hat_Enterprise_Linux-9-Configuring_InfiniBand_and_RDMA_networks-en-US.pdf"
+        >https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/9/pdf/configuring_infiniband_and_rdma_networks/Red_Hat_Enterprise_Linux-9-Configuring_InfiniBand_and_RDMA_networks-en-US.pdf</a
+      >
+    </li>
+
+    <li>
+      OPENNEBULA SYSTEMS, S.L. <i>OpenNebula Documentation</i> [online]. 2025 [cit. 2025-11-20]. Dostupné z:
+      <a href="https://docs.opennebula.io/">https://docs.opennebula.io/</a>
+    </li>
+
+    <li>
+      THINKPARQ GMBH. <i>BeeGFS Documentation</i> [online]. 2025 [cit. 2025-11-20]. Dostupné z:
+      <a href="https://doc.beegfs.io/latest/">https://doc.beegfs.io/latest/</a>
+    </li>
+
+    <li>
+      PROXMOX SERVER SOLUTIONS GMBH. <i>Proxmox VE Administration Guide</i> [online]. 2025 [cit. 2025-11-20]. Dostupné z:
+      <a href="https://pve.proxmox.com/pve-docs/pve-admin-guide.html">https://pve.proxmox.com/pve-docs/pve-admin-guide.html</a>
+    </li>
+  </ol>
+</body>
