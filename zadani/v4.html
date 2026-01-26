@@ -1,0 +1,155 @@
+<head>
+  <meta charset="UTF-8" />
+  <title>Návrh a implementace virtualizačního clusteru pro izolované testovací prostředí katedry informatiky</title>
+</head>
+<body>
+  <p>
+    <strong>Vedoucí práce:</strong><br />
+    (Mgr. Květuše Sýkorová)
+  </p>
+
+  <p>
+    <strong>Studijní program:</strong><br />
+    Aplikovaná informatika (Bc.)
+  </p>
+
+  <p>
+    <strong>Název práce v češtině</strong><br />
+    Návrh a implementace virtualizačního clusteru pro izolované testovací prostředí katedry informatiky
+  </p>
+
+  <p>
+    <strong>Název práce v angličtině</strong><br />
+    Design and Implementation of a Virtualization Cluster for the Isolated Testing Environment of the Department of Informatics
+  </p>
+
+  <p><strong>Anotace tématu</strong></p>
+  <p>
+    <strong>Motivace tématu</strong><br />
+    Virtualizační a kontejnerizační cluster bude představovat jednotné, bezpečné a škálovatelné prostředí pro systematické testování
+    softwarových projektů. Výsledné řešení bude zajišťovat opakovatelnost testů, spolehlivou izolaci běhu aplikací a efektivní vyhodnocování
+    i archivaci výsledků. Takový cluster může zvýšit objektivitu hodnocení, zjednodušit výuku a podpořit detekci chyb i bezpečnostních
+    nedostatků, přičemž poskytne moderní, praxí ověřenou infrastrukturu pro výuku DevOps a software engineeringu. Zároveň umožní zavést
+    přísnější bezpečnostní kontrolu nad běhovým prostředím, oddělit jednotlivé studentské projekty a minimalizovat rizika spojená se
+    spouštěním neznámého kódu. Potřebná technologická platforma je již k dispozici v rámci Laboratoře počítačových sítí a infrastruktury,
+    která poskytne vhodné zázemí pro realizaci a vývoj.
+  </p>
+
+  <p>
+    <strong>Hlavní cíl práce a dílčí cíle</strong><br />
+    Tato práce se zabývá návrhem a zprovozněním virtualizačního prostředí na specifickém hardwaru.
+    <b
+      >Je nutné zdůraznit, že práce se nezabývá samotným testováním aplikací, ale zaměřuje se výhradně na sestavení a konfiguraci
+      infrastruktury, která toto testování umožní</b
+    >. Jádrem práce je nalezení funkční kombinace softwarových technologií, které dokáží efektivně pracovat nad protokolem IP over
+    InfiniBand (IPoIB). Práce se zaměřuje na srovnání standardních řešení (Proxmox/Ceph) s alternativními přístupy (OpenNebula nad Ceph nebo
+    BeeGFS) a implementaci výkonnější varianty.
+  </p>
+
+  <p>Dílčí cíle práce jsou:</p>
+  <ul>
+    <li>analyzovat možnosti konfigurace IPoIB na podnikových distribucích Linuxu (např. Rocky Linux),</li>
+    <li>ověřit limity nasazení platformy Proxmox VE a úložiště Ceph v prostředí s vysokou latencí či specifickým síťovým stackem,</li>
+    <li>
+      navrhnout a implementovat optimalizované řešení postavené na OS Rocky Linux, paralelním souborovém systému BeeGFS a platformě
+      OpenNebula,
+    </li>
+    <li>prokázat stabilitu a výkon finálního řešení v kontextu izolovaného testovacího prostředí.</li>
+  </ul>
+
+  <p><strong>Výstupy práce</strong></p>
+  <p>Výstupy práce budou:</p>
+  <ul>
+    <li>funkční prototyp virtualizačního clusteru (Rocky Linux + OpenNebula + BeeGFS),</li>
+    <li>srovnávací analýza nevhodnosti nasazení Proxmox/Ceph a OpenNebula/Ceph na daném hardwaru oproti zvolenému řešení,</li>
+    <li>technická dokumentace a zpráva o měření výkonu.</li>
+  </ul>
+
+  <p><strong>Osnova práce</strong></p>
+
+  <p><strong>Teoretická část</strong></p>
+  <ol>
+    <li>principy, standardy a best practices tvorby infrastruktury pro testování aplikací (sandbox)</li>
+    <li>analýza síťových protokolů a specifika IPoIB</li>
+    <li>porovnání technologií Ethernet a InfiniBand</li>
+    <li>analýza dostupných open-source technologií pro virtualizaci, kontejnery a clusterovou infrastrukturu</li>
+    <li>architektura a limity distribuovaných úložišť (Ceph vs. BeeGFS)</li>
+  </ol>
+
+  <p><strong>Praktická část</strong></p>
+  <ol>
+    <li>testování vybraných technologií na dostupném hardware a následná volba řešení určeného k finálnímu nasazení</li>
+    <li>konfigurace sítě a implementace protokolu IPoIB na OS Rocky Linux</li>
+    <li>testování a analýza problémů při nasazení Proxmox VE a Ceph</li>
+    <li>implementace paralelního souborového systému BeeGFS</li>
+    <li>nasazení a integrace cloudové platformy OpenNebula</li>
+    <li>finální měření výkonu a zhodnocení výsledků</li>
+  </ol>
+
+  <p><strong>Literatura</strong></p>
+  <ol>
+    <li>
+      IETF. <i>Transmission of IP over InfiniBand (IPoIB) (RFC 4391)</i> [online]. 2006 [cit. 2025-11-20]. Dostupné z:
+      <a href="https://datatracker.ietf.org/doc/html/rfc4391">https://datatracker.ietf.org/doc/html/rfc4391</a>
+    </li>
+
+    <li>
+      OPENNEBULA SYSTEMS. <i>OpenNebula Documentation</i> [online]. 2025 [cit. 2025-11-20]. Dostupné z:
+      <a href="https://docs.opennebula.io/">https://docs.opennebula.io/</a>
+    </li>
+
+    <li>
+      THINKPARQ GMBH. <i>BeeGFS Documentation</i> [online]. 2025 [cit. 2025-11-20]. Dostupné z:
+      <a href="https://doc.beegfs.io/latest/">https://doc.beegfs.io/latest/</a>
+    </li>
+
+    <li>
+      CEPH FOUNDATION. <i>Ceph Documentation</i> [online]. 2025 [cit. 2025-11-20]. Dostupné z:
+      <a href="https://docs.ceph.com/en/latest/">https://docs.ceph.com/en/latest/</a>
+    </li>
+
+    <li>
+      PROXMOX SERVER SOLUTIONS GMBH. <i>Proxmox VE Administration Guide</i> [online]. 2025 [cit. 2025-11-20]. Dostupné z:
+      <a href="https://pve.proxmox.com/pve-docs/pve-admin-guide.html">https://pve.proxmox.com/pve-docs/pve-admin-guide.html</a>
+    </li>
+
+    <li>
+      RESF. <i>Rocky Linux Documentation</i> [online]. 2025 [cit. 2025-11-20]. Dostupné z:
+      <a href="https://docs.rockylinux.org/">https://docs.rockylinux.org/</a>
+    </li>
+  </ol>
+
+  <h1>Komentáře</h1>
+  <ul>
+    <li>
+      <b>Martin Kopecký - Čtvrtek, 20. listopadu 2025, 18.02</b>
+      <p>Pří úpravě mi úplně vypadlo záhlaví Vedoucí práce: Mgr. Květuše Sýkorová Studijní obor: Aplikovaná informatika (Bc.)</p>
+    </li>
+
+    <li>
+      <b>Jiří Fišer - Čtvrtek, 20. listopadu 2025, 22.57</b>
+      <p>
+        to že vám vypadlo zadání je jen detail, problém je v to, že jste opět radikálně změnil zadání. Takže to, co už bylo odladěno jste
+        zahodil. Navíc tohle je výrazně horší. V motivaci by se mělo vycházet se současného stavu a vy tam používáte důsledně budoucí čas.
+        To že cíle nobsahují slovo "cíl" ačkoliv je to povinné je v zásadě jen detail. V žádném případě však nelze v zadání používat věty
+        typu "Je nutné zdůraznit, že práce se nezabývá ..." Cíle musí popisovat, čím se práce zabývá nikoliv naopak.
+      </p>
+    </li>
+
+    <li>
+      <b>Jiří Fišer - Čtvrtek, 20. listopadu 2025, 23.06</b>
+      <p>
+        zcela jste změnil literaturu a nikoliv k lepšímu. Nyní obsahuje jen odkazy na dokumentaci a má opět nedostatky (např. korporátním
+        autorem u OpenNebula Documentation není OPENNEBULA SYSTEM)
+      </p>
+    </li>
+
+    <li>
+      <b>Jiří Škvor - Sobota, 22. listopadu 2025, 23.15</b>
+      <p>
+        Měl jste upravit předchozí verzi dle komentářů. To jste neprovedl. Namísto toho jste odevzdal zásadně změněný text. Tento pokus tedy
+        považuji za zmatečný a očekávám, že pošlete další pokus, který bude úpravou předchozího.
+      </p>
+    </li>
+  </ul>
+</body>

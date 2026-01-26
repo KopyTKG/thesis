@@ -1,0 +1,222 @@
+<head>
+  <meta charset="UTF-8" />
+  <title>Návrh a implementace virtualizačního clusteru pro izolované testovací prostředí katedry informatiky</title>
+</head>
+<body>
+  <p>
+    <strong>Vedoucí práce:</strong><br />
+    (Mgr. Květuše Sýkorová)
+  </p>
+
+  <p>
+    <strong>Studijní program:</strong><br />
+    Aplikovaná informatika (Bc.)
+  </p>
+
+  <p>
+    <strong>Název práce v češtině</strong><br />
+    Software sandbox: Návrh virtualizačního clusteru
+  </p>
+
+  <p>
+    <strong>Název práce v angličtině</strong><br />
+    Software sandbox: Design of a Virtualization Cluster
+  </p>
+
+  <p><strong>Anotace tématu</strong></p>
+  <p>
+    <strong>Motivace tématu</strong><br />
+    Katedra informatiky disponuje specifickým serverovým hardwarem (Mellanox ConnectX-5, přepínač SB7790), který kvůli nekompatibilitě
+    protokolů (Ethernet vs. InfiniBand) nelze v současnosti efektivně využít. Motivací této práce je zprovoznit tento hardware a vytvořit na
+    něm funkční virtualizační cluster pro obecné potřeby katedry. Tento cluster ponese pracovní název ”Software Sandbox”.
+  </p>
+
+  <p>
+    <strong>Hlavní cíl práce a dílčí cíle</strong><br />
+    Hlavním cílem práce je navrhnout, implementovat a otestovat virtualizační cluster "Software Sandbox". Klíčovou technickou výzvou, která
+    tvoří jádro této práce, je zprovoznění tohoto clusteru na specifickém hardwaru (servery Mellanox ConnectX-5 a přepínač SB7790). Tento
+    hardware vyžaduje pro standardní TCP/IP komunikaci analýzu a implementaci protokolu IP over InfiniBand (IPoIB).
+  </p>
+
+  <p>Dílčí cíle práce jsou:</p>
+  <ul>
+    <li>Provést rešerši a analýzu současného stavu konfigurace IPoIB.</li>
+    <li>Otestovat nasazení a funkčnost virtualizačních řešení (Proxmox VE, OpenNebula, OKD) v rámci takto vytvořené sítě.</li>
+    <li>Změřit a porovnat propustnost sítě a stabilitu jednotlivých řešení při využití IPoIB.</li>
+    <li>Zhodnotit vhodnost testovaných řešení pro roli "Software Sandbox" na daném hardwaru.</li>
+  </ul>
+
+  <p><strong>Výstupy práce</strong></p>
+  <p>Výstupy práce budou:</p>
+  <ul>
+    <li>Funkční prototyp virtualizačního clusteru "Software Sandbox".</li>
+    <li>Podrobná technická dokumentace obsahující návod na konfiguraci IPoIB.</li>
+    <li>Zpráva s výsledky měření výkonu a stability sítě.</li>
+  </ul>
+
+  <p><strong>Osnova práce</strong></p>
+
+  <p><strong>Teoretická část</strong></p>
+  <ol>
+    <li>Analýza síťových protokolů.</li>
+    <li>Technické řešení IP over InfiniBand (IPoIB).</li>
+    <li>Přehled a srovnání virtualizačních platforem (Proxmox, OpenNebula, OKD).</li>
+    <li>Analýza současného stavu a dostupného hardwaru.</li>
+  </ol>
+
+  <p><strong>Praktická část</strong></p>
+  <ol>
+    <li>Návrh cílové architektury clusteru.</li>
+    <li>Implementace a konfigurace sítě (IPoIB).</li>
+    <li>Nasazení a testování virtualizačních platforem.</li>
+    <li>Implementace virtualizační vrstvy nad IPoIB (Proxmox / OKD / OpenNebula).</li>
+    <li>Měření výkonu a stability.</li>
+    <li>Zhodnocení výsledků a vytvoření dokumentace.</li>
+  </ol>
+
+  <p><strong>Literatura</strong></p>
+  <ol>
+    <li>
+      LINUX FOUNDATION. <i>Introduction to Cloud Infrastructure Technologies</i> [online]. 2025 [cit. 2025-10-10]. Dostupné z:
+      <a href="https://training.linuxfoundation.org/training/introduction-to-cloud-infrastructure-technologies/"
+        >https://training.linuxfoundation.org/training/introduction-to-cloud-infrastructure-technologies/
+      </a>
+    </li>
+
+    <li>
+      MELLANOX TECHNOLOGIES INC. <i>Introduction to InfiniBand</i> [online]. 2003, 2003-01-12 [cit. 2025-10-10]. Dostupné z:
+      <a href="https://network.nvidia.com/pdf/whitepapers/IB_Intro_WP_190.pdf"
+        >https://network.nvidia.com/pdf/whitepapers/IB_Intro_WP_190.pdf</a
+      >
+    </li>
+    <li>
+      NVIDIA. <i>IP over InfiniBand (IPoIB)</i> [online]. 2024, 2024-05-15 [cit. 2025-10-10]. Dostupné z:
+      <a href="https://docs.nvidia.com/networking/display/mlnxofedv24010331/ip+over+infiniband+(ipoib)"
+        >https://docs.nvidia.com/networking/display/mlnxofedv24010331/ip+over+infiniband+(ipoib)
+      </a>
+    </li>
+    <li>
+      RED HAT, INC. <i>Configuring InfiniBand and RDMA Networks</i> [online]. 2024 [cit. 2025-11-20]. Dostupné z:
+      <a
+        href="https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/9/pdf/configuring_infiniband_and_rdma_networks/Red_Hat_Enterprise_Linux-9-Configuring_InfiniBand_and_RDMA_networks-en-US.pdf"
+        >https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/9/pdf/configuring_infiniband_and_rdma_networks/Red_Hat_Enterprise_Linux-9-Configuring_InfiniBand_and_RDMA_networks-en-US.pdf</a
+      >
+    </li>
+
+    <li>
+      THE DEBIAN PROJECT. <i>RDMA</i> [online]. 2020, 2020-11-15 [cit. 2025-10-10]. Dostupné z:
+      <a href="https://wiki.debian.org/RDMA">https://wiki.debian.org/RDMA</a>
+    </li>
+
+    <li>
+      USER ALPHA754293. <i>Here is how you can get 100 Gbps Infiniband up and running</i> [online]. 2023 [cit. 2025-10-10]. Dostupné z:
+      <a href="https://forum.proxmox.com/threads/here-is-how-you-can-get-100-gbps-infiniband-up-and-running.121873/"
+        >https://forum.proxmox.com/threads/here-is-how-you-can-get-100-gbps-infiniband-up-and-running.121873/</a
+      >
+    </li>
+  </ol>
+
+  <h1>Komentáře</h1>
+  <ul>
+    <li>
+      <b>Jiří Fišer - Pondělí, 10. listopadu 2025, 19.07</b>
+      <p>v souladu s vaším vysvětlením jsem změnil v názvech "sandbox" na "Sandbox"</p>
+    </li>
+
+    <li>
+      <b>Jiří Fišer - Pondělí, 10. listopadu 2025, 19.13</b>
+      <p>
+        nereflektoval jste můj komentář k odstranění H1, H2, H3 atd. tagů a navíc jste zrušil změny, které jsme udělal ve formátování
+        provedu je ještě jednou a odstraním i ty elementy, v další verzi prosím vycházejte z opravené verze (viz "Komentář uživatele")
+      </p>
+    </li>
+
+    <li>
+      <b>Jiří Fišer - Pondělí, 10. listopadu 2025, 19.19</b>
+      <p>
+        změny: smazal jsem nadbytečná záhlaví u ostatních jsem eliminoval H4, H4 tagy ve výčtech a osnově jsou malá písmena na začátku
+        položek v dílčích cílech a výstupech jsou na konci čárky (jen u poslední položky tečka)
+      </p>
+    </li>
+
+    <li>
+      <b>Jiří Škvor - Středa, 19. listopadu 2025, 17.46</b>
+      <p>
+        Poslední položka literatury nepatří do top výběru. Je to jen diskusní příspěvek z fóra, byť uznávám, že může být velmi relevantní.
+      </p>
+    </li>
+
+    <li>
+      <b>Jiří Škvor - Středa, 19. listopadu 2025, 17.57</b>
+      <p>
+        Přijde mi, že se body 3 a 4 praktické části vyloženě překrývají (nikoliv jen doplňují, resp. na sebe navazují). Prosím o vysvětlení,
+        co nového přináší bod 4 oproti bodu 3 (resp. naopak).
+      </p>
+    </li>
+
+    <li>
+      <b>Jiří Škvor - Středa, 19. listopadu 2025, 22.36</b>
+      <p>Překvapuje mě to množství změn. Zpomaluje dokončení procesu schválení...</p>
+    </li>
+
+    <li>
+      <b>Jiří Škvor - Středa, 19. listopadu 2025, 22.37</b>
+      <p>Opakuji otázku z předchozího pokusu: "Který bod v teoretické části pokrývá problematiku testování aplikací?"</p>
+    </li>
+
+    <li>
+      <b>iří Škvor - Středa, 19. listopadu 2025, 22.39</b>
+      <p>Provedl jsem nějaké formální úpravy. Prosím, v dalším kroku vycházejte z této upravené verze.</p>
+    </li>
+
+    <li>
+      <b>Jiří Škvor - Středa, 19. listopadu 2025, 22.56</b>
+      <p>
+        Název cluster "Software Sandbox" není potřeba zavádět. Odstraňte ho, prosím, z názvu. V celém zadání se tomuto pracovnímu názvu
+        vyhněte. Do názvu bych naopak zařadil, že to, co vytváříte, bude sloužit potřebám katedry informatiky. Nový název by tak mohl
+        například znít (zvažte i jiné varianty): --- Návrh a implementace virtualizačního clusteru pro izolované testovací prostředí katedry
+        informatiky
+      </p>
+    </li>
+
+    <li>
+      <b>Jiří Škvor - Středa, 19. listopadu 2025, 23.00</b>
+      <p>
+        Doplňte jeden až dva aktuální recenzované či oficiální zdroje (tj. např. akademické články k IPoIB či oficiální manuály
+        Proxmox/OKD/OpenNebula).
+      </p>
+    </li>
+
+    <li>
+      <b>Jiří Škvor - Středa, 19. listopadu 2025, 23.04</b>
+      <p>
+        Druhý bod osnovy zní "technické řešení IP over InfiniBand (IPoIB)", přitom stačí "technické řešení IPoIB", neboť IPoIB máte zavedené
+        již výše.
+      </p>
+    </li>
+
+    <li>
+      <b>Jiří Škvor - Středa, 19. listopadu 2025, 23.05</b>
+      <p>
+        Analýza současného stavu a dostupného hardwaru nepatří do teoretické části, ale patří na úvod praktické části. Už jsem Vám to psal.
+      </p>
+    </li>
+
+    <li>
+      <b>Jiří Škvor - Středa, 19. listopadu 2025, 23.12</b>
+      <p>
+        Formulace odstavce s motivací práce by neměla používat žádné tvary slov "motivace", "téma" a "práce", pokud nejsou použita v
+        odborném významu (tj. přímo ve vztahu k obsahu řešené problematiky). Nevhodné jsou proto zejména věty, které začínají například
+        takto: "Motivací práce je...", "Tématem práce je...", "Práce vychází z...". --- Úvodní odstavec by tak mohl znít např. --- Katedra
+        informatiky disponuje specifickým serverovým hardwarem (Mellanox ConnectX-5, přepínač SB7790), který kvůli nekompatibilitě protokolů
+        (Ethernet vs. InfiniBand) nelze v současnosti efektivně využít. Je potřeba zprovoznit tento hardware a vytvořit na něm funkční
+        virtualizační cluster pro obecné potřeby katedry, zejména pro izolované testování a ověřování softwaru.
+      </p>
+    </li>
+
+    <li>
+      <b>Jiří Škvor - Středa, 19. listopadu 2025, 23.40</b>
+      <p>Omlouvám se, že vracím s takovým zpožděním.</p>
+    </li>
+  </ul>
+</body>

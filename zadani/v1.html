@@ -1,0 +1,130 @@
+<head>
+  <meta charset="UTF-8" />
+  <title>Zadání V1</title>
+</head>
+<body>
+  <p>
+    <strong>Vedoucí práce:</strong><br />
+    (RNDr. Jan Krejčí, Ph.D.)
+  </p>
+
+  <p>
+    <strong>Studijní program:</strong><br />
+    Aplikovaná informatika (Bc.)
+  </p>
+
+  <p>
+    <strong>Název práce v češtině</strong><br />
+    Software sandbox: Sestavení virtualizačního clusteru pro testování aplikací
+  </p>
+
+  <p>
+    <strong>Název práce v angličtině</strong><br />
+    Software sandbox: Implementation of a Virtualization Cluster for Application Testing
+  </p>
+
+  <p><strong>Anotace tématu</strong></p>
+  <p>
+    Motivací této bakalářské práce je návrh virtualizačního clustrového prostředí pro testování softwaru v rámci serverové infrastruktury s
+    využitím vysokorychlostního síťového protokolu Infiniband.
+  </p>
+
+  <p>
+    Cílem práce je návrh a realizace systému Software sandbox – virtualizačního clusteru pro testování aplikací. Práce se zaměřuje na
+    ověření využitelnosti IPoIB v kombinaci s virtualizačními nástroji a systémy jako Proxmox, OpenStack, Ubuntu nebo CentOS.
+  </p>
+
+  <p>
+    Očekávaný výsledek bude určen na základě provedených experimentů a testování. Práce bude vést k vytvoření funkčního prostředí, nebo k
+    identifikaci technologických limitací, které brání jeho nasazení.
+  </p>
+
+  <p><strong>Osnova práce</strong></p>
+
+  <p><strong>Teoretická část</strong></p>
+  <ol>
+    <li>Úvod a cíl práce</li>
+    <li>Teoretické východiska</li>
+    <ol>
+      <li>Infiniband protokol a jeho využití</li>
+      <li>IP over Infiniband</li>
+      <li>Virtualizace</li>
+      <li>Orchestrace</li>
+    </ol>
+  </ol>
+
+  <p><strong>Praktická část</strong></p>
+  <ol>
+    <li>Zprovoznění komunikace přes Infiniband</li>
+    <li>Nasazení IP over Infiniband</li>
+    <li>Virtualizace nad IPoIB</li>
+    <li>Dokumentace systému</li>
+    <li>Vyhodnocení</li>
+  </ol>
+
+  <p><strong>Literatura</strong></p>
+  <ol>
+    <li>
+      LINUX FOUNDATION. <i>Introduction to Cloud Infrastructure Technologies</i> [online]. 2025 [cit. 2025-10-10]. Dostupné z:
+      <a href="https://training.linuxfoundation.org/training/introduction-to-cloud-infrastructure-technologies/"
+        >https://training.linuxfoundation.org/training/introduction-to-cloud-infrastructure-technologies/
+      </a>
+    </li>
+
+    <li>
+      MELLANOX TECHNOLOGIES INC. <i>Introduction to InfiniBand</i> [online]. 2003, 2003-01-12 [cit. 2025-10-10]. Dostupné z:
+      <a href="https://network.nvidia.com/pdf/whitepapers/IB_Intro_WP_190.pdf"
+        >https://network.nvidia.com/pdf/whitepapers/IB_Intro_WP_190.pdf</a
+      >
+    </li>
+    <li>
+      NVIDIA. <i>IP over InfiniBand (IPoIB)</i> [online]. 2024, 2024-05-15 [cit. 2025-10-10]. Dostupné z:
+      <a href="https://docs.nvidia.com/networking/display/mlnxofedv24010331/ip+over+infiniband+(ipoib)"
+        >https://docs.nvidia.com/networking/display/mlnxofedv24010331/ip+over+infiniband+(ipoib)
+      </a>
+    </li>
+    <li>
+      RED HAT, INC. <i>Configuring InfiniBand and RDMA Networks</i> [online]. 2024 [cit. 2025-11-20]. Dostupné z:
+      <a
+        href="https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/9/pdf/configuring_infiniband_and_rdma_networks/Red_Hat_Enterprise_Linux-9-Configuring_InfiniBand_and_RDMA_networks-en-US.pdf"
+        >https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/9/pdf/configuring_infiniband_and_rdma_networks/Red_Hat_Enterprise_Linux-9-Configuring_InfiniBand_and_RDMA_networks-en-US.pdf</a
+      >
+    </li>
+
+    <li>
+      THE DEBIAN PROJECT. <i>RDMA</i> [online]. 2020, 2020-11-15 [cit. 2025-10-10]. Dostupné z:
+      <a href="https://wiki.debian.org/RDMA">https://wiki.debian.org/RDMA</a>
+    </li>
+
+    <li>
+      USER ALPHA754293. <i>Here is how you can get 100 Gbps Infiniband up and running</i> [online]. 2023 [cit. 2025-10-10]. Dostupné z:
+      <a href="https://forum.proxmox.com/threads/here-is-how-you-can-get-100-gbps-infiniband-up-and-running.121873/"
+        >https://forum.proxmox.com/threads/here-is-how-you-can-get-100-gbps-infiniband-up-and-running.121873/</a
+      >
+    </li>
+  </ol>
+
+  <h1>Komentáře</h1>
+  <ul>
+    <li>
+      <b>Jiří Fišer - Pátek, 17. října 2025, 22.09</b>
+      <p>
+        motivace není motivací (motivací není cíl). Motivace má uvádět kontext, proč je to důležité a proč může být práce užitečná (už jsem
+        to se studentem projednával) z cílů není jasné, co je vlastně cílem (pro neodborníka) výstupy musí být specifikovány (může to ale
+        být ověření přístupu, pilotní či testovací aplikace)
+      </p>
+    </li>
+    <li>
+      <b>Jiří Škvor - Čtvrtek, 23. října 2025, 02.03</b>
+      <p>Osnova neodpovídá požadavkům, viz úvod a cíl práce v teoretické části.</p>
+    </li>
+    <li>
+      <b>Jan Krejčí - Úterý, 28. října 2025, 12.44</b>
+      <p>ok, tak mu to vratte at to muze dodelat</p>
+    </li>
+    <li>
+      <b>Jan Krejčí - Středa, 29. října 2025, 10.27</b>
+      <p>Upraveno do html</p>
+    </li>
+  </ul>
+</body>
