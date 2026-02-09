@@ -4,3 +4,10 @@
 *.out
 *.snm
 *.toc
+*.bbl
+*.blg
+*.bcf
+*.run.xml
+*.vrb
+*.pdfpc
+*~
