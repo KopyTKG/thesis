@@ -1,0 +1,227 @@
+% ============================================================
+% beamerthemeujep.sty – Beamer theme for UJEP PřF
+% Inspired by SINTEF Beamer template
+% Colors: UJEP Přírodovědecká fakulta branding
+%
+% Usage: \usetheme{ujep} in your .tex file
+% ============================================================
+\ProvidesPackage{beamerthemeujep}[2025/01/01 UJEP PřF Beamer Theme]
+
+\RequirePackage{tikz}
+\usetikzlibrary{calc, positioning, arrows.meta}
+\RequirePackage{fontspec}
+
+% ============================================================
+%  FONTS – Geist (primary) + Inter (complementary)
+%  Bundled in assets/fonts/ for portability
+% ============================================================
+\setsansfont{Geist}[
+  Path=assets/fonts/,
+  Extension=.otf,
+  UprightFont=*-Regular,
+  BoldFont=*-Bold,
+  ItalicFont=*-Italic,
+  BoldItalicFont=*-BoldItalic,
+]
+\newfontfamily\interfont{Inter}[
+  Path=assets/fonts/,
+  Extension=.otf,
+  UprightFont=*-Regular,
+  BoldFont=*-Bold,
+  ItalicFont=*-Italic,
+  BoldItalicFont=*-BoldItalic,
+]
+
+% ============================================================
+%  COLORS
+% ============================================================
+\definecolor{ujepteal}{HTML}{037E86}
+\definecolor{ujeptealdk}{HTML}{025D63}
+\definecolor{ujepteallg}{HTML}{E8F4F5}
+\definecolor{ujepgray}{HTML}{BCBCBC}
+\definecolor{dark}{HTML}{2C2C2C}
+\definecolor{mid}{HTML}{6B6B6B}
+\definecolor{light}{HTML}{F7F7F7}
+\definecolor{linkblue}{HTML}{5A8FA8}
+
+% ============================================================
+%  BASE THEME
+% ============================================================
+\usetheme{default}
+\usecolortheme{default}
+\setbeamertemplate{navigation symbols}{}
+
+% ============================================================
+%  BEAMER FONT ASSIGNMENTS
+%  Geist = titles/headings, Inter = body/secondary text
+% ============================================================
+\setbeamerfont{normal text}{size=\normalsize}
+\setbeamerfont{title}{size=\Large, series=\bfseries}
+\setbeamerfont{subtitle}{size=\normalsize}
+\setbeamerfont{frametitle}{size=\large, series=\bfseries}
+\setbeamerfont{framesubtitle}{size=\footnotesize, series=\mdseries, family=\interfont}
+\setbeamerfont{author}{size=\normalsize, family=\interfont}
+\setbeamerfont{institute}{size=\small, family=\interfont}
+\setbeamerfont{date}{size=\small, family=\interfont}
+\setbeamerfont{block title}{series=\bfseries}
+\setbeamerfont{block body}{family=\interfont}
+
+% ============================================================
+%  ELEMENT COLORS
+% ============================================================
+\setbeamercolor{normal text}{fg=dark}
+\setbeamercolor{frametitle}{fg=ujepteal}
+\setbeamercolor{framesubtitle}{fg=mid}
+\setbeamercolor{title}{fg=dark}
+\setbeamercolor{subtitle}{fg=ujepteal}
+\setbeamercolor{author}{fg=dark}
+\setbeamercolor{institute}{fg=mid}
+\setbeamercolor{date}{fg=mid}
+\setbeamercolor{item}{fg=ujepteal}
+\setbeamercolor{block title}{fg=white, bg=ujepteal}
+\setbeamercolor{block body}{fg=dark, bg=ujepteallg}
+\setbeamercolor{block title alerted}{fg=white, bg=red!70!black}
+\setbeamercolor{block body alerted}{fg=dark, bg=red!5}
+\setbeamercolor{block title example}{fg=white, bg=ujeptealdk}
+\setbeamercolor{block body example}{fg=dark, bg=ujepteallg}
+
+% ============================================================
+%  ITEMIZE / ENUMERATE
+% ============================================================
+\setbeamertemplate{itemize item}{\color{ujepteal}$\bullet$}
+\setbeamertemplate{itemize subitem}{\color{ujepgray}\small$\circ$}
+\setbeamertemplate{enumerate item}{\color{ujepteal}\insertenumlabel.}
+
+% ============================================================
+%  CONFIGURABLE LOGOS
+% ============================================================
+\newcommand{\ujepheaderlogo}{assets/logos/logo_white.png}
+\newcommand{\ujeptitlelogo}{assets/logos/logo_main.jpg}
+\newcommand{\ujepcloselogo}{assets/logos/logo_white.png}
+
+\newcommand{\setheaderlogo}[1]{\renewcommand{\ujepheaderlogo}{#1}}
+\newcommand{\settitlelogo}[1]{\renewcommand{\ujeptitlelogo}{#1}}
+\newcommand{\setcloselogo}[1]{\renewcommand{\ujepcloselogo}{#1}}
+
+% Short title for footer
+\newcommand{\ujepshorttitle}{}
+\newcommand{\shorttitle}[1]{\renewcommand{\ujepshorttitle}{#1}}
+
+% ============================================================
+%  BACKGROUND – plain white (normal slides)
+% ============================================================
+\setbeamertemplate{background}{%
+  \begin{tikzpicture}[remember picture, overlay]
+    \fill[white] (current page.south west) rectangle (current page.north east);
+  \end{tikzpicture}%
+}
+
+% ============================================================
+%  FRAMETITLE – logo badge + title inline
+% ============================================================
+\setbeamertemplate{frametitle}{%
+  \begin{tikzpicture}[remember picture, overlay]
+    % Teal badge behind logo
+    \node[anchor=north west, inner sep=0pt]
+      (headerlogo) at ([xshift=1cm, yshift=-0.2cm]current page.north west)
+      {\includegraphics[height=0.55cm]{\ujepheaderlogo}};
+    \fill[ujepteal]
+      ([xshift=-0.2cm, yshift=0.4cm]headerlogo.north west)
+      rectangle ([xshift=0.3cm, yshift=-0.5cm]headerlogo.south east);
+    \node[anchor=north west, inner sep=0pt]
+      at ([xshift=1cm, yshift=-0.35cm]current page.north west)
+      {\includegraphics[height=0.55cm]{\ujepheaderlogo}};
+  \end{tikzpicture}%
+  \ifx\insertframesubtitle\empty
+    \vspace{0.05cm}\\%
+    \hspace{2cm}%
+    {\usebeamerfont{frametitle}\usebeamercolor[fg]{frametitle}\insertframetitle}%
+  \else
+    \vspace{-0.45cm}\\%
+    \hspace{2cm}%
+    {\usebeamerfont{frametitle}\usebeamercolor[fg]{frametitle}\insertframetitle}%
+    \\[-0.05cm]%
+    \hspace{2cm}%
+    {\usebeamerfont{framesubtitle}\usebeamercolor[fg]{framesubtitle}\insertframesubtitle}%
+  \fi
+  \vspace{0.2cm}%
+}
+
+% ============================================================
+%  FOOTLINE
+% ============================================================
+\setbeamertemplate{footline}{%
+  \leavevmode%
+  \hbox to \paperwidth{%
+    \hspace{0.4cm}%
+    {\color{mid}\interfont\scriptsize\insertauthor}%
+    \hfill%
+    {\color{mid}\interfont\scriptsize\ujepshorttitle}%
+    \hfill%
+    {\color{mid}\interfont\scriptsize\insertframenumber\,/\,\inserttotalframenumber}%
+    \hspace{0.4cm}%
+  }%
+  \vspace{0.25cm}%
+}
+
+% ============================================================
+%  TITLE SLIDE COMMAND
+%  Usage: \titleslide
+% ============================================================
+\newcommand{\titleslide}{%
+{%
+\setbeamertemplate{background}{}%
+\setbeamertemplate{footline}{}%
+\begin{frame}[plain]
+\begin{tikzpicture}[remember picture, overlay]
+  \fill[white] (current page.south west) rectangle (current page.north east);
+  \foreach \i in {0,...,7}{
+    \fill[ujepgray, opacity=0.25, rotate around={-25:(current page.south west)}]
+      ([xshift=\i*0.8cm + 8cm, yshift=0cm]current page.south west)
+      rectangle ++(0.35cm, 7cm);
+  }
+\end{tikzpicture}
+\vspace{0.5cm}
+\hspace{0.6cm}
+\begin{minipage}{0.9\textwidth}
+  \includegraphics[width=0.45\textwidth]{\ujeptitlelogo}\\[1.2cm]
+  {\usebeamerfont{title}\usebeamercolor[fg]{title}\inserttitle}\\[0.4cm]
+  {\usebeamerfont{subtitle}\usebeamercolor[fg]{subtitle}\insertsubtitle}\\[0.5cm]
+  {\usebeamerfont{author}\usebeamercolor[fg]{author}\insertauthor}\\[0.15cm]
+  {\usebeamerfont{date}\usebeamercolor[fg]{date}\insertdate}
+\end{minipage}
+\end{frame}
+}%
+}
+
+% ============================================================
+%  CLOSING SLIDE COMMAND
+%  Usage: \closingslide{Thank You}{Questions?}{Your Name}{email@example.com}
+% ============================================================
+\newcommand{\closingslide}[2]{%
+{%
+\setbeamertemplate{background}{}%
+\setbeamertemplate{footline}{}%
+\begin{frame}[plain]
+\begin{tikzpicture}[remember picture, overlay]
+  \fill[ujepteal] (current page.south west) rectangle (current page.north east);
+  \node[anchor=north west, opacity=0.85] at ([xshift=0.5cm, yshift=-0.5cm]current page.north west)
+    {\includegraphics[height=1cm]{\ujepcloselogo}};
+  \foreach \i in {0,...,7}{
+    \fill[ujepgray, opacity=0.25, rotate around={-25:(current page.south west)}]
+      ([xshift=\i*0.8cm + 8cm, yshift=0cm]current page.south west)
+      rectangle ++(0.35cm, 7cm);
+  }
+\end{tikzpicture}
+\vfill
+\begin{center}
+  \vspace{1.5cm}
+  {\fontsize{28}{34}\selectfont\bfseries\color{white}#1}\\[1.5cm]
+  {\Large\color{white!80}#2}\\[1.2cm]
+\end{center}
+\vfill
+\end{frame}
+}%
+}
+
+\endinput

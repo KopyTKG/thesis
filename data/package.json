@@ -1,0 +1,17 @@
+{
+  "name": "data",
+  "module": "index.ts",
+  "type": "module",
+  "private": true,
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "dependencies": {
+    "canvas": "^3.2.1",
+    "chart.js": "^4.5.1",
+    "chartjs-plugin-annotation": "^3.1.0"
+  }
+}

@@ -1,0 +1,223 @@
+{
+  "metadata": {
+    "cluster": "UJEP HPC Cluster",
+    "total_nodes": 10,
+    "head_nodes": 2,
+    "compute_nodes": 8,
+    "cpus_per_node": "2x Intel Xeon E5-2650 v4 (24 cores)",
+    "ram_per_node_GiB": 64,
+    "ssd_model": "Samsung MZ7TY256 (CM871a) SATA III",
+    "ssd_count": 16,
+    "ssd_per_compute_node": 2,
+    "ssd_capacity_GB": 256,
+    "infiniband_card": "Mellanox ConnectX-5 EDR 100Gbps",
+    "infiniband_switch": "Mellanox SB7790 EDR",
+    "os": "Rocky Linux (8.10 / 9.7 depending on deployment)",
+    "units": "MB/s (1 MB = 1,000,000 bytes). BeeGFS originally reported in MiB/s and GiB/s, converted here.",
+    "benchmark_tool_notes": {
+      "fio": "4GB test, 1MB block, iodepth=16, numjobs=4, libaio, direct=1",
+      "beegfs": "beegfs-ctl benchmark, 1MiB block, 10GiB size, 5 tasks",
+      "ceph": "rados bench, 4MB block, 16 concurrent ops (unless noted)",
+      "dd": "dd with direct I/O, 1GB test file"
+    }
+  },
+  "theoretical_limits": {
+    "description": "Hardware-limited theoretical maximums",
+    "per_ssd": {
+      "sequential_read_MBps": 540,
+      "sequential_write_MBps": 520,
+      "interface": "SATA III (6 Gbps = 600 MB/s theoretical)"
+    },
+    "aggregate_storage": {
+      "total_ssds": 16,
+      "sequential_read_MBps": 8640,
+      "sequential_write_MBps": 8320,
+      "note": "16 SSDs x max SATA III sequential throughput"
+    },
+    "network_per_link": {
+      "bandwidth_Gbps": 100,
+      "throughput_MBps": 12500,
+      "note": "Single ConnectX-5 EDR link"
+    },
+    "network_aggregate_oss": {
+      "links": 8,
+      "throughput_MBps": 100000,
+      "note": "8 compute/OSS nodes x 12,500 MB/s"
+    },
+    "bottleneck": "SATA SSDs (8.6 GB/s read, 8.3 GB/s write) — InfiniBand has 12x headroom"
+  },
+  "benchmarks": [
+    {
+      "filesystem": "Lustre",
+      "version": "2.15.4",
+      "config": "TCP over Ethernet",
+      "os": "Rocky 8.10",
+      "transport": "TCP (192.168.1.x@tcp)",
+      "redundancy": "none",
+      "storage": "16x SSD (OSTs)",
+      "benchmark_tool": "fio",
+      "aggregate_write_MBps": 1563.16,
+      "aggregate_read_MBps": 3254.13,
+      "per_node": [
+        { "node": "Rocky-Compute-1", "write_MBps": 36.13, "read_MBps": 73.94 },
+        { "node": "Rocky-Compute-2", "write_MBps": 231.77, "read_MBps": 516.26 },
+        { "node": "Rocky-Compute-3", "write_MBps": 239.38, "read_MBps": 523.4 },
+        { "node": "Rocky-Compute-4", "write_MBps": 219.17, "read_MBps": 518.73 },
+        { "node": "Rocky-Compute-5", "write_MBps": 189.35, "read_MBps": 516.55 },
+        { "node": "Rocky-Compute-6", "write_MBps": 140.35, "read_MBps": 516.65 },
+        { "node": "Rocky-Compute-7", "write_MBps": 471.06, "read_MBps": 510.47 },
+        { "node": "Rocky-Compute-8", "write_MBps": 35.95, "read_MBps": 78.13 }
+      ]
+    },
+    {
+      "filesystem": "Lustre",
+      "version": "2.17.0",
+      "config": "RDMA over InfiniBand",
+      "os": "Rocky 9.7",
+      "transport": "o2ib RDMA (10.0.0.x@o2ib)",
+      "redundancy": "none",
+      "storage": "16x SSD (OSTs)",
+      "benchmark_tool": "dd (direct I/O)",
+      "aggregate_write_MBps": 1380,
+      "aggregate_read_MBps": 2770,
+      "per_node_note": "dd single-node test, then parallel 8-node test",
+      "single_node": {
+        "write_MBps": 165,
+        "read_MBps": 331
+      },
+      "per_node_range": {
+        "write_min_MBps": 165,
+        "write_max_MBps": 183,
+        "read_min_MBps": 314,
+        "read_max_MBps": 384
+      }
+    },
+    {
+      "filesystem": "Lustre",
+      "version": "2.17.0",
+      "config": "RDMA + FLR (2-way mirror)",
+      "os": "Rocky 9.7",
+      "transport": "o2ib RDMA (10.0.0.x@o2ib)",
+      "redundancy": "2-way mirror (FLR)",
+      "storage": "16x SSD (OSTs)",
+      "benchmark_tool": "dd (direct I/O)",
+      "aggregate_write_MBps": 1096,
+      "aggregate_read_MBps": 3648,
+      "per_node_estimate": {
+        "write_MBps": 137,
+        "read_MBps": 456
+      },
+      "mirror_overhead_pct": 17
+    },
+    {
+      "filesystem": "NFS",
+      "version": "NFSv4 + Pacemaker + TargetCLI",
+      "config": "HA with Pacemaker over InfiniBand",
+      "os": "Rocky 8.10",
+      "transport": "InfiniBand (IPoIB)",
+      "redundancy": "Pacemaker HA failover",
+      "storage": "16x SSD (iSCSI LUNs aggregated via RAID6)",
+      "benchmark_tool": "fio",
+      "aggregate_write_MBps": 11016.95,
+      "aggregate_read_MBps": 18638.6,
+      "note": "High values likely include client-side caching effects despite direct=1",
+      "per_node": [
+        { "node": "Rocky-Compute-1", "write_MBps": 1233.27, "read_MBps": 2205.11 },
+        { "node": "Rocky-Compute-2", "write_MBps": 1241.31, "read_MBps": 2031.24 },
+        { "node": "Rocky-Compute-3", "write_MBps": 1227.45, "read_MBps": 2060.88 },
+        { "node": "Rocky-Compute-4", "write_MBps": 1230.68, "read_MBps": 1784.75 },
+        { "node": "Rocky-Compute-5", "write_MBps": 1242.25, "read_MBps": 2080.51 },
+        { "node": "Rocky-Compute-6", "write_MBps": 1753.24, "read_MBps": 3263.09 },
+        { "node": "Rocky-Compute-7", "write_MBps": 1537.97, "read_MBps": 2552.42 },
+        { "node": "Rocky-Compute-8", "write_MBps": 1550.78, "read_MBps": 2660.6 }
+      ]
+    },
+    {
+      "filesystem": "GlusterFS",
+      "version": "GlusterFS (latest at time of test)",
+      "config": "Distributed volume over IPoIB",
+      "os": "Rocky 8.10",
+      "transport": "IPoIB (TCP over InfiniBand)",
+      "redundancy": "none (distributed, no replica)",
+      "storage": "16x SSD",
+      "benchmark_tool": "fio",
+      "deprecated_reason": "RDMA support removed in recent versions",
+      "aggregate_write_MBps": 1182.21,
+      "aggregate_read_MBps": 4109.54,
+      "per_node": [
+        { "node": "Rocky-Compute-1", "write_MBps": 73.21, "read_MBps": 522.9 },
+        { "node": "Rocky-Compute-2", "write_MBps": 73.22, "read_MBps": 501.62 },
+        { "node": "Rocky-Compute-3", "write_MBps": 221.7, "read_MBps": 509.42 },
+        { "node": "Rocky-Compute-4", "write_MBps": 226.25, "read_MBps": 523.65 },
+        { "node": "Rocky-Compute-5", "write_MBps": 223.0, "read_MBps": 518.81 },
+        { "node": "Rocky-Compute-6", "write_MBps": 222.94, "read_MBps": 512.79 },
+        { "node": "Rocky-Compute-7", "write_MBps": 70.9, "read_MBps": 501.93 },
+        { "node": "Rocky-Compute-8", "write_MBps": 70.99, "read_MBps": 518.42 }
+      ]
+    },
+    {
+      "filesystem": "BeeGFS",
+      "version": "BeeGFS Community Edition",
+      "config": "Distributed (RAID0 only in community)",
+      "os": "Rocky 8.10",
+      "transport": "InfiniBand (RDMA native)",
+      "redundancy": "none (RAID0 — enterprise license required for redundancy)",
+      "storage": "16x SSD",
+      "benchmark_tool": "beegfs-ctl benchmark",
+      "deprecated_reason": "Community edition only supports RAID0, no redundancy",
+      "aggregate_write_MBps": 4660,
+      "aggregate_read_MBps": 10104,
+      "per_node_avg": {
+        "write_MBps": 291,
+        "read_MBps": 631
+      },
+      "per_node_range": {
+        "write_min_MBps": 256,
+        "write_max_MBps": 300,
+        "read_min_MBps": 311,
+        "read_max_MBps": 871
+      },
+      "note": "Originally reported in MiB/s (converted: 277.67 MiB/s write avg, 601.99 MiB/s read avg, 4.34 GiB/s write agg, 9.41 GiB/s read agg)"
+    },
+    {
+      "filesystem": "Ceph",
+      "version": "Ceph (rados bench)",
+      "config": "16x SSD, default PGs, 2 replicas",
+      "os": "Rocky 8.10",
+      "transport": "TCP",
+      "redundancy": "2 replicas",
+      "storage": "16x SSD (OSDs)",
+      "benchmark_tool": "rados bench (4MB block, 16 concurrent)",
+      "aggregate_write_MBps": 681.64,
+      "aggregate_read_MBps": 2313.18,
+      "deprecated_reason": "Significant software overhead limiting performance"
+    },
+    {
+      "filesystem": "Ceph",
+      "version": "Ceph (rados bench)",
+      "config": "16x SSD, 1 replica, 128 PGs, 64 threads",
+      "os": "Rocky 8.10",
+      "transport": "TCP",
+      "redundancy": "1 replica (no redundancy)",
+      "storage": "16x SSD (OSDs)",
+      "benchmark_tool": "rados bench (4MB block, 64 concurrent)",
+      "aggregate_write_MBps": 1077.31,
+      "aggregate_read_MBps": 3058.17,
+      "note": "Best Ceph results: 1-replica write from 128PG test, read from new-controller test"
+    }
+  ],
+  "summary_for_plotting": {
+    "description": "Simplified comparison array — best result per filesystem for bar charts",
+    "unit": "MB/s",
+    "data": [
+      { "label": "Lustre TCP", "write": 1563, "read": 3254 },
+      { "label": "Lustre RDMA", "write": 1380, "read": 2770 },
+      { "label": "Lustre RDMA+FLR", "write": 1096, "read": 3648 },
+      { "label": "NFS + Pacemaker", "write": 11017, "read": 18639 },
+      { "label": "GlusterFS", "write": 1182, "read": 4110 },
+      { "label": "BeeGFS", "write": 4660, "read": 10104 },
+      { "label": "Ceph 16xSSD 2-rep", "write": 682, "read": 2313 },
+      { "label": "Ceph 16xSSD 1-rep", "write": 1077, "read": 3058 }
+    ]
+  }
+}

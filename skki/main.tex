@@ -1,0 +1,90 @@
+% ============================================================
+% Beamer Presentation Template – UJEP PřF
+% Uses: beamerthemeujep.sty
+% Compile: xelatex main.tex (2x)
+% ============================================================
+\documentclass[aspectratio=169, 12pt]{beamer}
+
+\usepackage[english]{babel}
+\usepackage{graphicx}
+
+% -- Load UJEP theme --
+\usepackage{beamerthemeujep}
+
+% -- (Optional) Override logos --
+% \setheaderlogo{my_header_logo.png}
+% \settitlelogo{my_title_logo.jpg}
+% \setcloselogo{my_closing_logo.jpg}
+
+% ============================================================
+%  METADATA
+% ============================================================
+\title{Návrh a implementace \\ virtualizačního clusterového prostředí \\ katedry informatiky}
+\shorttitle{virtualizační clusterové prostředí}
+\subtitle{Bakalářská práce}
+\author{Martin Kopecký}
+\institute{Univerzita J.\,E.\,Purkyně v Ústí nad Labem \\ Přírodovědecká fakulta}
+\date{\the\day.\the\month.\the\year}
+
+% ============================================================
+\begin{document}
+
+% -- Title slide --
+\titleslide
+
+% ============================================================
+%  CONTENT SLIDES
+% ============================================================
+
+\begin{frame}{Motivace}
+\begin{itemize}
+ \item Katedra informatiky postrádá prostředí
+ \item Laboratoř počítačových sítí a infrastruktury disponuje hardwarem
+ \item Příležitost navrhnout a sestavit nový virtualizační cluster
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Cíl práce}
+ Hlavním cílem práce je navrhnout a zprovoznit virtualizační prostředí na hardwaru.
+\vspace{0.3cm}
+\begin{itemize}
+ \item Testování distribuovaných úložišť 
+ \item Testování distribuovaných virtualizačních platforem
+ \item Implementace nejvhodnějšího řešení
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Stav práce}{Popis progresu}
+\textbf{Fáze:} Testování distribuovaných úložišť \\ 
+\vspace{0.3cm}
+\textbf{Otestováno:} Rocky Linux 
+\vspace{0.3cm}
+\begin{itemize}
+ \item BeegFS
+ \item Ceph
+ \item GlusterFS 
+ \item Lustre
+ \item NFS
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Stav práce}{Výsledky měření - Čtení}
+\begin{center}
+   \vspace{-0.2cm}
+   \includegraphics[width=0.65\textwidth]{assets/read_performance.png}
+\end{center}
+
+\end{frame}
+
+\begin{frame}{Stav práce}{Výsledky měření - Zápis}
+\begin{center}
+   \vspace{-0.2cm}
+   \includegraphics[width=0.65\textwidth]{assets/write_performance.png}
+\end{center}
+
+\end{frame}
+
+\closingslide{Děkuji za pozornost}{Otázky?}{}{}
+
+\end{document}
