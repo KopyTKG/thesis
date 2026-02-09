@@ -35,9 +35,9 @@
 \setbeamertemplate{note page}{%
   \colorbox{light}{%
     \begin{minipage}[t][\textheight]{\dimexpr\textwidth-2\fboxsep}
-      \vspace{0.5cm}
-      {\color{ujepteal}\bfseries\large Notes}\\[0.3cm]
-      {\color{dark}\normalsize\insertnote}
+      \vspace{0.1cm}
+      {\color{ujepteal}\bfseries\large Notes}\\[0.2cm]
+      {\color{dark}\footnotesize\insertnote}
       \vfill
     \end{minipage}%
   }%
@@ -95,7 +95,7 @@
 \setbeamerfont{framesubtitle}{size=\footnotesize, series=\mdseries, family=\interfont}
 \setbeamerfont{author}{size=\normalsize, family=\interfont}
 \setbeamerfont{institute}{size=\small, family=\interfont}
-\setbeamerfont{date}{size=\small, family=\interfont}
+\setbeamerfont{date}{size=\footnotesize, family=\interfont}
 \setbeamerfont{block title}{series=\bfseries}
 \setbeamerfont{block body}{family=\interfont}
 
@@ -139,6 +139,12 @@
 % Short title for footer
 \newcommand{\ujepshorttitle}{}
 \newcommand{\shorttitle}[1]{\renewcommand{\ujepshorttitle}{#1}}
+\newcommand{\ujepsupervisor}{}
+\newcommand{\supervisor}[1]{\renewcommand{\ujepsupervisor}{#1}}
+\newcommand{\ujepfieldofstudy}{}
+\newcommand{\fieldofstudy}[1]{\renewcommand{\ujepfieldofstudy}{#1}}
+\newcommand{\ujepconsultant}{}
+\newcommand{\consultant}[1]{\renewcommand{\ujepconsultant}{#1}}
 
 % ============================================================
 %  BACKGROUND – plain white (normal slides)
@@ -215,9 +221,17 @@
 \begin{minipage}{0.9\textwidth}
   \includegraphics[width=0.45\textwidth]{\ujeptitlelogo}\\[1.2cm]
   {\usebeamerfont{title}\usebeamercolor[fg]{title}\inserttitle}\\[0.4cm]
-  {\usebeamerfont{subtitle}\usebeamercolor[fg]{subtitle}\insertsubtitle}\\[0.5cm]
+  {\usebeamerfont{subtitle}\usebeamercolor[fg]{subtitle}\insertsubtitle}\\[0.2cm]
   {\usebeamerfont{author}\usebeamercolor[fg]{author}\insertauthor}\\[0.15cm]
-  {\usebeamerfont{date}\usebeamercolor[fg]{date}\insertdate}
+  {  \usebeamerfont{date}\usebeamercolor[fg]{date}Vedoucí: 
+     \usebeamerfont{date}\usebeamercolor[fg]{author}\ujepsupervisor
+  }\\
+  {  \usebeamerfont{date}\usebeamercolor[fg]{date}Konzultant: 
+     \usebeamerfont{date}\usebeamercolor[fg]{author}\ujepconsultant
+  }\\
+  {  \usebeamerfont{date}\usebeamercolor[fg]{date}Obor: 
+     \usebeamerfont{date}\usebeamercolor[fg]{author}\ujepfieldofstudy
+  }\\
 \end{minipage}
 \end{frame}
 }%

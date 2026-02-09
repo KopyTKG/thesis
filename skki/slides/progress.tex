@@ -1,0 +1,48 @@
+\begin{frame}{Stav práce}{Popis progresu}
+\textbf{Fáze:} Testování distribuovaných úložišť \\
+\vspace{0.5cm}
+\begin{columns}[T]
+\begin{column}{0.48\textwidth}
+ \textbf{Testované OS:}
+ \begin{itemize}
+  \item CentOS Stream 
+  \item Proxmox
+  \item Rocky Linux 
+  \item Ubuntu
+  \item Windows 
+ \end{itemize}
+\end{column}
+\begin{column}{0.48\textwidth}
+ \textbf{Testované FS:}
+ \begin{itemize}
+  \item BeeGFS
+  \item Ceph
+  \item GlusterFS 
+  \item Lustre
+  \item NFS + Pacemaker
+ \end{itemize}
+\end{column}
+\end{columns}
+% ===============================
+% Notes
+% ===============================
+\note{
+\textbf{Testované OS:}
+\begin{itemize}
+  \item CentOS Stream (9, 10)
+  \item Proxmox (8.2, 8.3, 9.0) 
+  \item Rocky Linux (9.5, 9.7, 10.0)
+  \item Ubuntu (22.04)
+  \item Windows 
+\end{itemize}
+
+\begin{itemize}
+	\item začátek na Proxmox(nemá podporu pro IPoIB a RDMA)
+	\item Ubuntu(max 2 vlánka - 30Gb/s)
+	\item CentOS(max 4 vlánka - 60Gb/s) (Bohuzel nejde o serverovy OS -> moznost nestability)
+	\item Rocky Linux(max 4 vlánka - 89Gb/s) (podporuje RDMA a IPoIB) -> 9.5, 9.7, 10.0
+\end{itemize}
+}
+\end{frame}
+
+

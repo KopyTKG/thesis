@@ -1,0 +1,37 @@
+\begin{frame}{Teoretická východiska}
+
+\begin{enumerate}
+\item Virtualizace a hypervisory
+\begin{itemize}
+ \item Typy virtualizace (plná, paravirtualizace, kontejnery), KVM/QEMU
+\end{itemize}
+\vspace{0.2cm}
+\item Distribuované souborové systémy
+\begin{itemize}
+ \item Principy distribuovaného úložiště
+\end{itemize}
+\vspace{0.2cm}
+\item Clusterová architektura / High Availability
+\begin{itemize}
+ \item Koncepty HA, failover, Pacemaker, RDMA/IPoIB
+\end{itemize}
+\note{
+\textbf{Virtualizace a hypervisory}
+\begin{itemize}
+	\item Více OS na jednom HW (KVM/QEMU)
+	\item V práci testuji platformy nad clusterem
+\end{itemize}
+\textbf{Distribuované souborové systémy}
+\begin{itemize}
+	\item Sdílení úložiště napříč uzly
+	\item Ceph, GlusterFS, Lustre, BeeGFS, NFS
+\end{itemize}
+\textbf{InfiniBand / RDMA / IPoIB}
+\begin{itemize}
+	\item Vysokorychlostní propojení bez zátěže CPU
+	\item Klíčové pro výběr OS (Rocky = plná podpora)
+\end{itemize}
+}
+\end{enumerate}
+\end{frame}
+
