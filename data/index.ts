@@ -78,8 +78,8 @@ async function createPerformanceChart(title: string, filesystems: string[], spee
         {
           label: "Measured Throughput",
           data: speeds,
-          backgroundColor: "rgba(54, 162, 235, 0.8)",
-          borderColor: "rgba(54, 162, 235, 1)",
+          backgroundColor: "rgba(3, 126, 134, 0.8)",
+          borderColor: "rgba(3, 126, 134, 1)",
           borderWidth: 1,
         },
       ],
