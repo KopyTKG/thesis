@@ -10,6 +10,38 @@
 \RequirePackage{tikz}
 \usetikzlibrary{calc, positioning, arrows.meta}
 \RequirePackage{fontspec}
+\RequirePackage{pgfpages}
+
+% ============================================================
+%  SPEAKER NOTES
+%  Compile with: \def\withnotes{1} to show notes
+%  Or use: just notes
+% ============================================================
+\ifdefined\withnotes
+  \setbeameroption{show notes on second screen=right}
+\else
+  \setbeameroption{hide notes}
+\fi
+
+% Fix pgfpages color stack corruption (notes mode renders
+% plain text as white). Force dark color at every frame start.
+\RequirePackage{etoolbox}
+\BeforeBeginEnvironment{frame}{\color{dark}}
+
+% -- Note page styling (force dark text on white) --
+\setbeamercolor{note page}{fg=dark, bg=white}
+\setbeamercolor{note title}{fg=ujepteal, bg=white}
+\setbeamercolor{note date}{fg=mid}
+\setbeamertemplate{note page}{%
+  \colorbox{light}{%
+    \begin{minipage}[t][\textheight]{\dimexpr\textwidth-2\fboxsep}
+      \vspace{0.5cm}
+      {\color{ujepteal}\bfseries\large Notes}\\[0.3cm]
+      {\color{dark}\normalsize\insertnote}
+      \vfill
+    \end{minipage}%
+  }%
+}
 
 % ============================================================
 %  FONTS – Geist (primary) + Inter (complementary)
@@ -41,7 +73,7 @@
 \definecolor{ujepgray}{HTML}{BCBCBC}
 \definecolor{dark}{HTML}{2C2C2C}
 \definecolor{mid}{HTML}{6B6B6B}
-\definecolor{light}{HTML}{F7F7F7}
+\definecolor{light}{HTML}{E3E3E3}
 \definecolor{linkblue}{HTML}{5A8FA8}
 
 % ============================================================
@@ -50,6 +82,7 @@
 \usetheme{default}
 \usecolortheme{default}
 \setbeamertemplate{navigation symbols}{}
+
 
 % ============================================================
 %  BEAMER FONT ASSIGNMENTS
@@ -110,11 +143,7 @@
 % ============================================================
 %  BACKGROUND – plain white (normal slides)
 % ============================================================
-\setbeamertemplate{background}{%
-  \begin{tikzpicture}[remember picture, overlay]
-    \fill[white] (current page.south west) rectangle (current page.north east);
-  \end{tikzpicture}%
-}
+\setbeamertemplate{background}{}
 
 % ============================================================
 %  FRAMETITLE – logo badge + title inline

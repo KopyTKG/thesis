@@ -42,6 +42,13 @@
  \item Laboratoř počítačových sítí a infrastruktury disponuje hardwarem
  \item Příležitost navrhnout a sestavit nový virtualizační cluster
 \end{itemize}
+\note{
+\begin{enumerate}
+	\item Katedra: nemá nic k použití a chce misto pro studnetské projekty.
+	\item Laboratoř má HW 
+	\item Vznik Baka je možnost hrát si s HW
+\end{enumerate}
+}
 \end{frame}
 
 \begin{frame}{Cíl práce}
@@ -52,12 +59,22 @@
  \item Testování distribuovaných virtualizačních platforem
  \item Implementace nejvhodnějšího řešení
 \end{itemize}
+\note{
+Fáze:
+\begin{itemize}
+\item Testování FS
+\item Testování VM
+\item Sestavení clusteru
+\item Otestování
+\end{itemize}
+Current: \textbf{FS}
+}
 \end{frame}
 
 \begin{frame}{Stav práce}{Popis progresu}
-\textbf{Fáze:} Testování distribuovaných úložišť \\ 
+\textbf{Fáze:} Testování distribuovaných úložišť \\
 \vspace{0.3cm}
-\textbf{Otestováno:} Rocky Linux 
+\textbf{Otestováno:} Rocky Linux
 \vspace{0.3cm}
 \begin{itemize}
  \item BeegFS
@@ -66,7 +83,14 @@
  \item Lustre
  \item NFS
 \end{itemize}
-
+	\note{
+\begin{itemize}
+	\item začátek na Proxmox(nemá podporu pro IPoIB a RDMA)
+	\item Ubuntu(max 2 vlánka - 30Gb/s)
+	\item CentOS(max 4 vlánka - 60Gb/s) (Bohuzel nejde o serverovy OS -> moznost nestability)
+	\item Rocky Linux(max 4 vlánka - 89Gb/s) (podporuje RDMA a IPoIB) -> 9.5, 9.7, 10.0
+\end{itemize}
+}
 \end{frame}
 
 \begin{frame}{Stav práce}{Výsledky měření - Čtení}
@@ -74,7 +98,13 @@
    \vspace{-0.2cm}
    \includegraphics[width=0.65\textwidth]{assets/read_performance.png}
 \end{center}
-
+\note{
+\begin{itemize}
+ \item \textbf{NFS + Pacemaker} je outlier .... cache v paměti a když to bylo zakázáno v CFG
+ \item \textbf{NFS + Pacemaker} NUKE + velice riskatní protože hlava dělá veškerou logiku RAID arr
+ \item \textbf{BeegFS} Super výsledke ... ALE v CE je jen RAID 0 ... nelze použit v PROD
+\end{itemize}
+}
 \end{frame}
 
 \begin{frame}{Stav práce}{Výsledky měření - Zápis}
@@ -82,7 +112,13 @@
    \vspace{-0.2cm}
    \includegraphics[width=0.65\textwidth]{assets/write_performance.png}
 \end{center}
-
+\note{
+\begin{itemize}
+ \item \textbf{NFS + Pacemaker} je outlier .... cache v paměti a když to bylo zakázáno v CFG
+ \item \textbf{NFS + Pacemaker} NUKE + velice riskatní protože hlava dělá veškerou logiku RAID arr
+ \item \textbf{BeegFS} Super výsledke ... ALE v CE je jen RAID 0 ... nelze použit v PROD
+\end{itemize}
+}
 \end{frame}
 
 \closingslide{Děkuji za pozornost}{Otázky?}{}{}

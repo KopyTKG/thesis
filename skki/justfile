@@ -1,0 +1,41 @@
+# List all available commands
+default:
+    @just --list
+
+# Compile LaTeX document (works for articles and beamer)
+build FILE="main":
+    xelatex {{FILE}}.tex
+    -biber {{FILE}}     # if using bibliography (- ignores failure)
+    xelatex {{FILE}}.tex
+    xelatex {{FILE}}.tex
+
+# Quick compile for beamer (single pass, faster for drafts)
+quick FILE="main":
+    xelatex {{FILE}}.tex
+
+# Compile with notes (for beamer presentations)
+notes FILE="main":
+    xelatex '\def\withnotes{1}\input{'"{{FILE}}"'}'
+    xelatex '\def\withnotes{1}\input{'"{{FILE}}"'}'
+
+# Clean auxiliary files
+clean:
+    rm -f *.aux *.log *.out *.toc *.bbl *.blg *.bcf *.run.xml *.nav *.snm *.vrb
+
+# Clean everything including PDF
+cleanall: clean
+    rm -f *.pdf
+
+# Watch and rebuild on changes
+watch FILE="main":
+    ls {{FILE}}.tex | entr -c just quick {{FILE}}
+
+# Compile with notes and present (projector + presenter view)
+present FILE="main":
+    xelatex '\def\withnotes{1}\input{'"{{FILE}}"'}'
+    xelatex '\def\withnotes{1}\input{'"{{FILE}}"'}'
+    pdfpc --notes=right {{FILE}}.pdf
+
+# Open PDF for editing/viewing
+view FILE="main":
+    zathura {{FILE}}.pdf &
