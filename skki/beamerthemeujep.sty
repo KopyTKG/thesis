@@ -71,6 +71,7 @@
 \definecolor{ujeptealdk}{HTML}{025D63}
 \definecolor{ujepteallg}{HTML}{E8F4F5}
 \definecolor{ujepgray}{HTML}{BCBCBC}
+\definecolor{ujepwarn}{HTML}{E8A838}
 \definecolor{dark}{HTML}{2C2C2C}
 \definecolor{mid}{HTML}{6B6B6B}
 \definecolor{light}{HTML}{E3E3E3}
@@ -203,7 +204,7 @@
 %  TITLE SLIDE COMMAND
 %  Usage: \titleslide
 % ============================================================
-\newcommand{\titleslide}{%
+\newcommand{\titleslide}[1]{%
 {%
 \setbeamertemplate{background}{}%
 \setbeamertemplate{footline}{}%
@@ -234,6 +235,7 @@
   }\\
 \end{minipage}
 \end{frame}
+\note{#1}
 }%
 }
 

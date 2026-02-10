@@ -21,6 +21,7 @@ notes FILE="main":
 # Clean auxiliary files
 clean:
     rm -f *.aux *.log *.out *.toc *.bbl *.blg *.bcf *.run.xml *.nav *.snm *.vrb
+    rm -f slides/*.aux slides/*.log slides/*.out
 
 # Clean everything including PDF
 cleanall: clean

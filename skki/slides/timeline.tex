@@ -1,0 +1,75 @@
+\begin{frame}{Harmonogram práce}
+
+\begin{center}
+\begin{tikzpicture}[
+  x=1cm,
+  phase/.style={
+    rectangle, rounded corners=2pt,
+    minimum height=0.65cm,
+    font=\footnotesize,
+    text=white,
+    anchor=west,
+    inner xsep=4pt
+  },
+  label/.style={
+    font=\footnotesize,
+    anchor=east,
+    text=dark
+  },
+  month/.style={
+    font=\tiny,
+    text=mid
+  }
+]
+
+% Měsíce nahoře
+\foreach \i/\m in {0/Čer,1/Říj,2/Lis,3/Pro,4/Led,5/Úno,6/Dub,7/Kvě} {
+  \node[month] at (\i+0.5, 4.6) {\m};
+  \draw[ujepgray!30] (\i, -0.3) -- (\i, 4.3);
+}
+\draw[ujepgray!30] (8, -0.3) -- (8, 4.3);
+
+\draw[ujepgray, thick] (0, 4.3) -- (8, 4.3);
+
+\node[font=\tiny, text=mid] at (1, 5.0) {2025};
+\node[font=\tiny, text=mid] at (5.5, 5.0) {2026};
+
+% 1. Analýza HW + OS (hotovo)
+\node[label] at (-0.15, 3.7) {Testování komp. HW a OS};
+\node[phase, fill=ujepteal, minimum width=2*1.65cm] at (0, 3.7) {};
+\node[font=\tiny, text=white] at (1, 3.7) {\checkmark};
+
+% 2. Testování FS (hotovo)
+\node[label] at (-0.15, 2.9) {Testování dist. FS};
+\node[phase, fill=ujepteal, minimum width=2*1.65cm] at (2, 2.9) {};
+\node[font=\tiny, text=white] at (3, 2.9) {\checkmark};
+
+% 3. Měření výkonnosti (hotovo)
+\node[label] at (-0.15, 2.1) {Měření výkonnosti};
+\node[phase, fill=ujepwarn, minimum width=2*1.65cm] at (3, 2.1) {};
+\node[font=\tiny, text=white] at (4, 2.1) {$\rightarrow$};
+
+% 4. Test. VM platforem (probíhá)
+\node[label] at (-0.15, 1.3) {Test. VM platforem};
+\node[phase, fill=ujepgray, minimum width=2*1.65cm] at (4, 1.3) {};
+\node[font=\tiny, text=white] at (5, 1.3) {};
+
+% 5. Implementace clusteru (plán)
+\node[label] at (-0.15, 0.5) {Implementace clusteru};
+\node[phase, fill=ujepgray, minimum width=2*1.65cm] at (5, 0.5) {};
+
+% 6. Testování + psaní (plán)
+\node[label] at (-0.15, -0.3) {Testování + psaní};
+\node[phase, fill=ujepgray, minimum width=2*1.65cm] at (6, -0.3) {};
+
+% Legenda
+\node[font=\tiny, text=dark] at (1.5, -1.1) {
+  \tikz{\fill[ujepteal] (0,0) rectangle (0.3,0.2);} Hotovo \quad
+  \tikz{\fill[ujepwarn] (0,0) rectangle (0.3,0.2);} Probíhá \quad
+  \tikz{\fill[ujepgray] (0,0) rectangle (0.3,0.2);} Plán
+};
+
+\end{tikzpicture}
+\end{center}
+
+\end{frame}

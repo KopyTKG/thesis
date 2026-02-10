@@ -11,11 +11,6 @@
 % -- Load UJEP theme --
 \usepackage{beamerthemeujep}
 
-% -- (Optional) Override logos --
-% \setheaderlogo{my_header_logo.png}
-% \settitlelogo{my_title_logo.jpg}
-% \setcloselogo{my_closing_logo.jpg}
-
 % ============================================================
 %  METADATA
 % ============================================================
@@ -33,7 +28,11 @@
 \begin{document}
 
 % -- Title slide --
-\titleslide
+\titleslide{
+Vedoučí $\rightarrow$ \textbf{Paní magistra Sýkorová}\\
+Konzultant $\rightarrow$ \textbf{Pan doktor Krejčí}
+}
+
 
 % ============================================================
 %  CONTENT SLIDES
@@ -42,9 +41,11 @@
 \include{slides/motivation}
 \include{slides/theoretical}
 \include{slides/methods}
+\include{slides/timeline}
 \include{slides/progress}
 \include{slides/read}
 \include{slides/write}
+
 
 \closingslide{Děkuji za pozornost}{Otázky?}
 
