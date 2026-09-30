@@ -1,0 +1,68 @@
+\documentclass[a4paper,11pt]{article}
+\usepackage[czech]{babel}
+\usepackage{amsmath, amssymb, listings}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{hyperref}
+\usepackage{graphicx}
+\usepackage{geometry}
+\usepackage{todonotes}
+\usepackage{longtable}
+\usepackage{xcolor}
+\usepackage{csquotes}
+\geometry{a4paper, margin=1in}
+
+\newcommand{\nepovedeno}{\protect\textbf{\protect\color{red}(Neúspěšný pokus)}}
+\newcommand{\povedeno}{\protect\textbf{\protect\color{green}(Úspěšný pokus)}}
+\newcommand{\moznost}{\protect\textbf{\protect\color{orange}(Možná cesta)}}
+
+\setlength{\parskip}{0.7\baselineskip}
+\setlength{\parindent}{0pt}
+\setlength{\marginparwidth}{2cm}
+
+\newcommand{\ukol}[1]{\todo[inline]{#1}}
+
+
+\usepackage[backend=biber,style=iso-numeric]{biblatex}
+\addbibresource{references.bib} 
+
+\begin{document}
+\listoftodos
+
+\newpage
+
+\begin{titlepage}
+    \centering
+    \includegraphics[width=0.4\textwidth]{assets/PřF-UJEP-logo.png}
+    
+        \vfill
+    
+    {\LARGE Univerzita Jana Evangelisty Purkyně v Ústí nad Labem}\\[1.5cm]
+    {\huge \bfseries Konfigurace Mellanox ConnectX-5 v Proxmox virtualizaci\\}
+    
+    \vfill
+    \begin{flushleft}
+        \large
+        \textbf{Autoři:} \\
+        Bao Kieu Quang, Jakub Petrášek, Martin Kopecký\\[1cm]
+
+        \textbf{Vypracováno:} 5. března 2025 \\
+        \textbf{Upraveno:} \today 
+    \end{flushleft}
+    
+\end{titlepage}
+
+\newpage
+
+\tableofcontents
+
+
+\include{kapitoly/uvod}
+\include{kapitoly/hledani}
+\include{kapitoly/nebula}
+
+\newpage
+
+\printbibliography
+
+\end{document}

@@ -1,0 +1,57 @@
+\documentclass{article}
+\usepackage{graphicx} % Required for inserting images
+
+\title{CX555A Ethernet}
+\author{kopecky }
+\date{March 2025}
+
+\begin{document}
+
+\maketitle
+
+\section{Nelze použít proxmox pro přepnutí}
+\begin{enumerate}
+    \item  Nutno zjistit pozici na PCIE a to přes
+\begin{verbatim}
+# lspci | grep -i mellanox
+02:00.0 Infiniband controller: Mellanox Technologies MT27800 Family [ConnectX-5]
+\end{verbatim}
+\item Nutno si zapsat XX:XX.X pozici a použit ji
+
+
+\item Nainstalovat MSTFLINT
+\begin{verbatim}
+# sudo apt-get update -y
+# sudo apt-get install gcc make dkms linux-headers-$(uname -r) 
+# wget https://www.mellanox.com/downloads/MFT/mft-4.30.1-113-x86_64-deb.tgz
+# tar -xf mft-4.30.1-113-x86_64-deb.tgz 
+# sudo mft-4.30.1-113-x86_64-deb/install.sh
+\end{verbatim}
+
+\item Přepnutí karty do Ethernet módu
+\begin{verbatim}
+# sudo mlxconfig -d XX:XX.X set LINK_TYPE_P1=2
+
+Device type:    ConnectX5
+Name:           N/A
+Description:    N/A
+Device:         XX:XX.X
+
+Configurations:                         Next Boot   New
+            LINK_TYPE_P1                IB(1)       ETH(2)
+
+Apply new Configuration? (y/n) [n]:
+
+\end{verbatim}
+
+\item Restart a podívat se na interfaces
+\begin{verbatim}
+ip add
+\end{verbatim}
+
+měl by se objevit nový ethenet port
+\end{enumerate}
+
+
+\end{document}
+

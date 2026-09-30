@@ -1,0 +1,258 @@
+\newpage
+
+\section{Hledání řešení}
+
+\subsection{Pokus 1) Proxmox 8.3.1 + Nvidia MLNX-EN}
+\label{pokus1}
+\nepovedeno
+
+Jako první jsme zkoušely nainstalovat nejnovější verzi platformy Proxmox jest je verze 8.3.1 (Debian 12.9). Dále jsme pokračovaly podle návodu co nám poskytla umělá inteligence. To tím že jsem chtěly nainstalovat ovladače MLNX-EN\cite{EN}.
+
+\subsubsection{Nález}
+Ovladače Nvidia MLNX-EN\cite{EN} nelze nainstalovat na Debian 12.9. Proto jsme byly nuceni přejít na starší verzi platformy Proxmox a to jest Proxmox 8.2.2 (Debian 12.5).
+
+
+
+
+\subsection{Pokus 2) Proxmox 8.2.2 + Nvidia MLNX-EN}
+\label{pokus2}
+\nepovedeno
+
+Po zjištění že verze 8.2.2 má jádro Debian 12.5 jsme přeinstalovaly celý systém na tuto verzi. Dále jsme stáhly ovladače a daly je instalovat. Při instalaci se nainstalovaly ovladače a aktualizoval Firmware sítových karet Mellanox ConnectX-5. Vše proběhlo v pořádku. Jenže po doinstalovaní se karta stále neobjevovala jako síťová. Po dohledávání v dokumentaci jsme se  dozvěděly že kartu lze softwarově přepnout do režimu Ethernet a hned poté se objevila, ale v tento moment jsme zjistily že switch nepodporuje Ethernet mód a tudíž je nutno najít způsob jak zprovoznit InfiniBand\cite{InfiniBand} a IP over InfiniBand (IPoIB)\cite{IPoIB}.
+
+\subsubsection{Nález}
+V jádře systému nejsou InfiniBand ovladače a schází podpora pro IP over InfiniBand.
+
+\subsection{Pokus 3) Proxmox 8.2.2 + Nvidia MLNX-EN + IB}
+\label{pokus3}
+\nepovedeno
+
+Dále pokračovala snaha o zprovoznění síťové karty po nalezení Open-Source ovladačů pro ovládání InfiniBand\cite{InfiniBand}. Přesněji ovladačů RDMA\cite{guideDeb} (rdma\_core). Instalace proběhla podle návodu\cite{guideDeb}, ale i po této snaze karta stále nebyla rozpoznána.
+
+Pro instalaci byly použity tyto komandy
+\begin{verbatim}
+    apt install rdma-core
+    apt install libibverbs1 librdmacm1 \
+libibmad5 libibumad3 librdmacm1 ibverbs-providers rdmacm-utils \
+infiniband-diags libfabric1 ibverbs-utils
+\end{verbatim}
+
+\subsubsection{Nález}
+Při delší prohledávání internetu jsme se dozvěděly, že MLNX-EN\cite{EN} nejsou ovladače pro InfiniBand ale pro Ethernet. Proto jsem musely přeinstalovat systém a začít znovu.
+
+\subsection{Pokus 4) Proxmox 8.2.2 + Nvidia MLNX-OFED + IB}
+\label{pokus4}
+\nepovedeno
+
+Další snaha byla převést ovladače Nvidia MLNX-EN\cite{EN} na MLNX-OFED\cite{OFED}, které jsou určeny pro RDMA\cite{RDMA} mód. Jenže při instalaci vyskočila chybová hláška, která nám oznámila že je třeba odinstalovat balíček proxmox-ve, který je nutný pro chod systému.
+
+\subsubsection{Nález}
+Ovladače MLNX-OFED\cite{OFED} nejsou kompatibilní s platformou Proxmox. Pro její zprovoznění by bylo nutno nainstalovat čistý Debian 12.5 a manuálně jej převést na Proxmox platformu.
+
+\subsection{Pokus 5) Proxmox 8.2.2 + IB}
+\label{pokus5}
+\nepovedeno
+
+Po delším hledání jsme nalezly uživatele Alpha75429 na  Proxmox fóru, který řešil ten samý problém před námi. Díky jeho příspěvku\cite{guide} jsme byly schopni zprovoznit síťovou kartu aby byla detekována a to jest instalací jen Open-source ovladačů.
+
+instalace ovladačů
+\begin{verbatim}
+apt install -y infiniband-diags opensm ibutils rdma-core rdmacm-utils
+\end{verbatim}
+
+zavedení ovladačů do jádra
+\begin{verbatim}
+modprobe ib_umad
+modprobe ib_ipoib
+\end{verbatim}
+
+nutná kontrola detekce síťové karty.
+\begin{verbatim}
+ip link show 
+\end{verbatim}
+
+nastavení statické IP adresy a to přidáním do souboru \texttt{/etc/network/interfaces} konfigurace \texttt{ib0}:
+\begin{verbatim}
+auto ibs1
+iface ibs1 inet static
+    address 10.0.0.1
+    netmask 255.255.255.0
+    mtu 2044
+\end{verbatim}
+
+Aplikace síťových změn
+\begin{verbatim}
+systemctl restart networking
+\end{verbatim}
+
+
+Ověření funkce IPoIB mezi dvěma servery
+\begin{verbatim}
+apt install iperf3 -y
+
+# nodeA
+iperf3 -s
+
+# nodeB
+iperf3 -c 10.0.0.2
+\end{verbatim}
+
+\subsubsection{Nález}
+Bohužel po zprovoznění IPoIB jsme nalezly rychlosti jen 20Gbps při syntetickém testování. Proto jsem přesunuly dva systémy na Rocky9.5 pro možnost instalování MLNX-OFED\cite{OFED}. IPoIB je stále potencionální možnost jestli že budeme schopni dostat MTU do řádu 65000.
+
+Při testování v rámci platformy Proxmox VE a CEPH jsme se dostaly jen na 2Gbps až 2,5Gbps. Konečná limitace je chod Proxmox VE a CEPH přes TCP/IP což je velice limitováno při použití IPoIB. CEPH ani Proxmox VE nativně nepodporují InfiniBand
+
+\newpage
+\subsection{Pokus 6) Rocky9.5 + DOCA\_OFED + IB}
+\label{pokus6}
+\povedeno
+
+Po nainstalovaní jsme se pustily do instalace Nvidia DOCA\_OFED ovladačů. Po jejich instalaci jsme byly překvapeni těmito výsledky.
+
+Výsledky jsou při čtení v módu RDMA
+\begin{footnotesize}
+\begin{verbatim}
+[root@localhost ~]# ib_read_bw -d mlx5_0
+
+************************************
+* Waiting for client to connect... *
+************************************
+---------------------------------------------------------------------------------------
+                    RDMA_Read BW Test
+ Dual-port       : OFF		Device         : mlx5_0
+ Number of qps   : 1		Transport type : IB
+ Connection type : RC		Using SRQ      : OFF
+ PCIe relax order: ON		Lock-free      : OFF
+ WARNING: CPU is not PCIe relaxed ordering compliant.
+ WARNING: You should disable PCIe RO with `--disable_pcie_relaxed` for both server and client.
+ ibv_wr* API     : ON		Using DDP      : OFF
+ CQ Moderation   : 1
+ Mtu             : 4096[B]
+ Link type       : IB
+ Outstand reads  : 16
+ rdma_cm QPs	 : OFF
+ Data ex. method : Ethernet
+---------------------------------------------------------------------------------------
+ local address: LID 0x04 QPN 0x0028 PSN 0xceaff0 OUT 0x10 RKey 0x1fff00 VAddr 0x007ff0816d9000
+ remote address: LID 0x05 QPN 0x0028 PSN 0xa27746 OUT 0x10 RKey 0x1fff00 VAddr 0x007f7429027000
+---------------------------------------------------------------------------------------
+ #bytes     #iterations    BW peak[MiB/sec]    BW average[MiB/sec]   MsgRate[Mpps]
+ 65536      1000             10629.15            10628.79		     0.170061
+---------------------------------------------------------------------------------------
+\end{verbatim}
+
+\end{footnotesize}
+
+Tato rychlost je dosažitelná pouze přes InfiniBand \cite{InfiniBand}.
+
+\subsubsection{Nález}
+Byla dosažena rychlost 90Gbps až 92Gbps při syntetickém testu v rámci konektivity přes IB a při použití testování rychlosti přes Iperf rychlosti se pohybovaly okolo 82Gbps.
+
+\newpage
+
+\subsection{Pokus 7) FreeBSD}
+\label{pokus7}
+\nepovedeno
+
+FreeBSD nemá nativní podporu pro OFED ani EN ovladače od Nvidia. Veškerá implementace závisí na komunitě. Syntetické testy ukázaly rychlosti v řádu 5Gb/s. Pro instalaci byl použit návod\cite{OFEDBSD} z platformy Github.
+
+\subsubsection{Nález}
+Implementace IPoIB je horší než na linux platformách.
+
+
+\subsection{Pokus 8) Debian 12.9 + DOCA-ALL}
+\label{pokus8}
+\nepovedeno
+
+Další pokus byl s použitím DOCA\cite{DOCA} ovladačů. Po nainstalování se interface síťové karty neobjevil a byl zjištěn problém že ovladače nelze použít v režimu IPoIB.
+
+\subsubsection{Nález}
+Ovladače DOCA\cite{DOCA} nejsou použitelné pro náš účel.
+
+\subsection{Pokus 9) RedHat + CentOS10 + Eth mód}
+\label{pokus9}
+\nepovedeno
+
+Při přepnutí karty do Eth módu a přímém připojení byla dosažena rychlost 40Gbps. Problém nastává že nemáme k dispozici switch s QSFP28 a Eth módem.
+
+\subsection{Pokus 10) CentOS10 + MLNX\_OFED}
+\label{pokus10}
+\povedeno
+
+Instalace OFED ovladačů přinesla konečně úspěch a to tím že konečně byla dosažena rychlost okolo 100Gbps (přesněji 89Gbps). Dosáhly jsme tak při použití starých ovladačů od Nvidia a to poslední LTS build MLNX\_OFED. Nainstalovány byly jen OFED ovladače a test byl přes iperf3.
+
+Systém byl nainstalován bez podpory pro InfiniBand. Ta byl následně doinstalována za pomocí Nvidia MLNX\_OFED ovladačů.
+
+\newpage
+\subsection{Pokus 11) Windows Server 2025 + MLNX\_WinOF2}
+\label{pokus11} 
+\nepovedeno
+
+\paragraph{Instalace Windows Server 2025}  
+Operační systém Windows Server 2025 byl úspěšně nainstalován na obě testovací stanice bez komplikací.
+
+\paragraph{Instalace ovladačů MLNX\_WinOF2}  
+Po instalaci oficiálního balíčku \texttt{MLNX\_WinOF2} došlo ke komplikacím: síťové rozhraní bylo sice detekováno jako \texttt{Mellanox ConnectX-5}, avšak příslušná služba \texttt{MellanoxNDProvider} nebyla aktivní. Služba sice existovala v systému, ale nebyla spustitelná z důvodu chybějících binárních souborů, konkrétně \texttt{mlnxnd.sys}. Pokus o ruční spuštění selhal s chybou \texttt{Cannot start service MellanoxNDProvider... The system cannot find the file specified}.  
+
+Dále bylo zjištěno, že základní instalace neobsahuje testovací a konfigurační nástroje jako \texttt{ib\_send\_bw.exe}, \texttt{mlxconfig.exe}, či \texttt{flint.exe}, a není ani součástí balíčku MFT. Tyto nástroje je nutné doinstalovat samostatně z oficiální stránky NVIDIA Networking.
+
+\paragraph{Instalace a testování WinMFT}  
+Po instalaci nástroje WinMFT (verze 4.22.1.406 – kompatibilní s ConnectX-5) se stále nevytvořila složka \texttt{bin}, která je pro provoz některých nástrojů nezbytná. Bylo zjištěno, že balíčky dostupné na oficiální stránce často neobsahují plnou sadu nástrojů, případně chybí správná konfigurace služby MST.
+
+Po ruční registraci služby \texttt{MellanoxNDProvider} a jejím pokusu o spuštění systém nadále hlásil absenci potřebného ovladače.
+
+\subsubsection{Zjištění}
+Po částečné konfiguraci byla síťová karta přepnuta do režimu InfiniBand, což bylo ověřeno pomocí nástroje \texttt{mlxconfig} (po aktivaci \texttt{mst status}). Přesto však nebylo možné využít benchmarkingové nástroje jako \texttt{ib\_send\_bw}, protože jejich spustitelné soubory v systému chyběly. Pokus o využití WSL (Windows Subsystem for Linux) a instalaci balíku \texttt{OFED} selhal, neboť Mellanox/OFED není ve WSL plně podporován.
+
+\subsubsection{Závěr}  
+Na systému Windows Server 2025 se ukázalo jako problematické provozovat InfiniBand benchmarky. Chybějící binární soubory, nekompletní balíčky nástrojů a chybová inicializace služeb bránily provedení testů propustnosti. Pro správné testování je doporučeno přejít na Linuxové prostředí s plnohodnotným OFED stackem nebo využít Mellanox nástroje na LiveCD distribuci od NVIDIA (např. UFM bootable image).
+
+\newpage
+\subsection{Pokus 12) Harvester virtualizace na SUSE Linux}
+\nepovedeno
+
+Instalace systému a ovladačů úspěšná. Ping na jiný systém pomocí InfiniBand úspěšný. Systém je nevhodný pro nasazení z důvodu, že to je \textit{immutable system}. Z tohoto důvodu je systém pouze read only a musí se přepnout v grubu do debug modu. Po restartováné si Harvester smaže konfigurační složky spojené s konfigurací IB interfacu. Dále je obtížné dohledávání repozitářů pro jakoukoliv následnou instalaci. Například nebyla otestovaná rychlost spojení přes IB.
+
+Možný další pokus s nainstalováním SUSE a nastavením, poté doinstalace Harvesteru. Zatím jsem nenašel návod na internetu.
+
+\section{Výsledky hledání}
+
+\subsection{Tabulka výsledků testování}
+\begin{center}
+    
+\begin{tabular}{|c|c|c|c|c|c|}
+    \hline
+    \textbf{OS} &
+    \textbf{Ovladače} &
+    \textbf{Metoda} &
+    \textbf{IB rychl.} &
+    \textbf{IPoIB rychl.} \\
+    \hline
+Proxmox 8.3.x & MLNX\_OFED   & -   & - & -  \\
+\hline
+Proxmox 8.3.x & MLNX\_EN   & -   & - & -  \\
+\hline
+Proxmox 8.3.x & OSS RDMA + IB   & IPoIB & - & 20Gbps \\
+\hline
+Proxmox 8.2.1 & MLNX\_OFED   & IB & - & -   \\
+\hline
+Proxmox 8.2.1 & MLNX\_EN     & Eth & - & - \\
+\hline
+Proxmox 8.2.1 & OSS RDMA + IB   & IPoIB & - & 20Gbps  \\
+\hline
+\textbf{Rocky 9.5} & MLNX\_OFED & IB & 92Gbps & 82Gbp  \\
+\hline
+FreeBSD 14.2 & OSS IB & IPoIB & - & 5Gbps  \\
+\hline
+Debian 12.9 & DOCA-ALL & IB & - &  -  \\
+\hline
+CentOS s. 10 & DOCA\_OFED & IPoIB & 91Gbps &  89Gbps  \\
+\hline
+\textbf{CentOS s. 9} & DOCA\_OFED & IPoIB & 90Gbps &  60Gbps  \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection{Zvolené řešení}
+
+Pro finální nasazení pro platformu OpenNebula byly zvoleny \textbf{Centos Stream 9} a \textbf{RockyLinux 9.5}. Důvodem pro volbu těchto Linux distribucí je rychlost komunikace přes protokol IPoIB\cite{IPoIB} a podpora samotné síťové implementace pro InfiniBand\cite{InfiniBand} a IPoIB\cite{IPoIB}. 

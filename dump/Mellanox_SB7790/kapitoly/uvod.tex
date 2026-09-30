@@ -1,0 +1,15 @@
+\newpage
+\section{Úvod}
+Úkolem práce je zprovoznění komunikace 100Gbps karty Mellanox ConnectX-5 pod operačním systémem Proxmox. Komunikace bude probíhat přes 
+Mellanox SB7790 InfiniBand switch, který podporuje komunikaci pouze přes protokol InfiniBand\cite{InfiniBand}. Linuxové platformy nemají vestavěné ovladače v jádře.
+\newpage
+
+\section{Rozdíly mezi Ethernetem a InfiniBand}
+Ethernet a InfiniBand\cite{InfiniBand} jsou dvě odlišné technologie pro síťovou komunikaci, které se liší v několika klíčových aspektech:
+\begin{itemize}
+    \item \textbf{Protokolová architektura} – Ethernet využívá TCP/IP model s vrstvovou strukturou, zatímco InfiniBand\cite{InfiniBand} je nízkoúrovňová síťová technologie orientovaná na vysokou propustnost a nízkou latenci.
+    \item \textbf{Latence} – InfiniBand\cite{InfiniBand} nabízí extrémně nízkou latenci v řádu mikrosekund, zatímco běžné Ethernet sítě mají latence v řádu milisekund.
+    \item \textbf{Propustnost} – InfiniBand\cite{InfiniBand} podporuje přenosové rychlosti až 400 Gb/s, což je výrazně více než u standardních Ethernet sítí.
+    \item \textbf{Síťová topologie} – Ethernet sítě jsou obvykle hierarchicky uspořádané s využitím přepínačů a směrovačů, zatímco InfiniBand\cite{InfiniBand} umožňuje přímou komunikaci mezi uzly pomocí RDMA (Remote Direct Memory Access).
+    \item \textbf{Použití} – Ethernet je dominantní v tradičních podnikových sítích, zatímco InfiniBand\cite{InfiniBand} se používá zejména v HPC (High-Performance Computing) a datových centrech.
+\end{itemize}
