@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "notes/12-requirements-cluster-shape.md",
+                "file": "EN-base/01-Journey of network link.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "12-requirements-cluster-shape"
+              "title": "01-Journey of network link"
             }
           }
         ]
@@ -83,7 +83,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 300
+    "width": 200
   },
   "right": {
     "id": "08bdd78952cae927",
@@ -190,16 +190,36 @@
   },
   "active": "8d7c3425fc8e0f1d",
   "lastOpenFiles": [
-    "notes/13-data-folder-benchmark-dataset.md",
+    "data/stability/logs/coldboot_20261001T173157.log",
+    "data/stability/logs/coldboot_20261001T171436.log",
+    "data/stability/logs/coldboot_20261001T170138.log",
+    "data/stability/logs/coldboot_20261001T163817.log",
+    "data/stability/logs/coldboot_20261001T160755.log",
+    "data/stability/NEXT.md",
+    "data/stability/coldboot_settle.csv",
+    "data/stability/coldboot_v2.csv",
+    "data/stability/coldboot.csv",
+    "data/stability_data.json",
+    "data/stability/logs",
+    "data/stability",
+    "notes/baseline/15-netbsd.md",
+    "notes/baseline/14-fedora.md",
+    "notes/baseline/13-windows-10.md",
+    "notes/Selection.md",
+    "EN-base/01-Journey of network link.md",
+    "EN-base/00-Introduction.md",
+    "Untitled.md",
+    "notes/baseline/results-table.md",
+    "notes/baseline/01-proxmox-8.3.1-mlnx-en.md",
+    "notes/baseline/00-index.md",
+    "notes/14-test-plan-stable-data.md",
     "notes/12-requirements-cluster-shape.md",
+    "notes/13-data-folder-benchmark-dataset.md",
     "data/README.md",
     "data/write_performance.png",
     "data/read_performance.png",
     "notes/baseline/12-harvester-suse.md",
-    "notes/baseline/00-index.md",
-    "notes/baseline/results-table.md",
     "notes/baseline/decision.md",
-    "notes/baseline/sedzG7Z2v",
     "notes/baseline/credentials-lab-draft.md",
     "notes/00a-pre-repo_overleaf-mellanox-paper.md",
     "notes/00-index.md",
@@ -208,18 +228,6 @@
     "notes/baseline/ethernet-mode-howto.md",
     "notes/baseline/11-windows-server-2025.md",
     "notes/baseline/10-centos-10-mlnx-ofed.md",
-    "notes/baseline/09-centos-10-eth-mode.md",
-    "notes/baseline/08-debian-12.9-doca-all.md",
-    "notes/baseline/07-freebsd-14.2.md",
-    "notes/baseline/06-rocky-9.5-doca-ofed.md",
-    "notes/baseline/05-proxmox-8.2.2-oss-ib.md",
-    "notes/baseline/04-proxmox-8.2.2-mlnx-ofed.md",
-    "notes/baseline/03-proxmox-8.2.2-mlnx-en-rdma-core.md",
-    "notes/baseline/02-proxmox-8.2.2-mlnx-en.md",
-    "notes/baseline/01-proxmox-8.3.1-mlnx-en.md",
-    "notes/baseline",
-    "notes/01-2025-03_mellanox-drivers-virt.md",
-    "notes/11-reference_benchmarks-hardware.md",
     "dump/Mellanox_SB7790/assets/diagram.png",
     "dump/Mellanox_SB7790/assets/nmtui-07-2.png",
     "dump/Mellanox_SB7790/assets/nmtui-03.png",
@@ -227,14 +235,6 @@
     "dump/Mellanox_SB7790/assets/nmtui-01.png",
     "dump/Mellanox_SB7790/assets/nmtui-13.png",
     "dump/Mellanox_SB7790/assets/nmtui-12.png",
-    "dump/Mellanox_SB7790/assets/nmtui-11.png",
-    "dump/Mellanox_SB7790/assets",
-    "dump/Mellanox_SB7790/kapitoly/uvod.tex",
-    "dump/Mellanox_SB7790/kapitoly/nebula.tex",
-    "dump/Mellanox_SB7790/kapitoly/hledani.tex",
-    "dump/Mellanox_SB7790/kapitoly",
-    "dump/Mellanox_SB7790/references.bib",
-    "dump/Mellanox_SB7790/main.tex",
-    "dump/Mellanox_SB7790"
+    "dump/Mellanox_SB7790/assets/nmtui-11.png"
   ]
 }
