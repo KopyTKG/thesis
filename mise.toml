@@ -1,0 +1,8 @@
+[tools]
+just = "latest"
+bun = "latest"
+python = "3"
+
+[env]
+# user-level TeX Live (LuaLaTeX, biber, latexmk), installed with install-tl into ~/.local/texlive
+_.path = ["~/.local/texlive/current/bin/x86_64-linux"]

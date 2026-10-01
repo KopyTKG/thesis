@@ -37,4 +37,4 @@ Datagram-mode IPoIB MTU 2044 explains part of the limit.
 
 ## References
 
-[guide] Proxmox forum thread (see `dump/Mellanox_SB7790/references.bib`)
+Do not cite: the Proxmox forum thread that suggested this approach (user post, unverified, editable by its author). Verify against the Debian RDMA wiki and the NVIDIA IPoIB documentation.

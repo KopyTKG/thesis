@@ -1,0 +1,2604 @@
+{
+ "metadata": {
+  "generated_from": [
+   "stability_data.json",
+   "stability/coldboot_v2.csv",
+   "stability/coldboot_settle.csv"
+  ],
+  "units": "seconds, relative to the first IPMI power-on command unless stated",
+  "cluster": "10 nodes: 2 heads (MGS+MDT0 on Head-1, MDT1 on Head-2) + 8 computes (16 OSTs)",
+  "caveats": [
+   "Cold boots were done as a small number of runs (4 graceful with the fixed script, 1 at 240 s Head-1 delay); not statistics.",
+   "Per-node times use node clocks corrected against the controller (+-1-2 s).",
+   "Restart=on-failure retry path was not exercised (skipped, 600 s Head-1 delay test).",
+   "Hard power-off results are not representative of production: the cluster runs on two power lines with two UPS each and scheduled shutdowns."
+  ]
+ },
+ "runs": [
+  {
+   "id": "r01",
+   "date": "2026-10-01T13:14",
+   "script": "legacy",
+   "mode": "cold-start-3-months",
+   "head1_delay_s": null,
+   "nodes_mounted": 2,
+   "nodes_total": 10,
+   "success": false,
+   "fatal_retries_total": null,
+   "head1_os_up_s": null,
+   "mgs_wait_min_s": null,
+   "mgs_wait_max_s": null,
+   "all_units_complete_s": null,
+   "coarse_all_mounted_s": null,
+   "pool_visible_after_mounted_s": null,
+   "integrity_files_ok": null,
+   "integrity_files_bad": null,
+   "has_per_node": false,
+   "note": "Both heads mounted; all 8 computes failed: 'MGS not reachable after 300s' (wall 168 s). Head-1 (MGS) reached the OS about 2.5 min after the computes."
+  },
+  {
+   "id": "r02",
+   "date": "2026-10-01T15:32:38",
+   "script": "legacy",
+   "mode": "graceful",
+   "head1_delay_s": null,
+   "nodes_mounted": 10,
+   "nodes_total": 10,
+   "success": true,
+   "fatal_retries_total": null,
+   "head1_os_up_s": null,
+   "mgs_wait_min_s": null,
+   "mgs_wait_max_s": null,
+   "all_units_complete_s": null,
+   "coarse_all_mounted_s": 172,
+   "pool_visible_after_mounted_s": null,
+   "integrity_files_ok": null,
+   "integrity_files_bad": null,
+   "has_per_node": false,
+   "note": "one cluster-wide poll time; clock starts after the IPMI power-on loop"
+  },
+  {
+   "id": "r03",
+   "date": "2026-10-01T15:39:18",
+   "script": "legacy",
+   "mode": "graceful",
+   "head1_delay_s": null,
+   "nodes_mounted": 10,
+   "nodes_total": 10,
+   "success": true,
+   "fatal_retries_total": null,
+   "head1_os_up_s": null,
+   "mgs_wait_min_s": null,
+   "mgs_wait_max_s": null,
+   "all_units_complete_s": null,
+   "coarse_all_mounted_s": 177,
+   "pool_visible_after_mounted_s": null,
+   "integrity_files_ok": null,
+   "integrity_files_bad": null,
+   "has_per_node": false,
+   "note": "one cluster-wide poll time; clock starts after the IPMI power-on loop"
+  },
+  {
+   "id": "r04",
+   "date": "2026-10-01T15:45:56",
+   "script": "legacy",
+   "mode": "graceful",
+   "head1_delay_s": null,
+   "nodes_mounted": 10,
+   "nodes_total": 10,
+   "success": true,
+   "fatal_retries_total": null,
+   "head1_os_up_s": null,
+   "mgs_wait_min_s": null,
+   "mgs_wait_max_s": null,
+   "all_units_complete_s": null,
+   "coarse_all_mounted_s": 189,
+   "pool_visible_after_mounted_s": null,
+   "integrity_files_ok": null,
+   "integrity_files_bad": null,
+   "has_per_node": false,
+   "note": "one cluster-wide poll time; clock starts after the IPMI power-on loop"
+  },
+  {
+   "id": "r05",
+   "date": "2026-10-01T16:07:56",
+   "script": "legacy",
+   "mode": "graceful",
+   "head1_delay_s": 10,
+   "nodes_mounted": 10,
+   "nodes_total": 10,
+   "success": true,
+   "fatal_retries_total": 0,
+   "head1_os_up_s": 248,
+   "mgs_wait_min_s": 102,
+   "mgs_wait_max_s": 157,
+   "all_units_complete_s": 310,
+   "coarse_all_mounted_s": null,
+   "pool_visible_after_mounted_s": null,
+   "integrity_files_ok": null,
+   "integrity_files_bad": null,
+   "has_per_node": true,
+   "note": null
+  },
+  {
+   "id": "r06",
+   "date": "2026-10-01T16:15:20",
+   "script": "legacy",
+   "mode": "graceful",
+   "head1_delay_s": 10,
+   "nodes_mounted": 10,
+   "nodes_total": 10,
+   "success": true,
+   "fatal_retries_total": 0,
+   "head1_os_up_s": 248,
+   "mgs_wait_min_s": 106,
+   "mgs_wait_max_s": 156,
+   "all_units_complete_s": 278,
+   "coarse_all_mounted_s": null,
+   "pool_visible_after_mounted_s": null,
+   "integrity_files_ok": null,
+   "integrity_files_bad": null,
+   "has_per_node": true,
+   "note": null
+  },
+  {
+   "id": "r07",
+   "date": "2026-10-01T16:26",
+   "script": "legacy",
+   "mode": "graceful",
+   "head1_delay_s": 10,
+   "nodes_mounted": 9,
+   "nodes_total": 10,
+   "success": false,
+   "fatal_retries_total": null,
+   "head1_os_up_s": null,
+   "mgs_wait_min_s": null,
+   "mgs_wait_max_s": null,
+   "all_units_complete_s": null,
+   "coarse_all_mounted_s": null,
+   "pool_visible_after_mounted_s": null,
+   "integrity_files_ok": null,
+   "integrity_files_bad": null,
+   "has_per_node": false,
+   "note": "Run 3 of the legacy series: Compute-2 gave up after 145 s waiting for the MGS (legacy limit about 145-170 s) and stayed unmounted; OST0002 mounted, OST0003 missing. No retry in the legacy unit."
+  },
+  {
+   "id": "r08",
+   "date": "2026-10-01T16:38:17",
+   "script": "fixed",
+   "mode": "graceful",
+   "head1_delay_s": 10,
+   "nodes_mounted": 10,
+   "nodes_total": 10,
+   "success": true,
+   "fatal_retries_total": 0,
+   "head1_os_up_s": 241,
+   "mgs_wait_min_s": 106,
+   "mgs_wait_max_s": 148,
+   "all_units_complete_s": 300,
+   "coarse_all_mounted_s": null,
+   "pool_visible_after_mounted_s": null,
+   "integrity_files_ok": null,
+   "integrity_files_bad": null,
+   "has_per_node": true,
+   "note": null
+  },
+  {
+   "id": "r09",
+   "date": "2026-10-01T16:45:59",
+   "script": "fixed",
+   "mode": "graceful",
+   "head1_delay_s": 10,
+   "nodes_mounted": 10,
+   "nodes_total": 10,
+   "success": true,
+   "fatal_retries_total": 0,
+   "head1_os_up_s": 248,
+   "mgs_wait_min_s": 111,
+   "mgs_wait_max_s": 158,
+   "all_units_complete_s": 281,
+   "coarse_all_mounted_s": null,
+   "pool_visible_after_mounted_s": null,
+   "integrity_files_ok": null,
+   "integrity_files_bad": null,
+   "has_per_node": true,
+   "note": null
+  },
+  {
+   "id": "r10",
+   "date": "2026-10-01T16:53:37",
+   "script": "fixed",
+   "mode": "graceful",
+   "head1_delay_s": 10,
+   "nodes_mounted": 10,
+   "nodes_total": 10,
+   "success": true,
+   "fatal_retries_total": 0,
+   "head1_os_up_s": 247,
+   "mgs_wait_min_s": 107,
+   "mgs_wait_max_s": 156,
+   "all_units_complete_s": 307,
+   "coarse_all_mounted_s": null,
+   "pool_visible_after_mounted_s": null,
+   "integrity_files_ok": null,
+   "integrity_files_bad": null,
+   "has_per_node": true,
+   "note": null
+  },
+  {
+   "id": "r11",
+   "date": "2026-10-01T17:01:39",
+   "script": "fixed",
+   "mode": "graceful",
+   "head1_delay_s": 240,
+   "nodes_mounted": 10,
+   "nodes_total": 10,
+   "success": true,
+   "fatal_retries_total": 0,
+   "head1_os_up_s": 435,
+   "mgs_wait_min_s": 293,
+   "mgs_wait_max_s": 344,
+   "all_units_complete_s": 467,
+   "coarse_all_mounted_s": null,
+   "pool_visible_after_mounted_s": null,
+   "integrity_files_ok": null,
+   "integrity_files_bad": null,
+   "has_per_node": true,
+   "note": null
+  },
+  {
+   "id": "r12",
+   "date": "2026-10-01T17:14:36",
+   "script": "fixed",
+   "mode": "hard",
+   "head1_delay_s": 0,
+   "nodes_mounted": 10,
+   "nodes_total": 10,
+   "success": true,
+   "fatal_retries_total": 0,
+   "head1_os_up_s": 196,
+   "mgs_wait_min_s": 59,
+   "mgs_wait_max_s": 101,
+   "all_units_complete_s": 230,
+   "coarse_all_mounted_s": null,
+   "pool_visible_after_mounted_s": null,
+   "integrity_files_ok": null,
+   "integrity_files_bad": null,
+   "has_per_node": true,
+   "note": null
+  },
+  {
+   "id": "r13",
+   "date": "2026-10-01T17:20:44",
+   "script": "fixed",
+   "mode": "hard",
+   "head1_delay_s": 0,
+   "nodes_mounted": 10,
+   "nodes_total": 10,
+   "success": true,
+   "fatal_retries_total": 0,
+   "head1_os_up_s": 199,
+   "mgs_wait_min_s": 50,
+   "mgs_wait_max_s": 97,
+   "all_units_complete_s": 230,
+   "coarse_all_mounted_s": null,
+   "pool_visible_after_mounted_s": null,
+   "integrity_files_ok": null,
+   "integrity_files_bad": null,
+   "has_per_node": true,
+   "note": null
+  },
+  {
+   "id": "r14",
+   "date": "2026-10-01T17:31:57",
+   "script": "fixed",
+   "mode": "hard",
+   "head1_delay_s": 0,
+   "nodes_mounted": 10,
+   "nodes_total": 10,
+   "success": true,
+   "fatal_retries_total": 0,
+   "head1_os_up_s": 195,
+   "mgs_wait_min_s": 56,
+   "mgs_wait_max_s": 103,
+   "all_units_complete_s": 231,
+   "coarse_all_mounted_s": null,
+   "pool_visible_after_mounted_s": 292,
+   "integrity_files_ok": 40,
+   "integrity_files_bad": 0,
+   "has_per_node": true,
+   "note": null
+  },
+  {
+   "id": "r15",
+   "date": "2026-10-01T17:45:20",
+   "script": "fixed",
+   "mode": "hard",
+   "head1_delay_s": 0,
+   "nodes_mounted": 10,
+   "nodes_total": 10,
+   "success": true,
+   "fatal_retries_total": 0,
+   "head1_os_up_s": 193,
+   "mgs_wait_min_s": 50,
+   "mgs_wait_max_s": 101,
+   "all_units_complete_s": 254,
+   "coarse_all_mounted_s": null,
+   "pool_visible_after_mounted_s": 275,
+   "integrity_files_ok": 40,
+   "integrity_files_bad": 0,
+   "has_per_node": true,
+   "note": null
+  }
+ ],
+ "nodes": [
+  {
+   "run": "r05",
+   "node": "Rocky-Head-1",
+   "role": "head",
+   "boot_s": 248,
+   "unit_begin_s": 266,
+   "mgs_wait_s": null,
+   "unit_complete_s": 299,
+   "fatal_retries": 0,
+   "mounted": false
+  },
+  {
+   "run": "r05",
+   "node": "Rocky-Head-2",
+   "role": "head",
+   "boot_s": 94,
+   "unit_begin_s": 110,
+   "mgs_wait_s": 157,
+   "unit_complete_s": 304,
+   "fatal_retries": 0,
+   "mounted": false
+  },
+  {
+   "run": "r05",
+   "node": "Rocky-Compute-1",
+   "role": "compute",
+   "boot_s": 102,
+   "unit_begin_s": 122,
+   "mgs_wait_s": 145,
+   "unit_complete_s": 307,
+   "fatal_retries": 0,
+   "mounted": false
+  },
+  {
+   "run": "r05",
+   "node": "Rocky-Compute-2",
+   "role": "compute",
+   "boot_s": 105,
+   "unit_begin_s": 121,
+   "mgs_wait_s": 146,
+   "unit_complete_s": 307,
+   "fatal_retries": 0,
+   "mounted": false
+  },
+  {
+   "run": "r05",
+   "node": "Rocky-Compute-3",
+   "role": "compute",
+   "boot_s": 112,
+   "unit_begin_s": 132,
+   "mgs_wait_s": 136,
+   "unit_complete_s": 306,
+   "fatal_retries": 0,
+   "mounted": false
+  },
+  {
+   "run": "r05",
+   "node": "Rocky-Compute-4",
+   "role": "compute",
+   "boot_s": 118,
+   "unit_begin_s": 133,
+   "mgs_wait_s": 133,
+   "unit_complete_s": 304,
+   "fatal_retries": 0,
+   "mounted": false
+  },
+  {
+   "run": "r05",
+   "node": "Rocky-Compute-5",
+   "role": "compute",
+   "boot_s": 128,
+   "unit_begin_s": 144,
+   "mgs_wait_s": 122,
+   "unit_complete_s": 306,
+   "fatal_retries": 0,
+   "mounted": false
+  },
+  {
+   "run": "r05",
+   "node": "Rocky-Compute-6",
+   "role": "compute",
+   "boot_s": 129,
+   "unit_begin_s": 148,
+   "mgs_wait_s": 119,
+   "unit_complete_s": 307,
+   "fatal_retries": 0,
+   "mounted": false
+  },
+  {
+   "run": "r05",
+   "node": "Rocky-Compute-7",
+   "role": "compute",
+   "boot_s": 139,
+   "unit_begin_s": 154,
+   "mgs_wait_s": 112,
+   "unit_complete_s": 308,
+   "fatal_retries": 0,
+   "mounted": false
+  },
+  {
+   "run": "r05",
+   "node": "Rocky-Compute-8",
+   "role": "compute",
+   "boot_s": 143,
+   "unit_begin_s": 163,
+   "mgs_wait_s": 102,
+   "unit_complete_s": 310,
+   "fatal_retries": 0,
+   "mounted": false
+  },
+  {
+   "run": "r06",
+   "node": "Rocky-Head-1",
+   "role": "head",
+   "boot_s": 248,
+   "unit_begin_s": 266,
+   "mgs_wait_s": null,
+   "unit_complete_s": 273,
+   "fatal_retries": 0,
+   "mounted": false
+  },
+  {
+   "run": "r06",
+   "node": "Rocky-Head-2",
+   "role": "head",
+   "boot_s": 95,
+   "unit_begin_s": 111,
+   "mgs_wait_s": 156,
+   "unit_complete_s": 278,
+   "fatal_retries": 0,
+   "mounted": false
+  },
+  {
+   "run": "r06",
+   "node": "Rocky-Compute-1",
+   "role": "compute",
+   "boot_s": 104,
+   "unit_begin_s": 120,
+   "mgs_wait_s": 148,
+   "unit_complete_s": 278,
+   "fatal_retries": 0,
+   "mounted": false
+  },
+  {
+   "run": "r06",
+   "node": "Rocky-Compute-2",
+   "role": "compute",
+   "boot_s": 107,
+   "unit_begin_s": 123,
+   "mgs_wait_s": 145,
+   "unit_complete_s": 278,
+   "fatal_retries": 0,
+   "mounted": false
+  },
+  {
+   "run": "r06",
+   "node": "Rocky-Compute-3",
+   "role": "compute",
+   "boot_s": 115,
+   "unit_begin_s": 130,
+   "mgs_wait_s": 136,
+   "unit_complete_s": 278,
+   "fatal_retries": 0,
+   "mounted": false
+  },
+  {
+   "run": "r06",
+   "node": "Rocky-Compute-4",
+   "role": "compute",
+   "boot_s": 119,
+   "unit_begin_s": 134,
+   "mgs_wait_s": 133,
+   "unit_complete_s": 277,
+   "fatal_retries": 0,
+   "mounted": false
+  },
+  {
+   "run": "r06",
+   "node": "Rocky-Compute-5",
+   "role": "compute",
+   "boot_s": 125,
+   "unit_begin_s": 141,
+   "mgs_wait_s": 125,
+   "unit_complete_s": 277,
+   "fatal_retries": 0,
+   "mounted": false
+  },
+  {
+   "run": "r06",
+   "node": "Rocky-Compute-6",
+   "role": "compute",
+   "boot_s": 129,
+   "unit_begin_s": 144,
+   "mgs_wait_s": 122,
+   "unit_complete_s": 277,
+   "fatal_retries": 0,
+   "mounted": false
+  },
+  {
+   "run": "r06",
+   "node": "Rocky-Compute-7",
+   "role": "compute",
+   "boot_s": 134,
+   "unit_begin_s": 150,
+   "mgs_wait_s": 117,
+   "unit_complete_s": 277,
+   "fatal_retries": 0,
+   "mounted": false
+  },
+  {
+   "run": "r06",
+   "node": "Rocky-Compute-8",
+   "role": "compute",
+   "boot_s": 140,
+   "unit_begin_s": 160,
+   "mgs_wait_s": 106,
+   "unit_complete_s": 277,
+   "fatal_retries": 0,
+   "mounted": false
+  },
+  {
+   "run": "r08",
+   "node": "Rocky-Head-1",
+   "role": "head",
+   "boot_s": 241,
+   "unit_begin_s": 258,
+   "mgs_wait_s": null,
+   "unit_complete_s": 291,
+   "fatal_retries": 0,
+   "mounted": false
+  },
+  {
+   "run": "r08",
+   "node": "Rocky-Head-2",
+   "role": "head",
+   "boot_s": 94,
+   "unit_begin_s": 110,
+   "mgs_wait_s": 148,
+   "unit_complete_s": 295,
+   "fatal_retries": 0,
+   "mounted": false
+  },
+  {
+   "run": "r08",
+   "node": "Rocky-Compute-1",
+   "role": "compute",
+   "boot_s": 102,
+   "unit_begin_s": 118,
+   "mgs_wait_s": 142,
+   "unit_complete_s": 293,
+   "fatal_retries": 0,
+   "mounted": false
+  },
+  {
+   "run": "r08",
+   "node": "Rocky-Compute-2",
+   "role": "compute",
+   "boot_s": 105,
+   "unit_begin_s": 120,
+   "mgs_wait_s": 140,
+   "unit_complete_s": 295,
+   "fatal_retries": 0,
+   "mounted": false
+  },
+  {
+   "run": "r08",
+   "node": "Rocky-Compute-3",
+   "role": "compute",
+   "boot_s": 110,
+   "unit_begin_s": 125,
+   "mgs_wait_s": 134,
+   "unit_complete_s": 296,
+   "fatal_retries": 0,
+   "mounted": false
+  },
+  {
+   "run": "r08",
+   "node": "Rocky-Compute-4",
+   "role": "compute",
+   "boot_s": 114,
+   "unit_begin_s": 130,
+   "mgs_wait_s": 128,
+   "unit_complete_s": 296,
+   "fatal_retries": 0,
+   "mounted": false
+  },
+  {
+   "run": "r08",
+   "node": "Rocky-Compute-5",
+   "role": "compute",
+   "boot_s": 122,
+   "unit_begin_s": 138,
+   "mgs_wait_s": 121,
+   "unit_complete_s": 300,
+   "fatal_retries": 0,
+   "mounted": false
+  },
+  {
+   "run": "r08",
+   "node": "Rocky-Compute-6",
+   "role": "compute",
+   "boot_s": 125,
+   "unit_begin_s": 145,
+   "mgs_wait_s": 114,
+   "unit_complete_s": 295,
+   "fatal_retries": 0,
+   "mounted": false
+  },
+  {
+   "run": "r08",
+   "node": "Rocky-Compute-7",
+   "role": "compute",
+   "boot_s": 129,
+   "unit_begin_s": 145,
+   "mgs_wait_s": 114,
+   "unit_complete_s": 299,
+   "fatal_retries": 0,
+   "mounted": false
+  },
+  {
+   "run": "r08",
+   "node": "Rocky-Compute-8",
+   "role": "compute",
+   "boot_s": 136,
+   "unit_begin_s": 152,
+   "mgs_wait_s": 106,
+   "unit_complete_s": 294,
+   "fatal_retries": 0,
+   "mounted": false
+  },
+  {
+   "run": "r09",
+   "node": "Rocky-Head-1",
+   "role": "head",
+   "boot_s": 248,
+   "unit_begin_s": 266,
+   "mgs_wait_s": null,
+   "unit_complete_s": 273,
+   "fatal_retries": 0,
+   "mounted": false
+  },
+  {
+   "run": "r09",
+   "node": "Rocky-Head-2",
+   "role": "head",
+   "boot_s": 93,
+   "unit_begin_s": 110,
+   "mgs_wait_s": 158,
+   "unit_complete_s": 281,
+   "fatal_retries": 0,
+   "mounted": false
+  },
+  {
+   "run": "r09",
+   "node": "Rocky-Compute-1",
+   "role": "compute",
+   "boot_s": 101,
+   "unit_begin_s": 118,
+   "mgs_wait_s": 149,
+   "unit_complete_s": 278,
+   "fatal_retries": 0,
+   "mounted": false
+  },
+  {
+   "run": "r09",
+   "node": "Rocky-Compute-2",
+   "role": "compute",
+   "boot_s": 105,
+   "unit_begin_s": 121,
+   "mgs_wait_s": 145,
+   "unit_complete_s": 277,
+   "fatal_retries": 0,
+   "mounted": false
+  },
+  {
+   "run": "r09",
+   "node": "Rocky-Compute-3",
+   "role": "compute",
+   "boot_s": 112,
+   "unit_begin_s": 128,
+   "mgs_wait_s": 139,
+   "unit_complete_s": 277,
+   "fatal_retries": 0,
+   "mounted": false
+  },
+  {
+   "run": "r09",
+   "node": "Rocky-Compute-4",
+   "role": "compute",
+   "boot_s": 117,
+   "unit_begin_s": 132,
+   "mgs_wait_s": 135,
+   "unit_complete_s": 276,
+   "fatal_retries": 0,
+   "mounted": false
+  },
+  {
+   "run": "r09",
+   "node": "Rocky-Compute-5",
+   "role": "compute",
+   "boot_s": 125,
+   "unit_begin_s": 144,
+   "mgs_wait_s": 122,
+   "unit_complete_s": 277,
+   "fatal_retries": 0,
+   "mounted": false
+  },
+  {
+   "run": "r09",
+   "node": "Rocky-Compute-6",
+   "role": "compute",
+   "boot_s": 129,
+   "unit_begin_s": 145,
+   "mgs_wait_s": 123,
+   "unit_complete_s": 277,
+   "fatal_retries": 0,
+   "mounted": false
+  },
+  {
+   "run": "r09",
+   "node": "Rocky-Compute-7",
+   "role": "compute",
+   "boot_s": 135,
+   "unit_begin_s": 154,
+   "mgs_wait_s": 113,
+   "unit_complete_s": 278,
+   "fatal_retries": 0,
+   "mounted": false
+  },
+  {
+   "run": "r09",
+   "node": "Rocky-Compute-8",
+   "role": "compute",
+   "boot_s": 139,
+   "unit_begin_s": 155,
+   "mgs_wait_s": 111,
+   "unit_complete_s": 277,
+   "fatal_retries": 0,
+   "mounted": false
+  },
+  {
+   "run": "r10",
+   "node": "Rocky-Head-1",
+   "role": "head",
+   "boot_s": 247,
+   "unit_begin_s": 265,
+   "mgs_wait_s": null,
+   "unit_complete_s": 298,
+   "fatal_retries": 0,
+   "mounted": false
+  },
+  {
+   "run": "r10",
+   "node": "Rocky-Head-2",
+   "role": "head",
+   "boot_s": 93,
+   "unit_begin_s": 109,
+   "mgs_wait_s": 156,
+   "unit_complete_s": 303,
+   "fatal_retries": 0,
+   "mounted": false
+  },
+  {
+   "run": "r10",
+   "node": "Rocky-Compute-1",
+   "role": "compute",
+   "boot_s": 102,
+   "unit_begin_s": 118,
+   "mgs_wait_s": 148,
+   "unit_complete_s": 300,
+   "fatal_retries": 0,
+   "mounted": false
+  },
+  {
+   "run": "r10",
+   "node": "Rocky-Compute-2",
+   "role": "compute",
+   "boot_s": 104,
+   "unit_begin_s": 124,
+   "mgs_wait_s": 142,
+   "unit_complete_s": 298,
+   "fatal_retries": 0,
+   "mounted": false
+  },
+  {
+   "run": "r10",
+   "node": "Rocky-Compute-3",
+   "role": "compute",
+   "boot_s": 111,
+   "unit_begin_s": 127,
+   "mgs_wait_s": 139,
+   "unit_complete_s": 300,
+   "fatal_retries": 0,
+   "mounted": false
+  },
+  {
+   "run": "r10",
+   "node": "Rocky-Compute-4",
+   "role": "compute",
+   "boot_s": 116,
+   "unit_begin_s": 131,
+   "mgs_wait_s": 134,
+   "unit_complete_s": 300,
+   "fatal_retries": 0,
+   "mounted": false
+  },
+  {
+   "run": "r10",
+   "node": "Rocky-Compute-5",
+   "role": "compute",
+   "boot_s": 123,
+   "unit_begin_s": 138,
+   "mgs_wait_s": 128,
+   "unit_complete_s": 299,
+   "fatal_retries": 0,
+   "mounted": false
+  },
+  {
+   "run": "r10",
+   "node": "Rocky-Compute-6",
+   "role": "compute",
+   "boot_s": 128,
+   "unit_begin_s": 144,
+   "mgs_wait_s": 122,
+   "unit_complete_s": 307,
+   "fatal_retries": 0,
+   "mounted": false
+  },
+  {
+   "run": "r10",
+   "node": "Rocky-Compute-7",
+   "role": "compute",
+   "boot_s": 134,
+   "unit_begin_s": 150,
+   "mgs_wait_s": 116,
+   "unit_complete_s": 300,
+   "fatal_retries": 0,
+   "mounted": false
+  },
+  {
+   "run": "r10",
+   "node": "Rocky-Compute-8",
+   "role": "compute",
+   "boot_s": 138,
+   "unit_begin_s": 158,
+   "mgs_wait_s": 107,
+   "unit_complete_s": 299,
+   "fatal_retries": 0,
+   "mounted": false
+  },
+  {
+   "run": "r11",
+   "node": "Rocky-Head-1",
+   "role": "head",
+   "boot_s": 435,
+   "unit_begin_s": 452,
+   "mgs_wait_s": null,
+   "unit_complete_s": 459,
+   "fatal_retries": 0,
+   "mounted": false
+  },
+  {
+   "run": "r11",
+   "node": "Rocky-Head-2",
+   "role": "head",
+   "boot_s": 95,
+   "unit_begin_s": 110,
+   "mgs_wait_s": 344,
+   "unit_complete_s": 467,
+   "fatal_retries": 0,
+   "mounted": false
+  },
+  {
+   "run": "r11",
+   "node": "Rocky-Compute-1",
+   "role": "compute",
+   "boot_s": 103,
+   "unit_begin_s": 122,
+   "mgs_wait_s": 331,
+   "unit_complete_s": 464,
+   "fatal_retries": 0,
+   "mounted": false
+  },
+  {
+   "run": "r11",
+   "node": "Rocky-Compute-2",
+   "role": "compute",
+   "boot_s": 106,
+   "unit_begin_s": 121,
+   "mgs_wait_s": 333,
+   "unit_complete_s": 464,
+   "fatal_retries": 0,
+   "mounted": false
+  },
+  {
+   "run": "r11",
+   "node": "Rocky-Compute-3",
+   "role": "compute",
+   "boot_s": 110,
+   "unit_begin_s": 126,
+   "mgs_wait_s": 328,
+   "unit_complete_s": 464,
+   "fatal_retries": 0,
+   "mounted": false
+  },
+  {
+   "run": "r11",
+   "node": "Rocky-Compute-4",
+   "role": "compute",
+   "boot_s": 116,
+   "unit_begin_s": 132,
+   "mgs_wait_s": 322,
+   "unit_complete_s": 464,
+   "fatal_retries": 0,
+   "mounted": false
+  },
+  {
+   "run": "r11",
+   "node": "Rocky-Compute-5",
+   "role": "compute",
+   "boot_s": 126,
+   "unit_begin_s": 142,
+   "mgs_wait_s": 311,
+   "unit_complete_s": 465,
+   "fatal_retries": 0,
+   "mounted": false
+  },
+  {
+   "run": "r11",
+   "node": "Rocky-Compute-6",
+   "role": "compute",
+   "boot_s": 130,
+   "unit_begin_s": 146,
+   "mgs_wait_s": 307,
+   "unit_complete_s": 463,
+   "fatal_retries": 0,
+   "mounted": false
+  },
+  {
+   "run": "r11",
+   "node": "Rocky-Compute-7",
+   "role": "compute",
+   "boot_s": 136,
+   "unit_begin_s": 156,
+   "mgs_wait_s": 298,
+   "unit_complete_s": 464,
+   "fatal_retries": 0,
+   "mounted": false
+  },
+  {
+   "run": "r11",
+   "node": "Rocky-Compute-8",
+   "role": "compute",
+   "boot_s": 141,
+   "unit_begin_s": 160,
+   "mgs_wait_s": 293,
+   "unit_complete_s": 464,
+   "fatal_retries": 0,
+   "mounted": false
+  },
+  {
+   "run": "r12",
+   "node": "Rocky-Head-1",
+   "role": "head",
+   "boot_s": 196,
+   "unit_begin_s": 215,
+   "mgs_wait_s": null,
+   "unit_complete_s": 222,
+   "fatal_retries": 0,
+   "mounted": false
+  },
+  {
+   "run": "r12",
+   "node": "Rocky-Head-2",
+   "role": "head",
+   "boot_s": 99,
+   "unit_begin_s": 115,
+   "mgs_wait_s": 101,
+   "unit_complete_s": 228,
+   "fatal_retries": 0,
+   "mounted": false
+  },
+  {
+   "run": "r12",
+   "node": "Rocky-Compute-1",
+   "role": "compute",
+   "boot_s": 107,
+   "unit_begin_s": 123,
+   "mgs_wait_s": 93,
+   "unit_complete_s": 227,
+   "fatal_retries": 0,
+   "mounted": false
+  },
+  {
+   "run": "r12",
+   "node": "Rocky-Compute-2",
+   "role": "compute",
+   "boot_s": 111,
+   "unit_begin_s": 126,
+   "mgs_wait_s": 90,
+   "unit_complete_s": 227,
+   "fatal_retries": 0,
+   "mounted": false
+  },
+  {
+   "run": "r12",
+   "node": "Rocky-Compute-3",
+   "role": "compute",
+   "boot_s": 115,
+   "unit_begin_s": 134,
+   "mgs_wait_s": 82,
+   "unit_complete_s": 227,
+   "fatal_retries": 0,
+   "mounted": false
+  },
+  {
+   "run": "r12",
+   "node": "Rocky-Compute-4",
+   "role": "compute",
+   "boot_s": 119,
+   "unit_begin_s": 135,
+   "mgs_wait_s": 81,
+   "unit_complete_s": 227,
+   "fatal_retries": 0,
+   "mounted": false
+  },
+  {
+   "run": "r12",
+   "node": "Rocky-Compute-5",
+   "role": "compute",
+   "boot_s": 129,
+   "unit_begin_s": 145,
+   "mgs_wait_s": 70,
+   "unit_complete_s": 230,
+   "fatal_retries": 0,
+   "mounted": false
+  },
+  {
+   "run": "r12",
+   "node": "Rocky-Compute-6",
+   "role": "compute",
+   "boot_s": 131,
+   "unit_begin_s": 147,
+   "mgs_wait_s": 69,
+   "unit_complete_s": 228,
+   "fatal_retries": 0,
+   "mounted": false
+  },
+  {
+   "run": "r12",
+   "node": "Rocky-Compute-7",
+   "role": "compute",
+   "boot_s": 136,
+   "unit_begin_s": 157,
+   "mgs_wait_s": 59,
+   "unit_complete_s": 227,
+   "fatal_retries": 0,
+   "mounted": false
+  },
+  {
+   "run": "r12",
+   "node": "Rocky-Compute-8",
+   "role": "compute",
+   "boot_s": 140,
+   "unit_begin_s": 156,
+   "mgs_wait_s": 59,
+   "unit_complete_s": 228,
+   "fatal_retries": 0,
+   "mounted": false
+  },
+  {
+   "run": "r13",
+   "node": "Rocky-Head-1",
+   "role": "head",
+   "boot_s": 199,
+   "unit_begin_s": 216,
+   "mgs_wait_s": null,
+   "unit_complete_s": 223,
+   "fatal_retries": 0,
+   "mounted": false
+  },
+  {
+   "run": "r13",
+   "node": "Rocky-Head-2",
+   "role": "head",
+   "boot_s": 105,
+   "unit_begin_s": 120,
+   "mgs_wait_s": 97,
+   "unit_complete_s": 229,
+   "fatal_retries": 0,
+   "mounted": false
+  },
+  {
+   "run": "r13",
+   "node": "Rocky-Compute-1",
+   "role": "compute",
+   "boot_s": 113,
+   "unit_begin_s": 129,
+   "mgs_wait_s": 89,
+   "unit_complete_s": 228,
+   "fatal_retries": 0,
+   "mounted": false
+  },
+  {
+   "run": "r13",
+   "node": "Rocky-Compute-2",
+   "role": "compute",
+   "boot_s": 118,
+   "unit_begin_s": 137,
+   "mgs_wait_s": 81,
+   "unit_complete_s": 230,
+   "fatal_retries": 0,
+   "mounted": false
+  },
+  {
+   "run": "r13",
+   "node": "Rocky-Compute-3",
+   "role": "compute",
+   "boot_s": 123,
+   "unit_begin_s": 139,
+   "mgs_wait_s": 79,
+   "unit_complete_s": 228,
+   "fatal_retries": 0,
+   "mounted": false
+  },
+  {
+   "run": "r13",
+   "node": "Rocky-Compute-4",
+   "role": "compute",
+   "boot_s": 129,
+   "unit_begin_s": 149,
+   "mgs_wait_s": 69,
+   "unit_complete_s": 227,
+   "fatal_retries": 0,
+   "mounted": false
+  },
+  {
+   "run": "r13",
+   "node": "Rocky-Compute-5",
+   "role": "compute",
+   "boot_s": 132,
+   "unit_begin_s": 147,
+   "mgs_wait_s": 69,
+   "unit_complete_s": 229,
+   "fatal_retries": 0,
+   "mounted": false
+  },
+  {
+   "run": "r13",
+   "node": "Rocky-Compute-6",
+   "role": "compute",
+   "boot_s": 141,
+   "unit_begin_s": 157,
+   "mgs_wait_s": 60,
+   "unit_complete_s": 228,
+   "fatal_retries": 0,
+   "mounted": false
+  },
+  {
+   "run": "r13",
+   "node": "Rocky-Compute-7",
+   "role": "compute",
+   "boot_s": 142,
+   "unit_begin_s": 157,
+   "mgs_wait_s": 60,
+   "unit_complete_s": 229,
+   "fatal_retries": 0,
+   "mounted": false
+  },
+  {
+   "run": "r13",
+   "node": "Rocky-Compute-8",
+   "role": "compute",
+   "boot_s": 151,
+   "unit_begin_s": 166,
+   "mgs_wait_s": 50,
+   "unit_complete_s": 227,
+   "fatal_retries": 0,
+   "mounted": false
+  },
+  {
+   "run": "r14",
+   "node": "Rocky-Head-1",
+   "role": "head",
+   "boot_s": 195,
+   "unit_begin_s": 216,
+   "mgs_wait_s": null,
+   "unit_complete_s": 223,
+   "fatal_retries": 0,
+   "mounted": false
+  },
+  {
+   "run": "r14",
+   "node": "Rocky-Head-2",
+   "role": "head",
+   "boot_s": 99,
+   "unit_begin_s": 116,
+   "mgs_wait_s": 103,
+   "unit_complete_s": 230,
+   "fatal_retries": 0,
+   "mounted": false
+  },
+  {
+   "run": "r14",
+   "node": "Rocky-Compute-1",
+   "role": "compute",
+   "boot_s": 107,
+   "unit_begin_s": 124,
+   "mgs_wait_s": 94,
+   "unit_complete_s": 227,
+   "fatal_retries": 0,
+   "mounted": false
+  },
+  {
+   "run": "r14",
+   "node": "Rocky-Compute-2",
+   "role": "compute",
+   "boot_s": 111,
+   "unit_begin_s": 127,
+   "mgs_wait_s": 91,
+   "unit_complete_s": 229,
+   "fatal_retries": 0,
+   "mounted": false
+  },
+  {
+   "run": "r14",
+   "node": "Rocky-Compute-3",
+   "role": "compute",
+   "boot_s": 118,
+   "unit_begin_s": 134,
+   "mgs_wait_s": 85,
+   "unit_complete_s": 229,
+   "fatal_retries": 0,
+   "mounted": false
+  },
+  {
+   "run": "r14",
+   "node": "Rocky-Compute-4",
+   "role": "compute",
+   "boot_s": 123,
+   "unit_begin_s": 143,
+   "mgs_wait_s": 75,
+   "unit_complete_s": 228,
+   "fatal_retries": 0,
+   "mounted": false
+  },
+  {
+   "run": "r14",
+   "node": "Rocky-Compute-5",
+   "role": "compute",
+   "boot_s": 131,
+   "unit_begin_s": 147,
+   "mgs_wait_s": 71,
+   "unit_complete_s": 229,
+   "fatal_retries": 0,
+   "mounted": false
+  },
+  {
+   "run": "r14",
+   "node": "Rocky-Compute-6",
+   "role": "compute",
+   "boot_s": 138,
+   "unit_begin_s": 158,
+   "mgs_wait_s": 59,
+   "unit_complete_s": 231,
+   "fatal_retries": 0,
+   "mounted": false
+  },
+  {
+   "run": "r14",
+   "node": "Rocky-Compute-7",
+   "role": "compute",
+   "boot_s": 143,
+   "unit_begin_s": 162,
+   "mgs_wait_s": 56,
+   "unit_complete_s": 228,
+   "fatal_retries": 0,
+   "mounted": false
+  },
+  {
+   "run": "r14",
+   "node": "Rocky-Compute-8",
+   "role": "compute",
+   "boot_s": 144,
+   "unit_begin_s": 159,
+   "mgs_wait_s": 58,
+   "unit_complete_s": 230,
+   "fatal_retries": 0,
+   "mounted": false
+  },
+  {
+   "run": "r15",
+   "node": "Rocky-Head-1",
+   "role": "head",
+   "boot_s": 193,
+   "unit_begin_s": 215,
+   "mgs_wait_s": null,
+   "unit_complete_s": 254,
+   "fatal_retries": 0,
+   "mounted": false
+  },
+  {
+   "run": "r15",
+   "node": "Rocky-Head-2",
+   "role": "head",
+   "boot_s": 99,
+   "unit_begin_s": 115,
+   "mgs_wait_s": 101,
+   "unit_complete_s": 235,
+   "fatal_retries": 0,
+   "mounted": false
+  },
+  {
+   "run": "r15",
+   "node": "Rocky-Compute-1",
+   "role": "compute",
+   "boot_s": 107,
+   "unit_begin_s": 127,
+   "mgs_wait_s": 89,
+   "unit_complete_s": 240,
+   "fatal_retries": 0,
+   "mounted": false
+  },
+  {
+   "run": "r15",
+   "node": "Rocky-Compute-2",
+   "role": "compute",
+   "boot_s": 114,
+   "unit_begin_s": 130,
+   "mgs_wait_s": 86,
+   "unit_complete_s": 238,
+   "fatal_retries": 0,
+   "mounted": false
+  },
+  {
+   "run": "r15",
+   "node": "Rocky-Compute-3",
+   "role": "compute",
+   "boot_s": 115,
+   "unit_begin_s": 130,
+   "mgs_wait_s": 85,
+   "unit_complete_s": 247,
+   "fatal_retries": 0,
+   "mounted": false
+  },
+  {
+   "run": "r15",
+   "node": "Rocky-Compute-4",
+   "role": "compute",
+   "boot_s": 119,
+   "unit_begin_s": 139,
+   "mgs_wait_s": 76,
+   "unit_complete_s": 250,
+   "fatal_retries": 0,
+   "mounted": false
+  },
+  {
+   "run": "r15",
+   "node": "Rocky-Compute-5",
+   "role": "compute",
+   "boot_s": 127,
+   "unit_begin_s": 143,
+   "mgs_wait_s": 72,
+   "unit_complete_s": 248,
+   "fatal_retries": 0,
+   "mounted": false
+  },
+  {
+   "run": "r15",
+   "node": "Rocky-Compute-6",
+   "role": "compute",
+   "boot_s": 134,
+   "unit_begin_s": 150,
+   "mgs_wait_s": 64,
+   "unit_complete_s": 249,
+   "fatal_retries": 0,
+   "mounted": false
+  },
+  {
+   "run": "r15",
+   "node": "Rocky-Compute-7",
+   "role": "compute",
+   "boot_s": 134,
+   "unit_begin_s": 150,
+   "mgs_wait_s": 65,
+   "unit_complete_s": 235,
+   "fatal_retries": 0,
+   "mounted": false
+  },
+  {
+   "run": "r15",
+   "node": "Rocky-Compute-8",
+   "role": "compute",
+   "boot_s": 145,
+   "unit_begin_s": 165,
+   "mgs_wait_s": 50,
+   "unit_complete_s": 249,
+   "fatal_retries": 0,
+   "mounted": false
+  }
+ ],
+ "groups": [
+  {
+   "key": "legacy/graceful/head1+10s",
+   "runs": [
+    "r05",
+    "r06"
+   ],
+   "success_rate": "2/2",
+   "mgs_wait_max_s": {
+    "n": 2,
+    "min": 156,
+    "max": 157,
+    "mean": 156.5
+   },
+   "all_units_complete_s": {
+    "n": 2,
+    "min": 278,
+    "max": 310,
+    "mean": 294
+   }
+  },
+  {
+   "key": "fixed/graceful/head1+10s",
+   "runs": [
+    "r08",
+    "r09",
+    "r10"
+   ],
+   "success_rate": "3/3",
+   "mgs_wait_max_s": {
+    "n": 3,
+    "min": 148,
+    "max": 158,
+    "mean": 154
+   },
+   "all_units_complete_s": {
+    "n": 3,
+    "min": 281,
+    "max": 307,
+    "mean": 296
+   }
+  },
+  {
+   "key": "fixed/graceful/head1+240s",
+   "runs": [
+    "r11"
+   ],
+   "success_rate": "1/1",
+   "mgs_wait_max_s": {
+    "n": 1,
+    "min": 344,
+    "max": 344,
+    "mean": 344
+   },
+   "all_units_complete_s": {
+    "n": 1,
+    "min": 467,
+    "max": 467,
+    "mean": 467
+   }
+  },
+  {
+   "key": "fixed/hard/head1+0s",
+   "runs": [
+    "r12",
+    "r13",
+    "r14",
+    "r15"
+   ],
+   "success_rate": "4/4",
+   "mgs_wait_max_s": {
+    "n": 4,
+    "min": 97,
+    "max": 103,
+    "mean": 100.5
+   },
+   "all_units_complete_s": {
+    "n": 4,
+    "min": 230,
+    "max": 254,
+    "mean": 236.3
+   }
+  }
+ ],
+ "charts": {
+  "success_by_script": [
+   {
+    "script": "legacy",
+    "ok": 5,
+    "failed": 2
+   },
+   {
+    "script": "fixed",
+    "ok": 8,
+    "failed": 0
+   }
+  ],
+  "mgs_wait_max_per_run": [
+   {
+    "run": "r05",
+    "label": "legacy/graceful/head1+10s",
+    "script": "legacy",
+    "value_s": 157
+   },
+   {
+    "run": "r06",
+    "label": "legacy/graceful/head1+10s",
+    "script": "legacy",
+    "value_s": 156
+   },
+   {
+    "run": "r08",
+    "label": "fixed/graceful/head1+10s",
+    "script": "fixed",
+    "value_s": 148
+   },
+   {
+    "run": "r09",
+    "label": "fixed/graceful/head1+10s",
+    "script": "fixed",
+    "value_s": 158
+   },
+   {
+    "run": "r10",
+    "label": "fixed/graceful/head1+10s",
+    "script": "fixed",
+    "value_s": 156
+   },
+   {
+    "run": "r11",
+    "label": "fixed/graceful/head1+240s",
+    "script": "fixed",
+    "value_s": 344
+   },
+   {
+    "run": "r12",
+    "label": "fixed/hard/head1+0s",
+    "script": "fixed",
+    "value_s": 101
+   },
+   {
+    "run": "r13",
+    "label": "fixed/hard/head1+0s",
+    "script": "fixed",
+    "value_s": 97
+   },
+   {
+    "run": "r14",
+    "label": "fixed/hard/head1+0s",
+    "script": "fixed",
+    "value_s": 103
+   },
+   {
+    "run": "r15",
+    "label": "fixed/hard/head1+0s",
+    "script": "fixed",
+    "value_s": 101
+   }
+  ],
+  "legacy_timeout_window_s": {
+   "min": 145,
+   "max": 170,
+   "note": "MGS wait limit of the legacy script; waits above it fail"
+  },
+  "fixed_deadline_s": 600,
+  "timeline_per_node": [
+   {
+    "run": "r05",
+    "node": "Rocky-Head-1",
+    "role": "head",
+    "boot_s": 248,
+    "unit_begin_s": 266,
+    "mgs_wait_s": null,
+    "unit_complete_s": 299
+   },
+   {
+    "run": "r05",
+    "node": "Rocky-Head-2",
+    "role": "head",
+    "boot_s": 94,
+    "unit_begin_s": 110,
+    "mgs_wait_s": 157,
+    "unit_complete_s": 304
+   },
+   {
+    "run": "r05",
+    "node": "Rocky-Compute-1",
+    "role": "compute",
+    "boot_s": 102,
+    "unit_begin_s": 122,
+    "mgs_wait_s": 145,
+    "unit_complete_s": 307
+   },
+   {
+    "run": "r05",
+    "node": "Rocky-Compute-2",
+    "role": "compute",
+    "boot_s": 105,
+    "unit_begin_s": 121,
+    "mgs_wait_s": 146,
+    "unit_complete_s": 307
+   },
+   {
+    "run": "r05",
+    "node": "Rocky-Compute-3",
+    "role": "compute",
+    "boot_s": 112,
+    "unit_begin_s": 132,
+    "mgs_wait_s": 136,
+    "unit_complete_s": 306
+   },
+   {
+    "run": "r05",
+    "node": "Rocky-Compute-4",
+    "role": "compute",
+    "boot_s": 118,
+    "unit_begin_s": 133,
+    "mgs_wait_s": 133,
+    "unit_complete_s": 304
+   },
+   {
+    "run": "r05",
+    "node": "Rocky-Compute-5",
+    "role": "compute",
+    "boot_s": 128,
+    "unit_begin_s": 144,
+    "mgs_wait_s": 122,
+    "unit_complete_s": 306
+   },
+   {
+    "run": "r05",
+    "node": "Rocky-Compute-6",
+    "role": "compute",
+    "boot_s": 129,
+    "unit_begin_s": 148,
+    "mgs_wait_s": 119,
+    "unit_complete_s": 307
+   },
+   {
+    "run": "r05",
+    "node": "Rocky-Compute-7",
+    "role": "compute",
+    "boot_s": 139,
+    "unit_begin_s": 154,
+    "mgs_wait_s": 112,
+    "unit_complete_s": 308
+   },
+   {
+    "run": "r05",
+    "node": "Rocky-Compute-8",
+    "role": "compute",
+    "boot_s": 143,
+    "unit_begin_s": 163,
+    "mgs_wait_s": 102,
+    "unit_complete_s": 310
+   },
+   {
+    "run": "r06",
+    "node": "Rocky-Head-1",
+    "role": "head",
+    "boot_s": 248,
+    "unit_begin_s": 266,
+    "mgs_wait_s": null,
+    "unit_complete_s": 273
+   },
+   {
+    "run": "r06",
+    "node": "Rocky-Head-2",
+    "role": "head",
+    "boot_s": 95,
+    "unit_begin_s": 111,
+    "mgs_wait_s": 156,
+    "unit_complete_s": 278
+   },
+   {
+    "run": "r06",
+    "node": "Rocky-Compute-1",
+    "role": "compute",
+    "boot_s": 104,
+    "unit_begin_s": 120,
+    "mgs_wait_s": 148,
+    "unit_complete_s": 278
+   },
+   {
+    "run": "r06",
+    "node": "Rocky-Compute-2",
+    "role": "compute",
+    "boot_s": 107,
+    "unit_begin_s": 123,
+    "mgs_wait_s": 145,
+    "unit_complete_s": 278
+   },
+   {
+    "run": "r06",
+    "node": "Rocky-Compute-3",
+    "role": "compute",
+    "boot_s": 115,
+    "unit_begin_s": 130,
+    "mgs_wait_s": 136,
+    "unit_complete_s": 278
+   },
+   {
+    "run": "r06",
+    "node": "Rocky-Compute-4",
+    "role": "compute",
+    "boot_s": 119,
+    "unit_begin_s": 134,
+    "mgs_wait_s": 133,
+    "unit_complete_s": 277
+   },
+   {
+    "run": "r06",
+    "node": "Rocky-Compute-5",
+    "role": "compute",
+    "boot_s": 125,
+    "unit_begin_s": 141,
+    "mgs_wait_s": 125,
+    "unit_complete_s": 277
+   },
+   {
+    "run": "r06",
+    "node": "Rocky-Compute-6",
+    "role": "compute",
+    "boot_s": 129,
+    "unit_begin_s": 144,
+    "mgs_wait_s": 122,
+    "unit_complete_s": 277
+   },
+   {
+    "run": "r06",
+    "node": "Rocky-Compute-7",
+    "role": "compute",
+    "boot_s": 134,
+    "unit_begin_s": 150,
+    "mgs_wait_s": 117,
+    "unit_complete_s": 277
+   },
+   {
+    "run": "r06",
+    "node": "Rocky-Compute-8",
+    "role": "compute",
+    "boot_s": 140,
+    "unit_begin_s": 160,
+    "mgs_wait_s": 106,
+    "unit_complete_s": 277
+   },
+   {
+    "run": "r08",
+    "node": "Rocky-Head-1",
+    "role": "head",
+    "boot_s": 241,
+    "unit_begin_s": 258,
+    "mgs_wait_s": null,
+    "unit_complete_s": 291
+   },
+   {
+    "run": "r08",
+    "node": "Rocky-Head-2",
+    "role": "head",
+    "boot_s": 94,
+    "unit_begin_s": 110,
+    "mgs_wait_s": 148,
+    "unit_complete_s": 295
+   },
+   {
+    "run": "r08",
+    "node": "Rocky-Compute-1",
+    "role": "compute",
+    "boot_s": 102,
+    "unit_begin_s": 118,
+    "mgs_wait_s": 142,
+    "unit_complete_s": 293
+   },
+   {
+    "run": "r08",
+    "node": "Rocky-Compute-2",
+    "role": "compute",
+    "boot_s": 105,
+    "unit_begin_s": 120,
+    "mgs_wait_s": 140,
+    "unit_complete_s": 295
+   },
+   {
+    "run": "r08",
+    "node": "Rocky-Compute-3",
+    "role": "compute",
+    "boot_s": 110,
+    "unit_begin_s": 125,
+    "mgs_wait_s": 134,
+    "unit_complete_s": 296
+   },
+   {
+    "run": "r08",
+    "node": "Rocky-Compute-4",
+    "role": "compute",
+    "boot_s": 114,
+    "unit_begin_s": 130,
+    "mgs_wait_s": 128,
+    "unit_complete_s": 296
+   },
+   {
+    "run": "r08",
+    "node": "Rocky-Compute-5",
+    "role": "compute",
+    "boot_s": 122,
+    "unit_begin_s": 138,
+    "mgs_wait_s": 121,
+    "unit_complete_s": 300
+   },
+   {
+    "run": "r08",
+    "node": "Rocky-Compute-6",
+    "role": "compute",
+    "boot_s": 125,
+    "unit_begin_s": 145,
+    "mgs_wait_s": 114,
+    "unit_complete_s": 295
+   },
+   {
+    "run": "r08",
+    "node": "Rocky-Compute-7",
+    "role": "compute",
+    "boot_s": 129,
+    "unit_begin_s": 145,
+    "mgs_wait_s": 114,
+    "unit_complete_s": 299
+   },
+   {
+    "run": "r08",
+    "node": "Rocky-Compute-8",
+    "role": "compute",
+    "boot_s": 136,
+    "unit_begin_s": 152,
+    "mgs_wait_s": 106,
+    "unit_complete_s": 294
+   },
+   {
+    "run": "r09",
+    "node": "Rocky-Head-1",
+    "role": "head",
+    "boot_s": 248,
+    "unit_begin_s": 266,
+    "mgs_wait_s": null,
+    "unit_complete_s": 273
+   },
+   {
+    "run": "r09",
+    "node": "Rocky-Head-2",
+    "role": "head",
+    "boot_s": 93,
+    "unit_begin_s": 110,
+    "mgs_wait_s": 158,
+    "unit_complete_s": 281
+   },
+   {
+    "run": "r09",
+    "node": "Rocky-Compute-1",
+    "role": "compute",
+    "boot_s": 101,
+    "unit_begin_s": 118,
+    "mgs_wait_s": 149,
+    "unit_complete_s": 278
+   },
+   {
+    "run": "r09",
+    "node": "Rocky-Compute-2",
+    "role": "compute",
+    "boot_s": 105,
+    "unit_begin_s": 121,
+    "mgs_wait_s": 145,
+    "unit_complete_s": 277
+   },
+   {
+    "run": "r09",
+    "node": "Rocky-Compute-3",
+    "role": "compute",
+    "boot_s": 112,
+    "unit_begin_s": 128,
+    "mgs_wait_s": 139,
+    "unit_complete_s": 277
+   },
+   {
+    "run": "r09",
+    "node": "Rocky-Compute-4",
+    "role": "compute",
+    "boot_s": 117,
+    "unit_begin_s": 132,
+    "mgs_wait_s": 135,
+    "unit_complete_s": 276
+   },
+   {
+    "run": "r09",
+    "node": "Rocky-Compute-5",
+    "role": "compute",
+    "boot_s": 125,
+    "unit_begin_s": 144,
+    "mgs_wait_s": 122,
+    "unit_complete_s": 277
+   },
+   {
+    "run": "r09",
+    "node": "Rocky-Compute-6",
+    "role": "compute",
+    "boot_s": 129,
+    "unit_begin_s": 145,
+    "mgs_wait_s": 123,
+    "unit_complete_s": 277
+   },
+   {
+    "run": "r09",
+    "node": "Rocky-Compute-7",
+    "role": "compute",
+    "boot_s": 135,
+    "unit_begin_s": 154,
+    "mgs_wait_s": 113,
+    "unit_complete_s": 278
+   },
+   {
+    "run": "r09",
+    "node": "Rocky-Compute-8",
+    "role": "compute",
+    "boot_s": 139,
+    "unit_begin_s": 155,
+    "mgs_wait_s": 111,
+    "unit_complete_s": 277
+   },
+   {
+    "run": "r10",
+    "node": "Rocky-Head-1",
+    "role": "head",
+    "boot_s": 247,
+    "unit_begin_s": 265,
+    "mgs_wait_s": null,
+    "unit_complete_s": 298
+   },
+   {
+    "run": "r10",
+    "node": "Rocky-Head-2",
+    "role": "head",
+    "boot_s": 93,
+    "unit_begin_s": 109,
+    "mgs_wait_s": 156,
+    "unit_complete_s": 303
+   },
+   {
+    "run": "r10",
+    "node": "Rocky-Compute-1",
+    "role": "compute",
+    "boot_s": 102,
+    "unit_begin_s": 118,
+    "mgs_wait_s": 148,
+    "unit_complete_s": 300
+   },
+   {
+    "run": "r10",
+    "node": "Rocky-Compute-2",
+    "role": "compute",
+    "boot_s": 104,
+    "unit_begin_s": 124,
+    "mgs_wait_s": 142,
+    "unit_complete_s": 298
+   },
+   {
+    "run": "r10",
+    "node": "Rocky-Compute-3",
+    "role": "compute",
+    "boot_s": 111,
+    "unit_begin_s": 127,
+    "mgs_wait_s": 139,
+    "unit_complete_s": 300
+   },
+   {
+    "run": "r10",
+    "node": "Rocky-Compute-4",
+    "role": "compute",
+    "boot_s": 116,
+    "unit_begin_s": 131,
+    "mgs_wait_s": 134,
+    "unit_complete_s": 300
+   },
+   {
+    "run": "r10",
+    "node": "Rocky-Compute-5",
+    "role": "compute",
+    "boot_s": 123,
+    "unit_begin_s": 138,
+    "mgs_wait_s": 128,
+    "unit_complete_s": 299
+   },
+   {
+    "run": "r10",
+    "node": "Rocky-Compute-6",
+    "role": "compute",
+    "boot_s": 128,
+    "unit_begin_s": 144,
+    "mgs_wait_s": 122,
+    "unit_complete_s": 307
+   },
+   {
+    "run": "r10",
+    "node": "Rocky-Compute-7",
+    "role": "compute",
+    "boot_s": 134,
+    "unit_begin_s": 150,
+    "mgs_wait_s": 116,
+    "unit_complete_s": 300
+   },
+   {
+    "run": "r10",
+    "node": "Rocky-Compute-8",
+    "role": "compute",
+    "boot_s": 138,
+    "unit_begin_s": 158,
+    "mgs_wait_s": 107,
+    "unit_complete_s": 299
+   },
+   {
+    "run": "r11",
+    "node": "Rocky-Head-1",
+    "role": "head",
+    "boot_s": 435,
+    "unit_begin_s": 452,
+    "mgs_wait_s": null,
+    "unit_complete_s": 459
+   },
+   {
+    "run": "r11",
+    "node": "Rocky-Head-2",
+    "role": "head",
+    "boot_s": 95,
+    "unit_begin_s": 110,
+    "mgs_wait_s": 344,
+    "unit_complete_s": 467
+   },
+   {
+    "run": "r11",
+    "node": "Rocky-Compute-1",
+    "role": "compute",
+    "boot_s": 103,
+    "unit_begin_s": 122,
+    "mgs_wait_s": 331,
+    "unit_complete_s": 464
+   },
+   {
+    "run": "r11",
+    "node": "Rocky-Compute-2",
+    "role": "compute",
+    "boot_s": 106,
+    "unit_begin_s": 121,
+    "mgs_wait_s": 333,
+    "unit_complete_s": 464
+   },
+   {
+    "run": "r11",
+    "node": "Rocky-Compute-3",
+    "role": "compute",
+    "boot_s": 110,
+    "unit_begin_s": 126,
+    "mgs_wait_s": 328,
+    "unit_complete_s": 464
+   },
+   {
+    "run": "r11",
+    "node": "Rocky-Compute-4",
+    "role": "compute",
+    "boot_s": 116,
+    "unit_begin_s": 132,
+    "mgs_wait_s": 322,
+    "unit_complete_s": 464
+   },
+   {
+    "run": "r11",
+    "node": "Rocky-Compute-5",
+    "role": "compute",
+    "boot_s": 126,
+    "unit_begin_s": 142,
+    "mgs_wait_s": 311,
+    "unit_complete_s": 465
+   },
+   {
+    "run": "r11",
+    "node": "Rocky-Compute-6",
+    "role": "compute",
+    "boot_s": 130,
+    "unit_begin_s": 146,
+    "mgs_wait_s": 307,
+    "unit_complete_s": 463
+   },
+   {
+    "run": "r11",
+    "node": "Rocky-Compute-7",
+    "role": "compute",
+    "boot_s": 136,
+    "unit_begin_s": 156,
+    "mgs_wait_s": 298,
+    "unit_complete_s": 464
+   },
+   {
+    "run": "r11",
+    "node": "Rocky-Compute-8",
+    "role": "compute",
+    "boot_s": 141,
+    "unit_begin_s": 160,
+    "mgs_wait_s": 293,
+    "unit_complete_s": 464
+   },
+   {
+    "run": "r12",
+    "node": "Rocky-Head-1",
+    "role": "head",
+    "boot_s": 196,
+    "unit_begin_s": 215,
+    "mgs_wait_s": null,
+    "unit_complete_s": 222
+   },
+   {
+    "run": "r12",
+    "node": "Rocky-Head-2",
+    "role": "head",
+    "boot_s": 99,
+    "unit_begin_s": 115,
+    "mgs_wait_s": 101,
+    "unit_complete_s": 228
+   },
+   {
+    "run": "r12",
+    "node": "Rocky-Compute-1",
+    "role": "compute",
+    "boot_s": 107,
+    "unit_begin_s": 123,
+    "mgs_wait_s": 93,
+    "unit_complete_s": 227
+   },
+   {
+    "run": "r12",
+    "node": "Rocky-Compute-2",
+    "role": "compute",
+    "boot_s": 111,
+    "unit_begin_s": 126,
+    "mgs_wait_s": 90,
+    "unit_complete_s": 227
+   },
+   {
+    "run": "r12",
+    "node": "Rocky-Compute-3",
+    "role": "compute",
+    "boot_s": 115,
+    "unit_begin_s": 134,
+    "mgs_wait_s": 82,
+    "unit_complete_s": 227
+   },
+   {
+    "run": "r12",
+    "node": "Rocky-Compute-4",
+    "role": "compute",
+    "boot_s": 119,
+    "unit_begin_s": 135,
+    "mgs_wait_s": 81,
+    "unit_complete_s": 227
+   },
+   {
+    "run": "r12",
+    "node": "Rocky-Compute-5",
+    "role": "compute",
+    "boot_s": 129,
+    "unit_begin_s": 145,
+    "mgs_wait_s": 70,
+    "unit_complete_s": 230
+   },
+   {
+    "run": "r12",
+    "node": "Rocky-Compute-6",
+    "role": "compute",
+    "boot_s": 131,
+    "unit_begin_s": 147,
+    "mgs_wait_s": 69,
+    "unit_complete_s": 228
+   },
+   {
+    "run": "r12",
+    "node": "Rocky-Compute-7",
+    "role": "compute",
+    "boot_s": 136,
+    "unit_begin_s": 157,
+    "mgs_wait_s": 59,
+    "unit_complete_s": 227
+   },
+   {
+    "run": "r12",
+    "node": "Rocky-Compute-8",
+    "role": "compute",
+    "boot_s": 140,
+    "unit_begin_s": 156,
+    "mgs_wait_s": 59,
+    "unit_complete_s": 228
+   },
+   {
+    "run": "r13",
+    "node": "Rocky-Head-1",
+    "role": "head",
+    "boot_s": 199,
+    "unit_begin_s": 216,
+    "mgs_wait_s": null,
+    "unit_complete_s": 223
+   },
+   {
+    "run": "r13",
+    "node": "Rocky-Head-2",
+    "role": "head",
+    "boot_s": 105,
+    "unit_begin_s": 120,
+    "mgs_wait_s": 97,
+    "unit_complete_s": 229
+   },
+   {
+    "run": "r13",
+    "node": "Rocky-Compute-1",
+    "role": "compute",
+    "boot_s": 113,
+    "unit_begin_s": 129,
+    "mgs_wait_s": 89,
+    "unit_complete_s": 228
+   },
+   {
+    "run": "r13",
+    "node": "Rocky-Compute-2",
+    "role": "compute",
+    "boot_s": 118,
+    "unit_begin_s": 137,
+    "mgs_wait_s": 81,
+    "unit_complete_s": 230
+   },
+   {
+    "run": "r13",
+    "node": "Rocky-Compute-3",
+    "role": "compute",
+    "boot_s": 123,
+    "unit_begin_s": 139,
+    "mgs_wait_s": 79,
+    "unit_complete_s": 228
+   },
+   {
+    "run": "r13",
+    "node": "Rocky-Compute-4",
+    "role": "compute",
+    "boot_s": 129,
+    "unit_begin_s": 149,
+    "mgs_wait_s": 69,
+    "unit_complete_s": 227
+   },
+   {
+    "run": "r13",
+    "node": "Rocky-Compute-5",
+    "role": "compute",
+    "boot_s": 132,
+    "unit_begin_s": 147,
+    "mgs_wait_s": 69,
+    "unit_complete_s": 229
+   },
+   {
+    "run": "r13",
+    "node": "Rocky-Compute-6",
+    "role": "compute",
+    "boot_s": 141,
+    "unit_begin_s": 157,
+    "mgs_wait_s": 60,
+    "unit_complete_s": 228
+   },
+   {
+    "run": "r13",
+    "node": "Rocky-Compute-7",
+    "role": "compute",
+    "boot_s": 142,
+    "unit_begin_s": 157,
+    "mgs_wait_s": 60,
+    "unit_complete_s": 229
+   },
+   {
+    "run": "r13",
+    "node": "Rocky-Compute-8",
+    "role": "compute",
+    "boot_s": 151,
+    "unit_begin_s": 166,
+    "mgs_wait_s": 50,
+    "unit_complete_s": 227
+   },
+   {
+    "run": "r14",
+    "node": "Rocky-Head-1",
+    "role": "head",
+    "boot_s": 195,
+    "unit_begin_s": 216,
+    "mgs_wait_s": null,
+    "unit_complete_s": 223
+   },
+   {
+    "run": "r14",
+    "node": "Rocky-Head-2",
+    "role": "head",
+    "boot_s": 99,
+    "unit_begin_s": 116,
+    "mgs_wait_s": 103,
+    "unit_complete_s": 230
+   },
+   {
+    "run": "r14",
+    "node": "Rocky-Compute-1",
+    "role": "compute",
+    "boot_s": 107,
+    "unit_begin_s": 124,
+    "mgs_wait_s": 94,
+    "unit_complete_s": 227
+   },
+   {
+    "run": "r14",
+    "node": "Rocky-Compute-2",
+    "role": "compute",
+    "boot_s": 111,
+    "unit_begin_s": 127,
+    "mgs_wait_s": 91,
+    "unit_complete_s": 229
+   },
+   {
+    "run": "r14",
+    "node": "Rocky-Compute-3",
+    "role": "compute",
+    "boot_s": 118,
+    "unit_begin_s": 134,
+    "mgs_wait_s": 85,
+    "unit_complete_s": 229
+   },
+   {
+    "run": "r14",
+    "node": "Rocky-Compute-4",
+    "role": "compute",
+    "boot_s": 123,
+    "unit_begin_s": 143,
+    "mgs_wait_s": 75,
+    "unit_complete_s": 228
+   },
+   {
+    "run": "r14",
+    "node": "Rocky-Compute-5",
+    "role": "compute",
+    "boot_s": 131,
+    "unit_begin_s": 147,
+    "mgs_wait_s": 71,
+    "unit_complete_s": 229
+   },
+   {
+    "run": "r14",
+    "node": "Rocky-Compute-6",
+    "role": "compute",
+    "boot_s": 138,
+    "unit_begin_s": 158,
+    "mgs_wait_s": 59,
+    "unit_complete_s": 231
+   },
+   {
+    "run": "r14",
+    "node": "Rocky-Compute-7",
+    "role": "compute",
+    "boot_s": 143,
+    "unit_begin_s": 162,
+    "mgs_wait_s": 56,
+    "unit_complete_s": 228
+   },
+   {
+    "run": "r14",
+    "node": "Rocky-Compute-8",
+    "role": "compute",
+    "boot_s": 144,
+    "unit_begin_s": 159,
+    "mgs_wait_s": 58,
+    "unit_complete_s": 230
+   },
+   {
+    "run": "r15",
+    "node": "Rocky-Head-1",
+    "role": "head",
+    "boot_s": 193,
+    "unit_begin_s": 215,
+    "mgs_wait_s": null,
+    "unit_complete_s": 254
+   },
+   {
+    "run": "r15",
+    "node": "Rocky-Head-2",
+    "role": "head",
+    "boot_s": 99,
+    "unit_begin_s": 115,
+    "mgs_wait_s": 101,
+    "unit_complete_s": 235
+   },
+   {
+    "run": "r15",
+    "node": "Rocky-Compute-1",
+    "role": "compute",
+    "boot_s": 107,
+    "unit_begin_s": 127,
+    "mgs_wait_s": 89,
+    "unit_complete_s": 240
+   },
+   {
+    "run": "r15",
+    "node": "Rocky-Compute-2",
+    "role": "compute",
+    "boot_s": 114,
+    "unit_begin_s": 130,
+    "mgs_wait_s": 86,
+    "unit_complete_s": 238
+   },
+   {
+    "run": "r15",
+    "node": "Rocky-Compute-3",
+    "role": "compute",
+    "boot_s": 115,
+    "unit_begin_s": 130,
+    "mgs_wait_s": 85,
+    "unit_complete_s": 247
+   },
+   {
+    "run": "r15",
+    "node": "Rocky-Compute-4",
+    "role": "compute",
+    "boot_s": 119,
+    "unit_begin_s": 139,
+    "mgs_wait_s": 76,
+    "unit_complete_s": 250
+   },
+   {
+    "run": "r15",
+    "node": "Rocky-Compute-5",
+    "role": "compute",
+    "boot_s": 127,
+    "unit_begin_s": 143,
+    "mgs_wait_s": 72,
+    "unit_complete_s": 248
+   },
+   {
+    "run": "r15",
+    "node": "Rocky-Compute-6",
+    "role": "compute",
+    "boot_s": 134,
+    "unit_begin_s": 150,
+    "mgs_wait_s": 64,
+    "unit_complete_s": 249
+   },
+   {
+    "run": "r15",
+    "node": "Rocky-Compute-7",
+    "role": "compute",
+    "boot_s": 134,
+    "unit_begin_s": 150,
+    "mgs_wait_s": 65,
+    "unit_complete_s": 235
+   },
+   {
+    "run": "r15",
+    "node": "Rocky-Compute-8",
+    "role": "compute",
+    "boot_s": 145,
+    "unit_begin_s": 165,
+    "mgs_wait_s": 50,
+    "unit_complete_s": 249
+   }
+  ],
+  "hard_power_off": [
+   {
+    "run": "r12",
+    "all_units_complete_s": 230,
+    "pool_visible_after_mounted_s": null,
+    "files_ok": null,
+    "files_bad": null
+   },
+   {
+    "run": "r13",
+    "all_units_complete_s": 230,
+    "pool_visible_after_mounted_s": null,
+    "files_ok": null,
+    "files_bad": null
+   },
+   {
+    "run": "r14",
+    "all_units_complete_s": 231,
+    "pool_visible_after_mounted_s": 292,
+    "files_ok": 40,
+    "files_bad": 0
+   },
+   {
+    "run": "r15",
+    "all_units_complete_s": 254,
+    "pool_visible_after_mounted_s": 275,
+    "files_ok": 40,
+    "files_bad": 0
+   }
+  ]
+ },
+ "findings": [
+  {
+   "id": "F1",
+   "title": "Legacy startup script times out early",
+   "result": "MGS wait limit is about 145-170 s instead of 300 s because the loop counts iterations, not seconds; the same bug made the LNET wait about 11 s instead of 60 s.",
+   "evidence": "13:14 cold start (8/10 failed), legacy run 3 (Compute-2 FATAL after 145 s)"
+  },
+  {
+   "id": "F2",
+   "title": "Head-1 (MGS) is always the last node up",
+   "result": "Head-1 reaches the OS about 190 s after its own power-on versus about 90 s for the other blades; every cold start depends on this gap.",
+   "evidence": "head1_os_up_s 193-248 across all runs"
+  },
+  {
+   "id": "F3",
+   "title": "Fix verified",
+   "result": "With wall-clock deadlines the computes waited up to 344 s for the MGS (Head-1 held 240 s) and all 10 nodes mounted with 0 fatal retries; the legacy script would have failed at about 145 s.",
+   "evidence": "fixed run with head1_delay_s=240"
+  },
+  {
+   "id": "F4",
+   "title": "Data integrity across unclean power-off",
+   "result": "40 of 40 files (256 MB each, written with direct I/O) sha256-identical after each of 2 hard power-offs of all 10 nodes.",
+   "evidence": "integrity runs 17:31 and 17:45"
+  },
+  {
+   "id": "F5",
+   "title": "OST recovery window after unclean stop",
+   "result": "After a hard stop of all nodes only 2 of 16 OSTs were visible for another 275-292 s after all nodes reported mounted (OST recovery window 5:00; MDT mounted with abort_recov reconnects as a new client and is denied). After a graceful shutdown the pool was complete immediately. Accepted, not changed: production shutdowns are scheduled.",
+   "evidence": "pool_fully_visible_after_mounted_s 275 and 292"
+  },
+  {
+   "id": "F6",
+   "title": "Kernel update would break the boot",
+   "result": "dnf update installed the Rocky 9.8 kernel on Compute-2 and UPDATEDEFAULT=yes made it the boot default; the node came up without Lustre modules. Fixed with kernel* excluded in the update playbook and UPDATEDEFAULT=no on all nodes.",
+   "evidence": "thesis notes/15"
+  }
+ ],
+ "tests_planned": [
+  {
+   "test": "node loss under mirrored write load (compute x2, Head-2, Head-1)",
+   "requirement": "R5",
+   "status": "not run"
+  },
+  {
+   "test": "rolling reboots with live clients (4 loops)",
+   "requirement": "R4",
+   "status": "not run"
+  },
+  {
+   "test": "retry path, Head-1 held 600 s",
+   "requirement": "R4",
+   "status": "not run"
+  },
+  {
+   "test": "soak 24 h, mixed fio, error counters",
+   "requirement": "R4",
+   "status": "not run"
+  },
+  {
+   "test": "cache-bypassed fio matrix, repeated, 1/2/4/8 clients",
+   "requirement": "R3",
+   "status": "not run"
+  },
+  {
+   "test": "VM layer: live migration, node loss with VMs",
+   "requirement": "R8",
+   "status": "blocked (no KVM hosts yet)"
+  }
+ ]
+}

@@ -1,0 +1,124 @@
+<head>
+  <meta charset="UTF-8" />
+  <title>Návrh a implementace virtualizačního clusteru pro izolované testovací prostředí katedry informatiky</title>
+</head>
+<body>
+  <p>
+    <strong>Vedoucí práce:</strong><br />
+    (Mgr. Květuše Sýkorová)
+  </p>
+
+  <p>
+    <strong>Studijní program:</strong><br />
+    Aplikovaná informatika (Bc.)
+  </p>
+
+  <p>
+    <strong>Název práce v češtině</strong><br />
+    Návrh a implementace virtualizačního clusteru pro izolované testovací prostředí katedry informatiky
+  </p>
+
+  <p>
+    <strong>Název práce v angličtině</strong><br />
+    Design and Implementation of a Virtualization Cluster for the Isolated Testing Environment of the Department of Informatics
+  </p>
+
+  <p><strong>Anotace tématu</strong></p>
+  <p>
+    Katedra informatiky v současnosti postrádá izolované prostředí pro bezpečné testování aplikací a experimentování s různými softwarovými
+    technologiemi. Laboratoř počítačových sítí a infrastruktury však disponuje výkonným serverovým hardwarem s vysokorychlostním síťovým
+    rozhraním InfiniBand, který kvůli specifickým požadavkům tohoto protokolu není pro tyto účely momentálně využíván. Dostupnost tohoto
+    vybavení vytváří příležitost navrhnout a sestavit nový virtualizační cluster, který tento hardware efektivně zužitkuje a poskytne
+    chybějící zázemí pro studentské projekty, zejména pro izolované testování a ověřování softwaru.
+  </p>
+
+  <p>
+    Hlavním cílem práce je navrhnout a zprovoznit virtualizační prostředí na hardwaru s protokolem InfiniBand. Práce se zaměřuje na
+    sestavení a konfiguraci infrastrukturní vrstvy, která slouží jako podklad pro izolované testování aplikací. Jádrem práce je nalezení a
+    ověření funkční kombinace softwarových technologií pracujících nad protokolem IP over InfiniBand (IPoIB). Cílem je otestovat různá
+    řešení virtualizace a distribuovaných úložišť a na základě výsledků testování implementovat nejvhodnější variantu.
+  </p>
+
+  <p>Dílčí cíle práce jsou:</p>
+  <ul>
+    <li>analyzovat možnosti konfigurace IPoIB na linuxových distribucích,</li>
+    <li>otestovat vybraná řešení virtualizace a distribuovaných úložišť v prostředí s IPoIB a vyhodnotit jejich limity,</li>
+    <li>implementovat nejvhodnější řešení na základě výsledků testování,</li>
+    <li>prokázat stabilitu a výkon finálního řešení v kontextu izolovaného testovacího prostředí.</li>
+  </ul>
+
+  <p>Výstupy práce budou:</p>
+  <ul>
+    <li>funkční prototyp virtualizačního clusteru pro izolované testovací prostředí,</li>
+    <li>srovnávací analýza testovaných řešení virtualizace a distribuovaných úložišť na daném hardwaru,</li>
+    <li>technická dokumentace a zpráva o měření výkonu.</li>
+  </ul>
+
+  <p><strong>Osnova:</strong></p>
+
+  <p><strong>Teoretická část</strong></p>
+  <ol>
+    <li>
+      principy a standardy tvorby infrastruktury pro izolované testování aplikací (izolace virtualizovaných prostředí, síťová segmentace,
+      bezpečnostní požadavky, infrastruktura jako služba)
+    </li>
+    <li>IP over InfiniBand (IPoIB): stručný úvod do InfiniBandu a specifika IPoIB</li>
+    <li>open-source technologie pro virtualizaci a clusterovou infrastrukturu</li>
+    <li>přehled systémů distribuovaného úložiště a jejich architektura</li>
+  </ol>
+
+  <p><strong>Praktická část</strong></p>
+  <ol>
+    <li>analýza současného stavu a dostupného hardwaru</li>
+    <li>návrh cílové architektury clusteru</li>
+    <li>konfigurace sítě a implementace protokolu IPoIB na zvolené linuxové distribuci</li>
+    <li>testování a srovnání vybraných virtualizačních platforem a systémů distribuovaného úložiště</li>
+    <li>implementace zvoleného řešení</li>
+    <li>finální měření výkonu a zhodnocení výsledků</li>
+  </ol>
+
+  <p><strong>Literatura</strong></p>
+  <ol>
+    <li>
+      IETF. <i>Transmission of IP over InfiniBand (IPoIB) (RFC 4391)</i> [online]. 2006 [cit. 2025-11-20]. Dostupné z:
+      <a href="https://datatracker.ietf.org/doc/html/rfc4391">https://datatracker.ietf.org/doc/html/rfc4391</a>
+    </li>
+    <li>
+      LUSTRE. <i>Lustre Software Release 2.x: Operations Manual</i> [online]. [cit. 2026-10-01]. Dostupné z:
+      <a href="https://doc.lustre.org/lustre_manual.xhtml">https://doc.lustre.org/lustre_manual.xhtml</a>
+    </li>
+    <li>
+      NIST. <i>Guide to Security for Full Virtualization Technologies (SP 800-125)</i> [online]. 2011 [cit. 2026-10-01]. Dostupné z:
+      <a href="https://csrc.nist.gov/pubs/sp/800/125/final">https://csrc.nist.gov/pubs/sp/800/125/final</a>
+    </li>
+    <li>
+      NIST. <i>Secure Virtual Network Configuration for Virtual Machine (VM) Protection (SP 800-125B)</i> [online]. 2016 [cit. 2026-10-01].
+      Dostupné z:
+      <a href="https://csrc.nist.gov/pubs/sp/800/125/b/final">https://csrc.nist.gov/pubs/sp/800/125/b/final</a>
+    </li>
+    <li>
+      NIST. <i>The NIST Definition of Cloud Computing (SP 800-145)</i> [online]. 2011 [cit. 2026-10-01]. Dostupné z:
+      <a href="https://csrc.nist.gov/pubs/sp/800/145/final">https://csrc.nist.gov/pubs/sp/800/145/final</a>
+    </li>
+    <li>
+      NIST. <i>Technical Guide to Information Security Testing and Assessment (SP 800-115)</i> [online]. 2008 [cit. 2026-10-01]. Dostupné z:
+      <a href="https://csrc.nist.gov/pubs/sp/800/115/final">https://csrc.nist.gov/pubs/sp/800/115/final</a>
+    </li>
+    <li>
+      OPENNEBULA SYSTEMS. <i>OpenNebula Documentation</i> [online]. 2025 [cit. 2025-11-20]. Dostupné z:
+      <a href="https://docs.opennebula.io/">https://docs.opennebula.io/</a>
+    </li>
+
+    <li>
+      RESF. <i>Rocky Linux Documentation</i> [online]. 2025 [cit. 2025-11-20]. Dostupné z:
+      <a href="https://docs.rockylinux.org/">https://docs.rockylinux.org/</a>
+    </li>
+    <li>
+      THINKPARQ GMBH. <i>BeeGFS Documentation</i> [online]. 2025 [cit. 2025-11-20]. Dostupné z:
+      <a href="https://doc.beegfs.io/latest/">https://doc.beegfs.io/latest/</a>
+    </li>
+  </ol>
+
+  <h1>Komentáře</h1>
+  <ul></ul>
+</body>

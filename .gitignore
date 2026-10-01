@@ -1,3 +1,15 @@
 http-server/
 node_modules/
 
+overleaf.zip
+
+# LaTeX build output (base/ has its own repo and .gitignore)
+*.aux
+*.bbl
+*.bcf
+*.blg
+*.fls
+*.fdb_latexmk
+*.run.xml
+*.synctex.gz
+base/data/*.csv
