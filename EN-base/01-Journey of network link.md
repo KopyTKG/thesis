@@ -1,0 +1,4 @@
+# Journey of network link
+But the fun wasn't out since we were about to detect the cards but we weren't able to establish link. At first we didn't know anything about Infiniband protocol and it's quirks like IP over Infiniband (IPoIB). So we tested a lot of OS variants ranging from Proxmox (several versions),Debian, OpenSuse and Suse's Harvester, Redhat, Redhat derivates like Centos, Rocky and Fedora, FreeBSD, NetBSD, Windows server 2025 and Windows 10. 
+
+Most of them didn't work or they did but at speeds so slow that ethernet wold be better, but Redhat family came to rescue since they were about to hit almost the theoretical line speed of 100Gbs.

@@ -1,0 +1,1222 @@
+{
+ "metadata": {
+  "description": "Stability tests of the Lustre 2.17.0 cluster (RDMA/o2ib, FLR), performed 2026-10-01 after the cluster had been powered off for about 3 months. Source of truth: UJEP-LAB/benchmarks/stability (CSVs, logs), tooling UJEP-LAB/tools/stability.py.",
+  "cluster": "10 nodes: 2 heads (MGS+MDT0 on Head-1, MDT1 on Head-2) + 8 computes (16 OSTs)",
+  "kernel": "5.14.0-611.13.1_lustre.el9.x86_64 (Rocky Linux 9.7)",
+  "units": "seconds unless noted; times relative to the first IPMI power-on command",
+  "scripts": {
+   "legacy": "lustre-startup with iteration-counted timeouts: real MGS wait limit about 145-170 s, LNET wait about 11 s, no retry",
+   "fixed": "lustre-startup with $SECONDS wall-clock deadlines (MGS 600 s, LNET 120 s) and Restart=on-failure (deployed between the 16:15 and 16:38 runs)"
+  },
+  "caveats": [
+   "Cold boots were done as a small number of runs (4 graceful with the fixed script, 1 at 240 s Head-1 delay); not statistics.",
+   "Per-node times use node clocks corrected against the controller (+-1-2 s).",
+   "Restart=on-failure retry path was not exercised (skipped, 600 s Head-1 delay test).",
+   "Hard power-off results are not representative of production: the cluster runs on two power lines with two UPS each and scheduled shutdowns."
+  ]
+ },
+ "cold_boot_runs": [
+  {
+   "date": "2026-10-01T15:32:38",
+   "script": "legacy",
+   "mode": "graceful (coarse first version of the test)",
+   "run": 1,
+   "nodes_mounted": 10,
+   "nodes_total": 10,
+   "all_mounted_s_after_power_on_loop": 172,
+   "note": "one cluster-wide poll time; clock starts after the IPMI power-on loop"
+  },
+  {
+   "date": "2026-10-01T15:39:18",
+   "script": "legacy",
+   "mode": "graceful (coarse first version of the test)",
+   "run": 2,
+   "nodes_mounted": 10,
+   "nodes_total": 10,
+   "all_mounted_s_after_power_on_loop": 177,
+   "note": "one cluster-wide poll time; clock starts after the IPMI power-on loop"
+  },
+  {
+   "date": "2026-10-01T15:45:56",
+   "script": "legacy",
+   "mode": "graceful (coarse first version of the test)",
+   "run": 3,
+   "nodes_mounted": 10,
+   "nodes_total": 10,
+   "all_mounted_s_after_power_on_loop": 189,
+   "note": "one cluster-wide poll time; clock starts after the IPMI power-on loop"
+  },
+  {
+   "date": "2026-10-01T13:14",
+   "script": "legacy",
+   "mode": "power-on after ~3 months off (IPMI, all at once)",
+   "head1_delay_s": null,
+   "nodes_mounted": 2,
+   "nodes_total": 10,
+   "result": "FAIL",
+   "detail": "Both heads mounted; all 8 computes failed: 'MGS not reachable after 300s' (wall 168 s). Head-1 (MGS) reached the OS about 2.5 min after the computes.",
+   "source": "thesis notes/15"
+  },
+  {
+   "date": "2026-10-01T16:26",
+   "script": "legacy",
+   "mode": "graceful",
+   "head1_delay_s": 10,
+   "nodes_mounted": 9,
+   "nodes_total": 10,
+   "result": "FAIL (interrupted by operator, evidence from journal)",
+   "detail": "Run 3 of the legacy series: Compute-2 gave up after 145 s waiting for the MGS (legacy limit about 145-170 s) and stayed unmounted; OST0002 mounted, OST0003 missing. No retry in the legacy unit.",
+   "log": "stability/logs/coldboot_20261001T160755.log"
+  },
+  {
+   "date": "2026-10-01T16:07:56",
+   "script": "legacy",
+   "mode": "graceful",
+   "head1_delay_s": 10,
+   "nodes_mounted": 10,
+   "nodes_total": 10,
+   "fatal_retries_total": 0,
+   "head1_os_up_s": 248,
+   "other_nodes_os_up_s_range": [
+    94,
+    143
+   ],
+   "mgs_wait_s_max": 157,
+   "mgs_wait_s_min": 102,
+   "all_units_complete_s": 310,
+   "pool_fully_visible_after_mounted_s": null,
+   "lfs_df_after": {
+    "result": "HEALTHY",
+    "osts": 16,
+    "mdts": 2
+   },
+   "integrity": null,
+   "log": "stability/logs/coldboot_20261001T160755.log",
+   "per_node": [
+    {
+     "node": "Rocky-Head-1",
+     "os_up_s": 248,
+     "unit_begin_s": 266,
+     "mgs_wait_s": null,
+     "unit_complete_s": 299,
+     "fatal_retries": 0
+    },
+    {
+     "node": "Rocky-Head-2",
+     "os_up_s": 94,
+     "unit_begin_s": 110,
+     "mgs_wait_s": 157,
+     "unit_complete_s": 304,
+     "fatal_retries": 0
+    },
+    {
+     "node": "Rocky-Compute-1",
+     "os_up_s": 102,
+     "unit_begin_s": 122,
+     "mgs_wait_s": 145,
+     "unit_complete_s": 307,
+     "fatal_retries": 0
+    },
+    {
+     "node": "Rocky-Compute-2",
+     "os_up_s": 105,
+     "unit_begin_s": 121,
+     "mgs_wait_s": 146,
+     "unit_complete_s": 307,
+     "fatal_retries": 0
+    },
+    {
+     "node": "Rocky-Compute-3",
+     "os_up_s": 112,
+     "unit_begin_s": 132,
+     "mgs_wait_s": 136,
+     "unit_complete_s": 306,
+     "fatal_retries": 0
+    },
+    {
+     "node": "Rocky-Compute-4",
+     "os_up_s": 118,
+     "unit_begin_s": 133,
+     "mgs_wait_s": 133,
+     "unit_complete_s": 304,
+     "fatal_retries": 0
+    },
+    {
+     "node": "Rocky-Compute-5",
+     "os_up_s": 128,
+     "unit_begin_s": 144,
+     "mgs_wait_s": 122,
+     "unit_complete_s": 306,
+     "fatal_retries": 0
+    },
+    {
+     "node": "Rocky-Compute-6",
+     "os_up_s": 129,
+     "unit_begin_s": 148,
+     "mgs_wait_s": 119,
+     "unit_complete_s": 307,
+     "fatal_retries": 0
+    },
+    {
+     "node": "Rocky-Compute-7",
+     "os_up_s": 139,
+     "unit_begin_s": 154,
+     "mgs_wait_s": 112,
+     "unit_complete_s": 308,
+     "fatal_retries": 0
+    },
+    {
+     "node": "Rocky-Compute-8",
+     "os_up_s": 143,
+     "unit_begin_s": 163,
+     "mgs_wait_s": 102,
+     "unit_complete_s": 310,
+     "fatal_retries": 0
+    }
+   ]
+  },
+  {
+   "date": "2026-10-01T16:15:20",
+   "script": "legacy",
+   "mode": "graceful",
+   "head1_delay_s": 10,
+   "nodes_mounted": 10,
+   "nodes_total": 10,
+   "fatal_retries_total": 0,
+   "head1_os_up_s": 248,
+   "other_nodes_os_up_s_range": [
+    95,
+    140
+   ],
+   "mgs_wait_s_max": 156,
+   "mgs_wait_s_min": 106,
+   "all_units_complete_s": 278,
+   "pool_fully_visible_after_mounted_s": null,
+   "lfs_df_after": {
+    "result": "HEALTHY",
+    "osts": 16,
+    "mdts": 2
+   },
+   "integrity": null,
+   "log": "stability/logs/coldboot_20261001T160755.log",
+   "per_node": [
+    {
+     "node": "Rocky-Head-1",
+     "os_up_s": 248,
+     "unit_begin_s": 266,
+     "mgs_wait_s": null,
+     "unit_complete_s": 273,
+     "fatal_retries": 0
+    },
+    {
+     "node": "Rocky-Head-2",
+     "os_up_s": 95,
+     "unit_begin_s": 111,
+     "mgs_wait_s": 156,
+     "unit_complete_s": 278,
+     "fatal_retries": 0
+    },
+    {
+     "node": "Rocky-Compute-1",
+     "os_up_s": 104,
+     "unit_begin_s": 120,
+     "mgs_wait_s": 148,
+     "unit_complete_s": 278,
+     "fatal_retries": 0
+    },
+    {
+     "node": "Rocky-Compute-2",
+     "os_up_s": 107,
+     "unit_begin_s": 123,
+     "mgs_wait_s": 145,
+     "unit_complete_s": 278,
+     "fatal_retries": 0
+    },
+    {
+     "node": "Rocky-Compute-3",
+     "os_up_s": 115,
+     "unit_begin_s": 130,
+     "mgs_wait_s": 136,
+     "unit_complete_s": 278,
+     "fatal_retries": 0
+    },
+    {
+     "node": "Rocky-Compute-4",
+     "os_up_s": 119,
+     "unit_begin_s": 134,
+     "mgs_wait_s": 133,
+     "unit_complete_s": 277,
+     "fatal_retries": 0
+    },
+    {
+     "node": "Rocky-Compute-5",
+     "os_up_s": 125,
+     "unit_begin_s": 141,
+     "mgs_wait_s": 125,
+     "unit_complete_s": 277,
+     "fatal_retries": 0
+    },
+    {
+     "node": "Rocky-Compute-6",
+     "os_up_s": 129,
+     "unit_begin_s": 144,
+     "mgs_wait_s": 122,
+     "unit_complete_s": 277,
+     "fatal_retries": 0
+    },
+    {
+     "node": "Rocky-Compute-7",
+     "os_up_s": 134,
+     "unit_begin_s": 150,
+     "mgs_wait_s": 117,
+     "unit_complete_s": 277,
+     "fatal_retries": 0
+    },
+    {
+     "node": "Rocky-Compute-8",
+     "os_up_s": 140,
+     "unit_begin_s": 160,
+     "mgs_wait_s": 106,
+     "unit_complete_s": 277,
+     "fatal_retries": 0
+    }
+   ]
+  },
+  {
+   "date": "2026-10-01T16:38:17",
+   "script": "fixed",
+   "mode": "graceful",
+   "head1_delay_s": 10,
+   "nodes_mounted": 10,
+   "nodes_total": 10,
+   "fatal_retries_total": 0,
+   "head1_os_up_s": 241,
+   "other_nodes_os_up_s_range": [
+    94,
+    136
+   ],
+   "mgs_wait_s_max": 148,
+   "mgs_wait_s_min": 106,
+   "all_units_complete_s": 300,
+   "pool_fully_visible_after_mounted_s": null,
+   "lfs_df_after": {
+    "result": "HEALTHY",
+    "osts": 16,
+    "mdts": 2
+   },
+   "integrity": null,
+   "log": "stability/logs/coldboot_20261001T163817.log",
+   "per_node": [
+    {
+     "node": "Rocky-Head-1",
+     "os_up_s": 241,
+     "unit_begin_s": 258,
+     "mgs_wait_s": null,
+     "unit_complete_s": 291,
+     "fatal_retries": 0
+    },
+    {
+     "node": "Rocky-Head-2",
+     "os_up_s": 94,
+     "unit_begin_s": 110,
+     "mgs_wait_s": 148,
+     "unit_complete_s": 295,
+     "fatal_retries": 0
+    },
+    {
+     "node": "Rocky-Compute-1",
+     "os_up_s": 102,
+     "unit_begin_s": 118,
+     "mgs_wait_s": 142,
+     "unit_complete_s": 293,
+     "fatal_retries": 0
+    },
+    {
+     "node": "Rocky-Compute-2",
+     "os_up_s": 105,
+     "unit_begin_s": 120,
+     "mgs_wait_s": 140,
+     "unit_complete_s": 295,
+     "fatal_retries": 0
+    },
+    {
+     "node": "Rocky-Compute-3",
+     "os_up_s": 110,
+     "unit_begin_s": 125,
+     "mgs_wait_s": 134,
+     "unit_complete_s": 296,
+     "fatal_retries": 0
+    },
+    {
+     "node": "Rocky-Compute-4",
+     "os_up_s": 114,
+     "unit_begin_s": 130,
+     "mgs_wait_s": 128,
+     "unit_complete_s": 296,
+     "fatal_retries": 0
+    },
+    {
+     "node": "Rocky-Compute-5",
+     "os_up_s": 122,
+     "unit_begin_s": 138,
+     "mgs_wait_s": 121,
+     "unit_complete_s": 300,
+     "fatal_retries": 0
+    },
+    {
+     "node": "Rocky-Compute-6",
+     "os_up_s": 125,
+     "unit_begin_s": 145,
+     "mgs_wait_s": 114,
+     "unit_complete_s": 295,
+     "fatal_retries": 0
+    },
+    {
+     "node": "Rocky-Compute-7",
+     "os_up_s": 129,
+     "unit_begin_s": 145,
+     "mgs_wait_s": 114,
+     "unit_complete_s": 299,
+     "fatal_retries": 0
+    },
+    {
+     "node": "Rocky-Compute-8",
+     "os_up_s": 136,
+     "unit_begin_s": 152,
+     "mgs_wait_s": 106,
+     "unit_complete_s": 294,
+     "fatal_retries": 0
+    }
+   ]
+  },
+  {
+   "date": "2026-10-01T16:45:59",
+   "script": "fixed",
+   "mode": "graceful",
+   "head1_delay_s": 10,
+   "nodes_mounted": 10,
+   "nodes_total": 10,
+   "fatal_retries_total": 0,
+   "head1_os_up_s": 248,
+   "other_nodes_os_up_s_range": [
+    93,
+    139
+   ],
+   "mgs_wait_s_max": 158,
+   "mgs_wait_s_min": 111,
+   "all_units_complete_s": 281,
+   "pool_fully_visible_after_mounted_s": null,
+   "lfs_df_after": {
+    "result": "HEALTHY",
+    "osts": 16,
+    "mdts": 2
+   },
+   "integrity": null,
+   "log": "stability/logs/coldboot_20261001T163817.log",
+   "per_node": [
+    {
+     "node": "Rocky-Head-1",
+     "os_up_s": 248,
+     "unit_begin_s": 266,
+     "mgs_wait_s": null,
+     "unit_complete_s": 273,
+     "fatal_retries": 0
+    },
+    {
+     "node": "Rocky-Head-2",
+     "os_up_s": 93,
+     "unit_begin_s": 110,
+     "mgs_wait_s": 158,
+     "unit_complete_s": 281,
+     "fatal_retries": 0
+    },
+    {
+     "node": "Rocky-Compute-1",
+     "os_up_s": 101,
+     "unit_begin_s": 118,
+     "mgs_wait_s": 149,
+     "unit_complete_s": 278,
+     "fatal_retries": 0
+    },
+    {
+     "node": "Rocky-Compute-2",
+     "os_up_s": 105,
+     "unit_begin_s": 121,
+     "mgs_wait_s": 145,
+     "unit_complete_s": 277,
+     "fatal_retries": 0
+    },
+    {
+     "node": "Rocky-Compute-3",
+     "os_up_s": 112,
+     "unit_begin_s": 128,
+     "mgs_wait_s": 139,
+     "unit_complete_s": 277,
+     "fatal_retries": 0
+    },
+    {
+     "node": "Rocky-Compute-4",
+     "os_up_s": 117,
+     "unit_begin_s": 132,
+     "mgs_wait_s": 135,
+     "unit_complete_s": 276,
+     "fatal_retries": 0
+    },
+    {
+     "node": "Rocky-Compute-5",
+     "os_up_s": 125,
+     "unit_begin_s": 144,
+     "mgs_wait_s": 122,
+     "unit_complete_s": 277,
+     "fatal_retries": 0
+    },
+    {
+     "node": "Rocky-Compute-6",
+     "os_up_s": 129,
+     "unit_begin_s": 145,
+     "mgs_wait_s": 123,
+     "unit_complete_s": 277,
+     "fatal_retries": 0
+    },
+    {
+     "node": "Rocky-Compute-7",
+     "os_up_s": 135,
+     "unit_begin_s": 154,
+     "mgs_wait_s": 113,
+     "unit_complete_s": 278,
+     "fatal_retries": 0
+    },
+    {
+     "node": "Rocky-Compute-8",
+     "os_up_s": 139,
+     "unit_begin_s": 155,
+     "mgs_wait_s": 111,
+     "unit_complete_s": 277,
+     "fatal_retries": 0
+    }
+   ]
+  },
+  {
+   "date": "2026-10-01T16:53:37",
+   "script": "fixed",
+   "mode": "graceful",
+   "head1_delay_s": 10,
+   "nodes_mounted": 10,
+   "nodes_total": 10,
+   "fatal_retries_total": 0,
+   "head1_os_up_s": 247,
+   "other_nodes_os_up_s_range": [
+    93,
+    138
+   ],
+   "mgs_wait_s_max": 156,
+   "mgs_wait_s_min": 107,
+   "all_units_complete_s": 307,
+   "pool_fully_visible_after_mounted_s": null,
+   "lfs_df_after": {
+    "result": "HEALTHY",
+    "osts": 16,
+    "mdts": 2
+   },
+   "integrity": null,
+   "log": "stability/logs/coldboot_20261001T163817.log",
+   "per_node": [
+    {
+     "node": "Rocky-Head-1",
+     "os_up_s": 247,
+     "unit_begin_s": 265,
+     "mgs_wait_s": null,
+     "unit_complete_s": 298,
+     "fatal_retries": 0
+    },
+    {
+     "node": "Rocky-Head-2",
+     "os_up_s": 93,
+     "unit_begin_s": 109,
+     "mgs_wait_s": 156,
+     "unit_complete_s": 303,
+     "fatal_retries": 0
+    },
+    {
+     "node": "Rocky-Compute-1",
+     "os_up_s": 102,
+     "unit_begin_s": 118,
+     "mgs_wait_s": 148,
+     "unit_complete_s": 300,
+     "fatal_retries": 0
+    },
+    {
+     "node": "Rocky-Compute-2",
+     "os_up_s": 104,
+     "unit_begin_s": 124,
+     "mgs_wait_s": 142,
+     "unit_complete_s": 298,
+     "fatal_retries": 0
+    },
+    {
+     "node": "Rocky-Compute-3",
+     "os_up_s": 111,
+     "unit_begin_s": 127,
+     "mgs_wait_s": 139,
+     "unit_complete_s": 300,
+     "fatal_retries": 0
+    },
+    {
+     "node": "Rocky-Compute-4",
+     "os_up_s": 116,
+     "unit_begin_s": 131,
+     "mgs_wait_s": 134,
+     "unit_complete_s": 300,
+     "fatal_retries": 0
+    },
+    {
+     "node": "Rocky-Compute-5",
+     "os_up_s": 123,
+     "unit_begin_s": 138,
+     "mgs_wait_s": 128,
+     "unit_complete_s": 299,
+     "fatal_retries": 0
+    },
+    {
+     "node": "Rocky-Compute-6",
+     "os_up_s": 128,
+     "unit_begin_s": 144,
+     "mgs_wait_s": 122,
+     "unit_complete_s": 307,
+     "fatal_retries": 0
+    },
+    {
+     "node": "Rocky-Compute-7",
+     "os_up_s": 134,
+     "unit_begin_s": 150,
+     "mgs_wait_s": 116,
+     "unit_complete_s": 300,
+     "fatal_retries": 0
+    },
+    {
+     "node": "Rocky-Compute-8",
+     "os_up_s": 138,
+     "unit_begin_s": 158,
+     "mgs_wait_s": 107,
+     "unit_complete_s": 299,
+     "fatal_retries": 0
+    }
+   ]
+  },
+  {
+   "date": "2026-10-01T17:01:39",
+   "script": "fixed",
+   "mode": "graceful",
+   "head1_delay_s": 240,
+   "nodes_mounted": 10,
+   "nodes_total": 10,
+   "fatal_retries_total": 0,
+   "head1_os_up_s": 435,
+   "other_nodes_os_up_s_range": [
+    95,
+    141
+   ],
+   "mgs_wait_s_max": 344,
+   "mgs_wait_s_min": 293,
+   "all_units_complete_s": 467,
+   "pool_fully_visible_after_mounted_s": null,
+   "lfs_df_after": {
+    "result": "HEALTHY",
+    "osts": 16,
+    "mdts": 2
+   },
+   "integrity": null,
+   "log": "stability/logs/coldboot_20261001T170138.log",
+   "per_node": [
+    {
+     "node": "Rocky-Head-1",
+     "os_up_s": 435,
+     "unit_begin_s": 452,
+     "mgs_wait_s": null,
+     "unit_complete_s": 459,
+     "fatal_retries": 0
+    },
+    {
+     "node": "Rocky-Head-2",
+     "os_up_s": 95,
+     "unit_begin_s": 110,
+     "mgs_wait_s": 344,
+     "unit_complete_s": 467,
+     "fatal_retries": 0
+    },
+    {
+     "node": "Rocky-Compute-1",
+     "os_up_s": 103,
+     "unit_begin_s": 122,
+     "mgs_wait_s": 331,
+     "unit_complete_s": 464,
+     "fatal_retries": 0
+    },
+    {
+     "node": "Rocky-Compute-2",
+     "os_up_s": 106,
+     "unit_begin_s": 121,
+     "mgs_wait_s": 333,
+     "unit_complete_s": 464,
+     "fatal_retries": 0
+    },
+    {
+     "node": "Rocky-Compute-3",
+     "os_up_s": 110,
+     "unit_begin_s": 126,
+     "mgs_wait_s": 328,
+     "unit_complete_s": 464,
+     "fatal_retries": 0
+    },
+    {
+     "node": "Rocky-Compute-4",
+     "os_up_s": 116,
+     "unit_begin_s": 132,
+     "mgs_wait_s": 322,
+     "unit_complete_s": 464,
+     "fatal_retries": 0
+    },
+    {
+     "node": "Rocky-Compute-5",
+     "os_up_s": 126,
+     "unit_begin_s": 142,
+     "mgs_wait_s": 311,
+     "unit_complete_s": 465,
+     "fatal_retries": 0
+    },
+    {
+     "node": "Rocky-Compute-6",
+     "os_up_s": 130,
+     "unit_begin_s": 146,
+     "mgs_wait_s": 307,
+     "unit_complete_s": 463,
+     "fatal_retries": 0
+    },
+    {
+     "node": "Rocky-Compute-7",
+     "os_up_s": 136,
+     "unit_begin_s": 156,
+     "mgs_wait_s": 298,
+     "unit_complete_s": 464,
+     "fatal_retries": 0
+    },
+    {
+     "node": "Rocky-Compute-8",
+     "os_up_s": 141,
+     "unit_begin_s": 160,
+     "mgs_wait_s": 293,
+     "unit_complete_s": 464,
+     "fatal_retries": 0
+    }
+   ]
+  },
+  {
+   "date": "2026-10-01T17:14:36",
+   "script": "fixed",
+   "mode": "hard",
+   "head1_delay_s": 0,
+   "nodes_mounted": 10,
+   "nodes_total": 10,
+   "fatal_retries_total": 0,
+   "head1_os_up_s": 196,
+   "other_nodes_os_up_s_range": [
+    99,
+    140
+   ],
+   "mgs_wait_s_max": 101,
+   "mgs_wait_s_min": 59,
+   "all_units_complete_s": 230,
+   "pool_fully_visible_after_mounted_s": null,
+   "lfs_df_after": {
+    "result": "HEALTHY",
+    "osts": 16,
+    "mdts": 2
+   },
+   "integrity": null,
+   "log": "stability/logs/coldboot_20261001T171436.log",
+   "per_node": [
+    {
+     "node": "Rocky-Head-1",
+     "os_up_s": 196,
+     "unit_begin_s": 215,
+     "mgs_wait_s": null,
+     "unit_complete_s": 222,
+     "fatal_retries": 0
+    },
+    {
+     "node": "Rocky-Head-2",
+     "os_up_s": 99,
+     "unit_begin_s": 115,
+     "mgs_wait_s": 101,
+     "unit_complete_s": 228,
+     "fatal_retries": 0
+    },
+    {
+     "node": "Rocky-Compute-1",
+     "os_up_s": 107,
+     "unit_begin_s": 123,
+     "mgs_wait_s": 93,
+     "unit_complete_s": 227,
+     "fatal_retries": 0
+    },
+    {
+     "node": "Rocky-Compute-2",
+     "os_up_s": 111,
+     "unit_begin_s": 126,
+     "mgs_wait_s": 90,
+     "unit_complete_s": 227,
+     "fatal_retries": 0
+    },
+    {
+     "node": "Rocky-Compute-3",
+     "os_up_s": 115,
+     "unit_begin_s": 134,
+     "mgs_wait_s": 82,
+     "unit_complete_s": 227,
+     "fatal_retries": 0
+    },
+    {
+     "node": "Rocky-Compute-4",
+     "os_up_s": 119,
+     "unit_begin_s": 135,
+     "mgs_wait_s": 81,
+     "unit_complete_s": 227,
+     "fatal_retries": 0
+    },
+    {
+     "node": "Rocky-Compute-5",
+     "os_up_s": 129,
+     "unit_begin_s": 145,
+     "mgs_wait_s": 70,
+     "unit_complete_s": 230,
+     "fatal_retries": 0
+    },
+    {
+     "node": "Rocky-Compute-6",
+     "os_up_s": 131,
+     "unit_begin_s": 147,
+     "mgs_wait_s": 69,
+     "unit_complete_s": 228,
+     "fatal_retries": 0
+    },
+    {
+     "node": "Rocky-Compute-7",
+     "os_up_s": 136,
+     "unit_begin_s": 157,
+     "mgs_wait_s": 59,
+     "unit_complete_s": 227,
+     "fatal_retries": 0
+    },
+    {
+     "node": "Rocky-Compute-8",
+     "os_up_s": 140,
+     "unit_begin_s": 156,
+     "mgs_wait_s": 59,
+     "unit_complete_s": 228,
+     "fatal_retries": 0
+    }
+   ]
+  },
+  {
+   "date": "2026-10-01T17:20:44",
+   "script": "fixed",
+   "mode": "hard",
+   "head1_delay_s": 0,
+   "nodes_mounted": 10,
+   "nodes_total": 10,
+   "fatal_retries_total": 0,
+   "head1_os_up_s": 199,
+   "other_nodes_os_up_s_range": [
+    105,
+    151
+   ],
+   "mgs_wait_s_max": 97,
+   "mgs_wait_s_min": 50,
+   "all_units_complete_s": 230,
+   "pool_fully_visible_after_mounted_s": null,
+   "lfs_df_after": {
+    "result": "PROBLEMS",
+    "osts": 14,
+    "mdts": 2
+   },
+   "integrity": null,
+   "log": "stability/logs/coldboot_20261001T171436.log",
+   "per_node": [
+    {
+     "node": "Rocky-Head-1",
+     "os_up_s": 199,
+     "unit_begin_s": 216,
+     "mgs_wait_s": null,
+     "unit_complete_s": 223,
+     "fatal_retries": 0
+    },
+    {
+     "node": "Rocky-Head-2",
+     "os_up_s": 105,
+     "unit_begin_s": 120,
+     "mgs_wait_s": 97,
+     "unit_complete_s": 229,
+     "fatal_retries": 0
+    },
+    {
+     "node": "Rocky-Compute-1",
+     "os_up_s": 113,
+     "unit_begin_s": 129,
+     "mgs_wait_s": 89,
+     "unit_complete_s": 228,
+     "fatal_retries": 0
+    },
+    {
+     "node": "Rocky-Compute-2",
+     "os_up_s": 118,
+     "unit_begin_s": 137,
+     "mgs_wait_s": 81,
+     "unit_complete_s": 230,
+     "fatal_retries": 0
+    },
+    {
+     "node": "Rocky-Compute-3",
+     "os_up_s": 123,
+     "unit_begin_s": 139,
+     "mgs_wait_s": 79,
+     "unit_complete_s": 228,
+     "fatal_retries": 0
+    },
+    {
+     "node": "Rocky-Compute-4",
+     "os_up_s": 129,
+     "unit_begin_s": 149,
+     "mgs_wait_s": 69,
+     "unit_complete_s": 227,
+     "fatal_retries": 0
+    },
+    {
+     "node": "Rocky-Compute-5",
+     "os_up_s": 132,
+     "unit_begin_s": 147,
+     "mgs_wait_s": 69,
+     "unit_complete_s": 229,
+     "fatal_retries": 0
+    },
+    {
+     "node": "Rocky-Compute-6",
+     "os_up_s": 141,
+     "unit_begin_s": 157,
+     "mgs_wait_s": 60,
+     "unit_complete_s": 228,
+     "fatal_retries": 0
+    },
+    {
+     "node": "Rocky-Compute-7",
+     "os_up_s": 142,
+     "unit_begin_s": 157,
+     "mgs_wait_s": 60,
+     "unit_complete_s": 229,
+     "fatal_retries": 0
+    },
+    {
+     "node": "Rocky-Compute-8",
+     "os_up_s": 151,
+     "unit_begin_s": 166,
+     "mgs_wait_s": 50,
+     "unit_complete_s": 227,
+     "fatal_retries": 0
+    }
+   ]
+  },
+  {
+   "date": "2026-10-01T17:31:57",
+   "script": "fixed",
+   "mode": "hard",
+   "head1_delay_s": 0,
+   "nodes_mounted": 10,
+   "nodes_total": 10,
+   "fatal_retries_total": 0,
+   "head1_os_up_s": 195,
+   "other_nodes_os_up_s_range": [
+    99,
+    144
+   ],
+   "mgs_wait_s_max": 103,
+   "mgs_wait_s_min": 56,
+   "all_units_complete_s": 231,
+   "pool_fully_visible_after_mounted_s": 292,
+   "lfs_df_after": {
+    "result": "HEALTHY",
+    "osts": 16,
+    "mdts": 2
+   },
+   "integrity": {
+    "files_ok": 40,
+    "files_bad": 0,
+    "files_unreadable": 0,
+    "verify_seconds": 69
+   },
+   "log": "stability/logs/coldboot_20261001T173157.log",
+   "per_node": [
+    {
+     "node": "Rocky-Head-1",
+     "os_up_s": 195,
+     "unit_begin_s": 216,
+     "mgs_wait_s": null,
+     "unit_complete_s": 223,
+     "fatal_retries": 0
+    },
+    {
+     "node": "Rocky-Head-2",
+     "os_up_s": 99,
+     "unit_begin_s": 116,
+     "mgs_wait_s": 103,
+     "unit_complete_s": 230,
+     "fatal_retries": 0
+    },
+    {
+     "node": "Rocky-Compute-1",
+     "os_up_s": 107,
+     "unit_begin_s": 124,
+     "mgs_wait_s": 94,
+     "unit_complete_s": 227,
+     "fatal_retries": 0
+    },
+    {
+     "node": "Rocky-Compute-2",
+     "os_up_s": 111,
+     "unit_begin_s": 127,
+     "mgs_wait_s": 91,
+     "unit_complete_s": 229,
+     "fatal_retries": 0
+    },
+    {
+     "node": "Rocky-Compute-3",
+     "os_up_s": 118,
+     "unit_begin_s": 134,
+     "mgs_wait_s": 85,
+     "unit_complete_s": 229,
+     "fatal_retries": 0
+    },
+    {
+     "node": "Rocky-Compute-4",
+     "os_up_s": 123,
+     "unit_begin_s": 143,
+     "mgs_wait_s": 75,
+     "unit_complete_s": 228,
+     "fatal_retries": 0
+    },
+    {
+     "node": "Rocky-Compute-5",
+     "os_up_s": 131,
+     "unit_begin_s": 147,
+     "mgs_wait_s": 71,
+     "unit_complete_s": 229,
+     "fatal_retries": 0
+    },
+    {
+     "node": "Rocky-Compute-6",
+     "os_up_s": 138,
+     "unit_begin_s": 158,
+     "mgs_wait_s": 59,
+     "unit_complete_s": 231,
+     "fatal_retries": 0
+    },
+    {
+     "node": "Rocky-Compute-7",
+     "os_up_s": 143,
+     "unit_begin_s": 162,
+     "mgs_wait_s": 56,
+     "unit_complete_s": 228,
+     "fatal_retries": 0
+    },
+    {
+     "node": "Rocky-Compute-8",
+     "os_up_s": 144,
+     "unit_begin_s": 159,
+     "mgs_wait_s": 58,
+     "unit_complete_s": 230,
+     "fatal_retries": 0
+    }
+   ]
+  },
+  {
+   "date": "2026-10-01T17:45:20",
+   "script": "fixed",
+   "mode": "hard",
+   "head1_delay_s": 0,
+   "nodes_mounted": 10,
+   "nodes_total": 10,
+   "fatal_retries_total": 0,
+   "head1_os_up_s": 193,
+   "other_nodes_os_up_s_range": [
+    99,
+    145
+   ],
+   "mgs_wait_s_max": 101,
+   "mgs_wait_s_min": 50,
+   "all_units_complete_s": 254,
+   "pool_fully_visible_after_mounted_s": 275,
+   "lfs_df_after": {
+    "result": "HEALTHY",
+    "osts": 16,
+    "mdts": 2
+   },
+   "integrity": {
+    "files_ok": 40,
+    "files_bad": 0,
+    "files_unreadable": 0,
+    "verify_seconds": 63
+   },
+   "log": "stability/logs/coldboot_20261001T173157.log",
+   "per_node": [
+    {
+     "node": "Rocky-Head-1",
+     "os_up_s": 193,
+     "unit_begin_s": 215,
+     "mgs_wait_s": null,
+     "unit_complete_s": 254,
+     "fatal_retries": 0
+    },
+    {
+     "node": "Rocky-Head-2",
+     "os_up_s": 99,
+     "unit_begin_s": 115,
+     "mgs_wait_s": 101,
+     "unit_complete_s": 235,
+     "fatal_retries": 0
+    },
+    {
+     "node": "Rocky-Compute-1",
+     "os_up_s": 107,
+     "unit_begin_s": 127,
+     "mgs_wait_s": 89,
+     "unit_complete_s": 240,
+     "fatal_retries": 0
+    },
+    {
+     "node": "Rocky-Compute-2",
+     "os_up_s": 114,
+     "unit_begin_s": 130,
+     "mgs_wait_s": 86,
+     "unit_complete_s": 238,
+     "fatal_retries": 0
+    },
+    {
+     "node": "Rocky-Compute-3",
+     "os_up_s": 115,
+     "unit_begin_s": 130,
+     "mgs_wait_s": 85,
+     "unit_complete_s": 247,
+     "fatal_retries": 0
+    },
+    {
+     "node": "Rocky-Compute-4",
+     "os_up_s": 119,
+     "unit_begin_s": 139,
+     "mgs_wait_s": 76,
+     "unit_complete_s": 250,
+     "fatal_retries": 0
+    },
+    {
+     "node": "Rocky-Compute-5",
+     "os_up_s": 127,
+     "unit_begin_s": 143,
+     "mgs_wait_s": 72,
+     "unit_complete_s": 248,
+     "fatal_retries": 0
+    },
+    {
+     "node": "Rocky-Compute-6",
+     "os_up_s": 134,
+     "unit_begin_s": 150,
+     "mgs_wait_s": 64,
+     "unit_complete_s": 249,
+     "fatal_retries": 0
+    },
+    {
+     "node": "Rocky-Compute-7",
+     "os_up_s": 134,
+     "unit_begin_s": 150,
+     "mgs_wait_s": 65,
+     "unit_complete_s": 235,
+     "fatal_retries": 0
+    },
+    {
+     "node": "Rocky-Compute-8",
+     "os_up_s": 145,
+     "unit_begin_s": 165,
+     "mgs_wait_s": 50,
+     "unit_complete_s": 249,
+     "fatal_retries": 0
+    }
+   ]
+  }
+ ],
+ "findings": [
+  {
+   "id": "F1",
+   "title": "Legacy startup script times out early",
+   "result": "MGS wait limit is about 145-170 s instead of 300 s because the loop counts iterations, not seconds; the same bug made the LNET wait about 11 s instead of 60 s.",
+   "evidence": "13:14 cold start (8/10 failed), legacy run 3 (Compute-2 FATAL after 145 s)"
+  },
+  {
+   "id": "F2",
+   "title": "Head-1 (MGS) is always the last node up",
+   "result": "Head-1 reaches the OS about 190 s after its own power-on versus about 90 s for the other blades; every cold start depends on this gap.",
+   "evidence": "head1_os_up_s 193-248 across all runs"
+  },
+  {
+   "id": "F3",
+   "title": "Fix verified",
+   "result": "With wall-clock deadlines the computes waited up to 344 s for the MGS (Head-1 held 240 s) and all 10 nodes mounted with 0 fatal retries; the legacy script would have failed at about 145 s.",
+   "evidence": "fixed run with head1_delay_s=240"
+  },
+  {
+   "id": "F4",
+   "title": "Data integrity across unclean power-off",
+   "result": "40 of 40 files (256 MB each, written with direct I/O) sha256-identical after each of 2 hard power-offs of all 10 nodes.",
+   "evidence": "integrity runs 17:31 and 17:45"
+  },
+  {
+   "id": "F5",
+   "title": "OST recovery window after unclean stop",
+   "result": "After a hard stop of all nodes only 2 of 16 OSTs were visible for another 275-292 s after all nodes reported mounted (OST recovery window 5:00; MDT mounted with abort_recov reconnects as a new client and is denied). After a graceful shutdown the pool was complete immediately. Accepted, not changed: production shutdowns are scheduled.",
+   "evidence": "pool_fully_visible_after_mounted_s 275 and 292"
+  },
+  {
+   "id": "F6",
+   "title": "Kernel update would break the boot",
+   "result": "dnf update installed the Rocky 9.8 kernel on Compute-2 and UPDATEDEFAULT=yes made it the boot default; the node came up without Lustre modules. Fixed with kernel* excluded in the update playbook and UPDATEDEFAULT=no on all nodes.",
+   "evidence": "thesis notes/15"
+  }
+ ],
+ "tests_planned": [
+  {
+   "test": "node loss under mirrored write load (compute x2, Head-2, Head-1)",
+   "requirement": "R5",
+   "status": "not run"
+  },
+  {
+   "test": "rolling reboots with live clients (4 loops)",
+   "requirement": "R4",
+   "status": "not run"
+  },
+  {
+   "test": "retry path, Head-1 held 600 s",
+   "requirement": "R4",
+   "status": "not run"
+  },
+  {
+   "test": "soak 24 h, mixed fio, error counters",
+   "requirement": "R4",
+   "status": "not run"
+  },
+  {
+   "test": "cache-bypassed fio matrix, repeated, 1/2/4/8 clients",
+   "requirement": "R3",
+   "status": "not run"
+  },
+  {
+   "test": "VM layer: live migration, node loss with VMs",
+   "requirement": "R8",
+   "status": "blocked (no KVM hosts yet)"
+  }
+ ]
+}

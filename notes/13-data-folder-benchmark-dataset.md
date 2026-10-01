@@ -43,3 +43,7 @@ Location: `~/Projects/thesis/data/` (Bun project, created around 2026-09-08 per 
 - Keep one chart per requirement in note 12 (R3 speed, R5 redundancy) rather than one flat bar chart.
 
 I did not modify anything in `data/`.
+
+## Update 2026-10-01: stability data added
+
+New file `data/stability_data.json` (separate from `benchmark_data.json`, charts untouched) with the cold-boot runs of 2026-10-01 (legacy vs fixed `lustre-startup`, graceful and hard power-off, integrity 40/40), six findings (F1-F6) and the list of planned-but-not-run tests. Raw CSVs and logs in `data/stability/`. Narrative in note 15, test plan in note 14 and `data/stability/NEXT.md`. Node-loss, rolling-reboot, soak and cache-bypass benchmark data do not exist yet (status "not run").

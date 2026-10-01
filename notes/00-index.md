@@ -24,6 +24,7 @@ Hardware constant across the whole story: 2 head nodes + 8 compute nodes (Superm
 | 11 | reference | Benchmark summary, hardware, verdict matrix | |
 | 13 | dataset | `data/` folder: benchmark JSON + charts, problems to fix | Needs March 2026 Lustre data |
 | 12 | requirements | Cluster shape, constraints, goal R1-R10, candidate scoring | Base for thesis |
+| 14 | test plan | What to run to make the data and the system "stable" |
 
 ## Filesystem verdicts (final)
 

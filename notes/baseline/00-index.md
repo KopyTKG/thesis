@@ -16,6 +16,9 @@ Source: `dump/Mellanox_SB7790/kapitoly/hledani.tex` (Overleaf paper, 2025-03-05)
 | 10 | [CentOS Stream 10 + MLNX_OFED (last LTS)](10-centos-10-mlnx-ofed.md) | SUCCESS |
 | 11 | [Windows Server 2025 + MLNX_WinOF2](11-windows-server-2025.md) | Fail |
 | 12 | [Harvester (SUSE Linux)](12-harvester-suse.md) | Fail |
+| 13 | [Windows 10 + server drivers](13-windows-10.md) | Fail (not in paper) |
+| 14 | [Fedora (control run)](14-fedora.md) | Success, not in paper |
+| 15 | [NetBSD](15-netbsd.md) | Fail (not in paper) |
 
 Other files:
 - [results-table](results-table.md)
