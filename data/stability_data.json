@@ -1,18 +1,19 @@
 {
  "metadata": {
-  "description": "Stability tests of the Lustre 2.17.0 cluster (RDMA/o2ib, FLR), performed 2026-10-01 after the cluster had been powered off for about 3 months. Source of truth: UJEP-LAB/benchmarks/stability (CSVs, logs), tooling UJEP-LAB/tools/stability.py.",
+  "description": "Stability tests of the Lustre 2.17.0 cluster (RDMA/o2ib, FLR), 2026-10-01 and 2026-10-08. Source of truth: UJEP-LAB/benchmarks/stability; tooling UJEP-LAB/tools/stability.py; regenerate with tools/make_stability_data.py.",
   "cluster": "10 nodes: 2 heads (MGS+MDT0 on Head-1, MDT1 on Head-2) + 8 computes (16 OSTs)",
   "kernel": "5.14.0-611.13.1_lustre.el9.x86_64 (Rocky Linux 9.7)",
-  "units": "seconds unless noted; times relative to the first IPMI power-on command",
+  "units": "seconds unless noted; cold-boot times relative to the first IPMI power-on command",
   "scripts": {
    "legacy": "lustre-startup with iteration-counted timeouts: real MGS wait limit about 145-170 s, LNET wait about 11 s, no retry",
-   "fixed": "lustre-startup with $SECONDS wall-clock deadlines (MGS 600 s, LNET 120 s) and Restart=on-failure (deployed between the 16:15 and 16:38 runs)"
+   "fixed": "lustre-startup with $SECONDS deadlines (MGS 600 s, LNET 120 s) and Restart=on-failure"
   },
   "caveats": [
-   "Cold boots were done as a small number of runs (4 graceful with the fixed script, 1 at 240 s Head-1 delay); not statistics.",
+   "Small number of runs per condition; not statistics.",
    "Per-node times use node clocks corrected against the controller (+-1-2 s).",
-   "Restart=on-failure retry path was not exercised (skipped, 600 s Head-1 delay test).",
-   "Hard power-off results are not representative of production: the cluster runs on two power lines with two UPS each and scheduled shutdowns."
+   "Restart=on-failure retry path was not exercised.",
+   "Hard power-off cold boots are not representative of production (two power lines, 2 UPS each, scheduled shutdowns).",
+   "Node-loss and readfail runs used 256 MB dd files pinned with lfs mirror create; the hung operations are as long as the outage, which differs between runs (see per-run outage_s / t_back - t_kill)."
   ]
  },
  "cold_boot_runs": [
@@ -50,7 +51,6 @@
    "date": "2026-10-01T13:14",
    "script": "legacy",
    "mode": "power-on after ~3 months off (IPMI, all at once)",
-   "head1_delay_s": null,
    "nodes_mounted": 2,
    "nodes_total": 10,
    "result": "FAIL",
@@ -65,7 +65,7 @@
    "nodes_mounted": 9,
    "nodes_total": 10,
    "result": "FAIL (interrupted by operator, evidence from journal)",
-   "detail": "Run 3 of the legacy series: Compute-2 gave up after 145 s waiting for the MGS (legacy limit about 145-170 s) and stayed unmounted; OST0002 mounted, OST0003 missing. No retry in the legacy unit.",
+   "detail": "Run 3 of the legacy series: Compute-2 gave up after 145 s waiting for the MGS and stayed unmounted; OST0002 mounted, OST0003 missing; no retry in the legacy unit.",
    "log": "stability/logs/coldboot_20261001T160755.log"
   },
   {
@@ -1147,64 +1147,461 @@
      "fatal_retries": 0
     }
    ]
+  },
+  {
+   "date": "2026-10-08T13:54:03",
+   "script": "fixed",
+   "mode": "already-off",
+   "head1_delay_s": 0,
+   "nodes_mounted": 10,
+   "nodes_total": 10,
+   "fatal_retries_total": 0,
+   "head1_os_up_s": 190,
+   "other_nodes_os_up_s_range": [
+    100,
+    145
+   ],
+   "mgs_wait_s_max": 101,
+   "mgs_wait_s_min": 52,
+   "all_units_complete_s": 226,
+   "pool_fully_visible_after_mounted_s": 5,
+   "lfs_df_after": {
+    "result": "HEALTHY",
+    "osts": 16,
+    "mdts": 2
+   },
+   "integrity": null,
+   "log": "stability/logs/coldboot_20261008T135403.log",
+   "per_node": [
+    {
+     "node": "Rocky-Head-1",
+     "os_up_s": 190,
+     "unit_begin_s": 209,
+     "mgs_wait_s": null,
+     "unit_complete_s": 219,
+     "fatal_retries": 0
+    },
+    {
+     "node": "Rocky-Head-2",
+     "os_up_s": 100,
+     "unit_begin_s": 113,
+     "mgs_wait_s": 101,
+     "unit_complete_s": 226,
+     "fatal_retries": 0
+    },
+    {
+     "node": "Rocky-Compute-1",
+     "os_up_s": 108,
+     "unit_begin_s": 128,
+     "mgs_wait_s": 84,
+     "unit_complete_s": 226,
+     "fatal_retries": 0
+    },
+    {
+     "node": "Rocky-Compute-2",
+     "os_up_s": 111,
+     "unit_begin_s": 127,
+     "mgs_wait_s": 85,
+     "unit_complete_s": 225,
+     "fatal_retries": 0
+    },
+    {
+     "node": "Rocky-Compute-3",
+     "os_up_s": 116,
+     "unit_begin_s": 134,
+     "mgs_wait_s": 79,
+     "unit_complete_s": 225,
+     "fatal_retries": 0
+    },
+    {
+     "node": "Rocky-Compute-4",
+     "os_up_s": 122,
+     "unit_begin_s": 143,
+     "mgs_wait_s": 69,
+     "unit_complete_s": 224,
+     "fatal_retries": 0
+    },
+    {
+     "node": "Rocky-Compute-5",
+     "os_up_s": 128,
+     "unit_begin_s": 141,
+     "mgs_wait_s": 72,
+     "unit_complete_s": 223,
+     "fatal_retries": 0
+    },
+    {
+     "node": "Rocky-Compute-6",
+     "os_up_s": 133,
+     "unit_begin_s": 149,
+     "mgs_wait_s": 64,
+     "unit_complete_s": 224,
+     "fatal_retries": 0
+    },
+    {
+     "node": "Rocky-Compute-7",
+     "os_up_s": 140,
+     "unit_begin_s": 159,
+     "mgs_wait_s": 53,
+     "unit_complete_s": 226,
+     "fatal_retries": 0
+    },
+    {
+     "node": "Rocky-Compute-8",
+     "os_up_s": 145,
+     "unit_begin_s": 161,
+     "mgs_wait_s": 52,
+     "unit_complete_s": 223,
+     "fatal_retries": 0
+    }
+   ]
+  }
+ ],
+ "node_loss_runs": [
+  {
+   "victim": "Rocky-Compute-5",
+   "client": "Rocky-Compute-1",
+   "partner": "Rocky-Compute-8",
+   "files": 80,
+   "pre_s": 45,
+   "down_s": 90,
+   "verify_victim_down": "V SUMMARY ok=0 bad=0 err=11 seconds=52",
+   "recovery_to_mount_s": 137,
+   "recovery_timed_out": false,
+   "verify_after_return": "V SUMMARY ok=11 bad=0 err=0 seconds=18",
+   "resync": [
+    "R RESYNC stale=12 resynced=12 failed=0 seconds=16",
+    "R MIRRORVERIFY ok=11 mismatch=0 seconds=19"
+   ],
+   "verify_after_resync": "V SUMMARY ok=11 bad=0 err=0 seconds=17",
+   "io": {
+    "files_written_ok": 11,
+    "files_write_failed": 1,
+    "median_file_s_before_loss": 1.980942726135254,
+    "longest_gap_between_completions_s": 946.0,
+    "longest_gap_started_after_kill_s": -4.1,
+    "files_slow_after_loss": 0,
+    "slowest_file_s": 946.0,
+    "probe_total": 53,
+    "probe_failed": 1,
+    "probe_max_latency_s": 936.5,
+    "probe_median_latency_s": 0.006,
+    "t_kill": 1791460777.8130546,
+    "t_back": 1791461736.6186805
+   },
+   "file": "stability/nodeloss_20261008T135833.json",
+   "interpretation": "Mirrors were never resynced before the loss: reads with the node down failed (ok=0, err=11), resync found stale=12 (every written file); the in-flight write and a new-file create each blocked until the node returned (about 950 s). No data lost."
+  },
+  {
+   "victim": "Rocky-Head-2",
+   "client": "Rocky-Compute-1",
+   "partner": null,
+   "files": 80,
+   "pre_s": 45,
+   "down_s": 90,
+   "recovery_to_mount_s": 114,
+   "recovery_timed_out": false,
+   "verify_after_return": "V SUMMARY ok=25 bad=0 err=0 seconds=40",
+   "io": {
+    "files_written_ok": 25,
+    "files_write_failed": 1,
+    "median_file_s_before_loss": 1.6405432224273682,
+    "longest_gap_between_completions_s": 240.0,
+    "longest_gap_started_after_kill_s": 1.9,
+    "files_slow_after_loss": 0,
+    "slowest_file_s": 240.0,
+    "probe_total": 53,
+    "probe_failed": 2,
+    "probe_max_latency_s": 60.0,
+    "probe_median_latency_s": 0.005,
+    "t_kill": 1791464383.4378924,
+    "t_back": 1791464743.5476353
+   },
+   "file": "stability/nodeloss_20261008T145838.json",
+   "interpretation": "Test directory on MDT1 (new directories alternate between MDT0 and MDT1): in-flight write blocked 240 s (timeout), 2 of 53 creates failed after 60 s. 25/25 files intact."
+  },
+  {
+   "victim": "Rocky-Head-1",
+   "client": "Rocky-Compute-1",
+   "partner": null,
+   "files": 80,
+   "pre_s": 45,
+   "down_s": 90,
+   "recovery_to_mount_s": 230,
+   "recovery_timed_out": false,
+   "verify_after_return": "V SUMMARY ok=26 bad=0 err=2 seconds=44",
+   "io": {
+    "files_written_ok": 28,
+    "files_write_failed": 1,
+    "median_file_s_before_loss": 1.6336421966552734,
+    "longest_gap_between_completions_s": 562.3,
+    "longest_gap_started_after_kill_s": 2.5,
+    "files_slow_after_loss": 0,
+    "slowest_file_s": 562.3,
+    "probe_total": 53,
+    "probe_failed": 2,
+    "probe_max_latency_s": 60.0,
+    "probe_median_latency_s": 0.006,
+    "t_kill": 1791464922.0352492,
+    "t_back": 1791465453.129086
+   },
+   "file": "stability/nodeloss_20261008T150737.json",
+   "interpretation": "MGS + MDT0 lost: in-flight write blocked 562 s; client EVICTED by MDT0 on return (abort_recov); first 2 read-backs failed with I/O errors, 26 ok; no corruption."
+  }
+ ],
+ "read_failover_runs": [
+  {
+   "victim": "Rocky-Compute-5",
+   "client": "Rocky-Compute-1",
+   "partner": "Rocky-Compute-8",
+   "files": 20,
+   "deactivate": false,
+   "resync": [
+    "R RESYNC stale=20 resynced=20 failed=0 seconds=44",
+    "R MIRRORVERIFY ok=20 mismatch=0 seconds=33"
+   ],
+   "mirror_osts": [
+    8,
+    14
+   ],
+   "recovery_to_mount_s": 138,
+   "reads": {
+    "reads_before_loss": 25,
+    "median_read_s_before": 0.82,
+    "reads_ok_during_outage": 246,
+    "reads_failed_during_outage": 1,
+    "reads_after_return": 74,
+    "reads_failed_after_return": 0,
+    "slowest_read_s": 40.7,
+    "longest_gap_between_reads_s": 40.7,
+    "first_read_end_after_kill_s": 0.5
+   },
+   "outage_s": 240,
+   "settle_s": 2,
+   "verify_after": "V SUMMARY ok=20 bad=0 err=0 seconds=32",
+   "file": "stability/readfail_20261008T141841.json",
+   "scenario": "no manual action"
+  },
+  {
+   "victim": "Rocky-Compute-5",
+   "client": "Rocky-Compute-1",
+   "partner": "Rocky-Compute-8",
+   "files": 20,
+   "deactivate": false,
+   "resync": [
+    "R RESYNC stale=20 resynced=20 failed=0 seconds=41",
+    "R MIRRORVERIFY ok=20 mismatch=0 seconds=33"
+   ],
+   "mirror_osts": [
+    8,
+    14
+   ],
+   "recovery_to_mount_s": 126,
+   "reads": {
+    "reads_before_loss": 15,
+    "median_read_s_before": 0.83,
+    "reads_ok_during_outage": 292,
+    "reads_failed_during_outage": 1,
+    "reads_after_return": 70,
+    "reads_failed_after_return": 0,
+    "slowest_read_s": 3.3,
+    "longest_gap_between_reads_s": 3.3,
+    "first_read_end_after_kill_s": 0.6
+   },
+   "writes_during_outage": {
+    "ok": 0,
+    "failed": 0,
+    "slowest_s": 0,
+    "total_all_phases": 9
+   },
+   "creates_during_outage": {
+    "ok": 10,
+    "failed": 0,
+    "slowest_s": 0.0,
+    "total_all_phases": 43
+   },
+   "writes_total_ok": 8,
+   "writes_failed_files": [
+    "/mnt/lustre/stab/readfail_20261008T143050_w/w_00002"
+   ],
+   "outage_s": 240,
+   "settle_s": 2,
+   "verify_after": "V SUMMARY ok=20 bad=0 err=0 seconds=32",
+   "verify_written_during_test": "V SUMMARY ok=8 bad=0 err=0 seconds=13",
+   "file": "stability/readfail_20261008T143050.json",
+   "scenario": "no manual action"
+  },
+  {
+   "victim": "Rocky-Compute-5",
+   "client": "Rocky-Compute-1",
+   "partner": "Rocky-Compute-8",
+   "files": 20,
+   "deactivate": true,
+   "resync": [
+    "R RESYNC stale=20 resynced=20 failed=0 seconds=43",
+    "R MIRRORVERIFY ok=20 mismatch=0 seconds=34"
+   ],
+   "mirror_osts": [
+    8,
+    14
+   ],
+   "recovery_to_mount_s": 114,
+   "reads": {
+    "reads_before_loss": 12,
+    "median_read_s_before": 0.82,
+    "reads_ok_during_outage": 114,
+    "reads_failed_during_outage": 1,
+    "reads_after_return": 16,
+    "reads_failed_after_return": 0,
+    "slowest_read_s": 4.2,
+    "longest_gap_between_reads_s": 4.2,
+    "first_read_end_after_kill_s": 1.8
+   },
+   "writes_during_outage": {
+    "ok": 21,
+    "failed": 1,
+    "slowest_s": 51.1,
+    "total_all_phases": 39
+   },
+   "creates_during_outage": {
+    "ok": 180,
+    "failed": 1,
+    "slowest_s": 56.7,
+    "total_all_phases": 324
+   },
+   "writes_total_ok": 38,
+   "writes_failed_files": [
+    "/mnt/lustre/stab/readfail_20261008T144253_w/w_00003"
+   ],
+   "outage_s": 240,
+   "settle_s": 128,
+   "verify_after": "V SUMMARY ok=20 bad=0 err=0 seconds=32",
+   "verify_written_during_test": "V SUMMARY ok=38 bad=0 err=0 seconds=62",
+   "file": "stability/readfail_20261008T144253.json",
+   "scenario": "OSTs of the victim deactivated on MDS+client 38 s into the outage"
+  }
+ ],
+ "rolling_reboot_runs": [
+  {
+   "run": 1,
+   "ts": "2026-10-08T15:44:38",
+   "playbook_rc": 0,
+   "elapsed_s": 1501,
+   "healthy": true,
+   "problems": "",
+   "sm_layout": "OpenSM on all 10 nodes, equal priority"
+  },
+  {
+   "run": 2,
+   "ts": "2026-10-08T15:57:52",
+   "playbook_rc": 2,
+   "elapsed_s": 701,
+   "healthy": false,
+   "problems": "Rocky-Head-2: lustre-startup activating; Rocky-Head-2: /mnt/lustre not mounted; lfs df: 0 OST / 0 MDT / 0 inactive",
+   "sm_layout": "OpenSM on all 10 nodes, equal priority"
+  },
+  {
+   "run": 1,
+   "ts": "2026-10-08T16:58:29",
+   "playbook_rc": 0,
+   "elapsed_s": 1540,
+   "healthy": true,
+   "problems": "",
+   "sm_layout": "OpenSM on heads only, Head-1 prio 14 / Head-2 prio 13"
+  },
+  {
+   "run": 2,
+   "ts": "2026-10-08T17:24:27",
+   "playbook_rc": 0,
+   "elapsed_s": 1533,
+   "healthy": true,
+   "problems": "",
+   "sm_layout": "OpenSM on heads only, Head-1 prio 14 / Head-2 prio 13"
+  },
+  {
+   "run": 3,
+   "ts": "2026-10-08T17:50:11",
+   "playbook_rc": 0,
+   "elapsed_s": 1521,
+   "healthy": true,
+   "problems": "",
+   "sm_layout": "OpenSM on heads only, Head-1 prio 14 / Head-2 prio 13"
   }
  ],
  "findings": [
   {
    "id": "F1",
    "title": "Legacy startup script times out early",
-   "result": "MGS wait limit is about 145-170 s instead of 300 s because the loop counts iterations, not seconds; the same bug made the LNET wait about 11 s instead of 60 s.",
-   "evidence": "13:14 cold start (8/10 failed), legacy run 3 (Compute-2 FATAL after 145 s)"
+   "result": "MGS wait limit is about 145-170 s instead of 300 s (loop counts iterations, not seconds); LNET wait about 11 s instead of 60 s."
   },
   {
    "id": "F2",
    "title": "Head-1 (MGS) is always the last node up",
-   "result": "Head-1 reaches the OS about 190 s after its own power-on versus about 90 s for the other blades; every cold start depends on this gap.",
-   "evidence": "head1_os_up_s 193-248 across all runs"
+   "result": "Reaches the OS about 190 s after its own power-on versus about 90 s for other blades."
   },
   {
    "id": "F3",
-   "title": "Fix verified",
-   "result": "With wall-clock deadlines the computes waited up to 344 s for the MGS (Head-1 held 240 s) and all 10 nodes mounted with 0 fatal retries; the legacy script would have failed at about 145 s.",
-   "evidence": "fixed run with head1_delay_s=240"
+   "title": "Startup fix verified",
+   "result": "With wall-clock deadlines computes waited up to 344 s for the MGS (Head-1 held 240 s) and all 10 nodes mounted with 0 fatal retries."
   },
   {
    "id": "F4",
    "title": "Data integrity across unclean power-off",
-   "result": "40 of 40 files (256 MB each, written with direct I/O) sha256-identical after each of 2 hard power-offs of all 10 nodes.",
-   "evidence": "integrity runs 17:31 and 17:45"
+   "result": "40/40 files sha256-identical after each of 2 hard power-offs of all 10 nodes."
   },
   {
    "id": "F5",
    "title": "OST recovery window after unclean stop",
-   "result": "After a hard stop of all nodes only 2 of 16 OSTs were visible for another 275-292 s after all nodes reported mounted (OST recovery window 5:00; MDT mounted with abort_recov reconnects as a new client and is denied). After a graceful shutdown the pool was complete immediately. Accepted, not changed: production shutdowns are scheduled.",
-   "evidence": "pool_fully_visible_after_mounted_s 275 and 292"
+   "result": "After a hard stop of all nodes only 2 of 16 OSTs were visible for another 275-292 s (5:00 recovery window; MDT with abort_recov is denied as new client). Graceful shutdown: pool complete immediately. Accepted (scheduled shutdowns)."
   },
   {
    "id": "F6",
    "title": "Kernel update would break the boot",
-   "result": "dnf update installed the Rocky 9.8 kernel on Compute-2 and UPDATEDEFAULT=yes made it the boot default; the node came up without Lustre modules. Fixed with kernel* excluded in the update playbook and UPDATEDEFAULT=no on all nodes.",
-   "evidence": "thesis notes/15"
+   "result": "dnf update installed Rocky 9.8 kernel on Compute-2, UPDATEDEFAULT=yes made it the default; no Lustre modules on boot. Fixed: kernel* excluded, UPDATEDEFAULT=no."
+  },
+  {
+   "id": "F7",
+   "title": "FLR is delayed mirroring",
+   "result": "Writes land on one mirror; the other stays stale until lfs mirror resync (stale=12/12 and 20/20 right after writing). Without resync, data on a lost node is unavailable until it returns."
+  },
+  {
+   "id": "F8",
+   "title": "Reads fail over automatically when mirrors are in sync",
+   "result": "Node loss with resynced mirrors: 246-292 reads ok during a 240 s outage, longest stall 3-41 s, 0 failures after return."
+  },
+  {
+   "id": "F9",
+   "title": "Writes and creates block on a dead OSS unless its OSTs are deactivated",
+   "result": "Without action: no write completed during the outage, one create blocked 344 s. With the dead OSTs deactivated on MDS+client: 21 writes and 180 creates ok, only the in-flight operations failed (51-57 s); 38/38 written files intact."
+  },
+  {
+   "id": "F10",
+   "title": "Metadata is not redundant",
+   "result": "New directories alternate between MDT0 and MDT1; losing a head stalls the directories on its MDT (write 240 s, creates failed after 60 s). Head-1 loss also evicts clients on return (abort_recov): first 2 read-backs I/O errors."
+  },
+  {
+   "id": "F11",
+   "title": "Rolling reboot can leave a node's IB port in INIT",
+   "result": "Loop 1 of 2 passed (10/10). Loop 2: Head-2's port stayed INIT about 10 min (no SM activated it); both head OpenSMs STANDBY; OpenSM runs on all 10 nodes with equal priority. Recovered by restarting OpenSM on Head-1."
+  },
+  {
+   "id": "F12",
+   "title": "Deterministic subnet-manager layout fixes the rolling reboot",
+   "result": "OpenSM only on the heads (Head-1 priority 14, Head-2 13), off on the computes; reboot.yml waits for the IB port ACTIVE. Rolling reboot repeated: 3 of 3 loops passed (about 1520-1540 s each), pool HEALTHY. Small sample; cause not fully proven (why the previous master did not activate Head-2's port is unexplained)."
   }
  ],
  "tests_planned": [
   {
-   "test": "node loss under mirrored write load (compute x2, Head-2, Head-1)",
+   "test": "soak 24 h, mixed fio, error counters",
+   "requirement": "R4",
+   "status": "not run"
+  },
+  {
+   "test": "periodic mirror resync + automatic OST deactivation (watchdog), then repeat node loss",
    "requirement": "R5",
    "status": "not run"
   },
   {
-   "test": "rolling reboots with live clients (4 loops)",
-   "requirement": "R4",
-   "status": "not run"
-  },
-  {
    "test": "retry path, Head-1 held 600 s",
-   "requirement": "R4",
-   "status": "not run"
-  },
-  {
-   "test": "soak 24 h, mixed fio, error counters",
    "requirement": "R4",
    "status": "not run"
   },

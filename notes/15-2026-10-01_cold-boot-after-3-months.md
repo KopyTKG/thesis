@@ -92,3 +92,74 @@ Both runs: 10/10 nodes mounted, 0 fatal retries, MGS wait max 97-101 s, all comp
 - Candidate fix: `abort_recov` on the OST mounts as well. Trade-off: after a total power loss no client survives to replay, so nothing is lost; for a single OSS crash while other clients are active it would evict those clients instead of letting them replay. Not applied; needs a decision and a re-run.
 
 **Decision (owner, 2026-10-01): `abort_recov` is NOT added to the OST mounts.** In production the cluster runs on two separate power lines, each with 2 UPS, and shutdowns are scheduled, so a whole-cluster dirty stop is not an expected event. Keeping OST recovery lets live clients replay in-flight writes when a single node crashes, which is the case that matters. Consequence: shutdown must be graceful (`just down`); after a total unclean stop expect about 5 extra minutes before all 16 OSTs are visible (data intact, 40/40 files).
+
+## 2026-10-08: cold start after a week off, then node loss (Compute-5)
+
+Week-cold start (`just coldboot 1 --no-shutdown`): 10/10 mounted, 0 fatal retries, Head-1 OS up at 190 s, longest MGS wait 101 s, all units complete by 226 s, pool fully visible after 5 s (16 OST + 2 MDT). The last shutdown had been graceful, so no OST recovery delay.
+
+Node loss (`just nodeloss Rocky-Compute-5`, 80 mirrored files pinned: mirror A on Compute-5's OST8, mirror B on Compute-8's OST14; writer on Compute-1; log `benchmarks/stability/logs/nodeloss_*`; result `nodeloss_*.json`):
+- Mirror placement check passed (`lfs mirror create -N1 -c1 -o 8 -N1 -c1 -o 14`).
+- 11 files completed before the power-off, 1 write failed (in flight when the node died).
+- **Verify #1 (victim still down): ok=0, err=11.** The surviving mirror was NOT used: reads failed. After the node returned: ok=11 bad=0 err=0. After resync: ok=11 bad=0, `lfs mirror verify` mismatch=0. No data lost.
+- **Resync: stale=12 resynced=12.** Every file written was stale on the second mirror until the manual resync: FLR is delayed (asynchronous) mirroring, writes land on one mirror only. Without a periodic resync, a node loss makes recent data unavailable, and a destroyed disk would lose it.
+- **No failover, I/O blocks.** Client: `Connection to lustrefs-OST0008 (at 10.0.0.5@o2ib) was lost; in progress operations using this service will wait for recovery to complete`; restored 14:15:20. The in-flight write took 946 s (until the node returned). A metadata probe creating new files hung 936 s (max latency; 1 of 53 failed); Head-1 logged the same wait for OST0009 (`osc-MDT0000`). New-file creation appears to stall while an OSS is down.
+- Caveat: the test waited about 10 minutes for the hung writer before powering the node back on, so the outage was about 13 minutes (`t_back - t_kill` = 959 s), not the planned 90 s. Recovery after power-on: mounted 137 s, pool HEALTHY.
+- Consequence for R5: with the current layout and defaults a blade loss freezes I/O and creates until the node is back; mirrors protect data only after resync. Open: do resynced mirrors give read failover, and does deactivating the dead OST on the MDS/client keep work going? (next test)
+
+## 2026-10-08: read/write/create behaviour during a node loss, mirrors resynced first (`just readfail`)
+
+Setup for all three runs: 20 mirrored files (mirror A on Compute-5's OST8, B on Compute-8's OST14) written and **resynced before the failure** (`stale=20 resynced=20`, mirror verify 0 mismatches). Client Compute-1 runs three jobs at once: reader (round-robin reads of the 20 files), writer (overwrites mirrored files whose first mirror is on the victim), create-probe (a new file every second, default layout). Compute-5 is hard-powered off for 240 s, then powered on. Raw: `benchmarks/stability/readfail_*.json` and logs.
+
+| | (a) first run, reads only | (a2) no action | (b) OSTs 8,9 deactivated on MDS+client at +38 s |
+|---|---|---|---|
+| Reads during outage | 246 ok, 1 failed, slowest 40.7 s | 292 ok, 1 failed, slowest 3.3 s | 114 ok, 1 failed, slowest 4.2 s |
+| Writes during outage | n/a | **0 completed**; 1 write blocked 358 s until the node returned, then rc=124 | 21 ok; 1 failed after 51 s (in flight at the loss); then normal |
+| New-file creates during outage | n/a | 10 ok, then 1 `touch` **blocked 344 s** (until the node returned) | 180 ok; 1 failed after 56.7 s; then normal (324 creates in total) |
+| Data after return | 20/20 ok | 20/20 ok, 8/8 written ok | 20/20 ok, **38/38 written ok** |
+| Pool fully visible after node mounted | 2 s | 2 s | 128 s (MDS reconnect after re-activation) |
+
+Findings:
+1. **Read failover works automatically if the mirrors are in sync**: no manual step, 0 read errors after the first in-flight one, stall 3-41 s once. The earlier `ok=0 err=11` was caused by stale mirrors (nothing resynced), not by FLR being unable to fail over.
+2. **Writes and creates do not fail over by themselves.** Writes to a file whose first mirror is on the dead node, and creates whose objects the MDS allocates on the dead node's OSTs, block until the node is back (here 344-358 s, about the whole outage).
+3. **Deactivating the dead OSTs on the MDS and the client (`lctl set_param osp.<OST>-osc-MDT*.active=0`, `osc.<OST>-osc-*.active=0`) makes writes and creates continue**; writes went to the surviving mirror and were intact (38/38). The only disruption was the operations in flight at the failure (51-57 s, then an error). The deactivation was manual at +38 s; the in-flight stall is roughly the detection plus obd timeout, so automating it bounds the disruption to about that. After the node returns the OSTs must be re-activated (the script does); files written during the outage have a stale mirror and need `lfs mirror resync`.
+4. **FLR redundancy therefore needs two operational pieces that Lustre does not provide on its own here**: a periodic `lfs mirror resync` (data written since the last resync exists only on one mirror), and an automatic OST deactivation on node failure (watchdog). Without them a blade loss stalls writes/creates for the whole outage and recent data is unavailable until the node returns.
+
+## 2026-10-08: loss of Head-2 (MDT1) under load (`just nodeloss Rocky-Head-2`)
+
+Head-2 hard-powered off 47 s into continuous writes (plain files, writer + create-probe on Compute-1); outage about 360 s in total (back at `t_back`).
+- **Data intact: 25 of 25 completed files sha256-identical after the return**, pool HEALTHY (16 OST, 2 MDT).
+- **Operations stalled**: the write in flight at the loss blocked the full 240 s (killed by `timeout`, rc=124, 1 failed file); 2 of 53 create-probe `touch` calls failed after 60 s each (rc=124). Other operations kept completing.
+- Cause (mechanism confirmed, this run's directory not inspected because the test deletes it): `lfs getdirstripe -D /mnt/lustre` shows `lmv_stripe_offset: -1`, `lmv_max_inherit_rr: 3`, and new subdirectories alternate between MDT0 and MDT1 (`0 1 0 1 0 1`). The test directory therefore lives on one of the two MDTs; when that MDT's head is down, everything in that subtree (creates, opens) blocks.
+- **The metadata layer is not redundant.** DNE spreads the namespace across MDT0 (Head-1) and MDT1 (Head-2); each MDT is one SSD in one head with no failover partner. Losing a head makes the directories on that MDT unavailable until it is back (data on the computes is untouched). FLR protects file data only. This is the "fully clustered" caveat for the thesis (Selection.md): clustered data, not clustered metadata.
+
+## 2026-10-08: loss of Head-1 (MGS + MDT0) under load (`just nodeloss Rocky-Head-1`)
+
+Head-1 hard-powered off 47 s into the load; outage `t_back - t_kill` = 531 s (Head-1 OS up about 190 s after power-on, MGS/MDT0 mounted, `recovery_to_mount_s` 230).
+- Client log (Compute-1): 15:08:46 `Connection to lustrefs-MDT0000 was lost; in progress operations using this service will wait for recovery`; 15:09:19 `MGC ... Connection to MGS was lost; in progress operations using this service will fail`.
+- The write in flight at the loss blocked **562 s** (until MDT0 was back). 1 write failed (`w_00028`), 28 completed; 2 of 53 create-probe calls failed after 60 s.
+- **After the return the client was evicted: `This client was evicted by lustrefs-MDT0000; in progress operations using this service will fail.`** Cause: the MDT is mounted with `-o abort_recov` (`lustre-startup`), which skips recovery by evicting all client sessions. The first 2 read-backs after the return failed with I/O errors (`ok=26 bad=0 err=2`); the other 26 were intact, pool HEALTHY. The two files were deleted by the test cleanup, so whether they were readable on a retry is unknown.
+- Consequence for the VM layer: files held open on the Lustre mount (VM disk images) get I/O errors when a head restarts with `abort_recov`. For scheduled maintenance stop the VMs first, or remove `abort_recov` from the MDT mount when clients are alive (then clients replay and keep state, at the cost of a recovery window of up to 5 min). `abort_recov` is only right for a full cold start.
+- Summary of the three loss tests: compute loss = reads fail over (if mirrors in sync), writes/creates stall unless the dead OSTs are deactivated; Head-2 loss = the directories on MDT1 stall; Head-1 loss = root and half the namespace plus the MGS stall and clients are evicted when it returns. No data lost in any of them.
+
+## 2026-10-08: rolling reboot (`just rebootloop 2`, started 15:19)
+
+- **Loop 1: all 10 nodes rebooted in turn (heads first, then Compute-1..8), each passed its `/mnt/lustre` check; `lfs df` 16 OST / 2 MDT, HEALTHY.**
+- **Loop 2 failed at Head-2** (`Wait for /mnt/lustre to be mounted`, 30 x 10 s, rc=32). `lustre-startup` was still `activating`, blocked in `lctl ping`. Cause is the InfiniBand fabric, not Lustre: Head-2's port was `INIT` (physical `LinkUp`, 100 Gb/s), never `ACTIVE`, so `ibs1` stayed `DOWN`, IPoIB could not reach Head-1 and LNET reported `ptlrpc_init_portals() network initialisation failed rc = -22 / -100` and `1 local NIs in recovery`. No subnet manager activated the port for about 10 minutes.
+- OpenSM state: Head-1's SM went `STANDBY` at 15:48:23 and Head-2's at 15:50:45; neither has ever logged `Entering MASTER`. Both logged repeated `Timeout while getting attribute 0x20 (SMInfo); Possible mis-set mkey?`. `sm_priority` is 0 everywhere. **OpenSM runs on all 10 nodes** (`systemctl is-active opensm` = active on every node); the master moves with every reboot (Compute-5 last `Entering MASTER` 15:37:36, 6 master entries; Compute-7 5 entries, standby since 15:41:47).
+- Recovery: `systemctl restart opensm` on Head-1 only; within seconds Head-2's port went `ACTIVE`, `ibs1` `UP`, `lustre-startup` completed and mounted, cluster HEALTHY. Why the then-master (probably Compute-5) had not swept the port itself is unproven.
+- Conclusion: a rolling reboot with SMs on every node and equal priority can leave a freshly rebooted node with a port stuck in `INIT`; the Lustre startup wait (600 s) just waits. Candidate fixes (not applied, need a decision): run OpenSM only on the two heads with explicit `sm_priority` (e.g. Head-1 14, Head-2 13), disable it on the computes; make `reboot.yml` wait for the IB port to be `ACTIVE` before the Lustre check and before moving to the next node; then repeat `rebootloop`.
+- This also means the earlier clean cold boots depended on SM election going well each time.
+
+## 2026-10-08: subnet-manager fix and rolling reboot repeated (`just opensm`, `just rebootloop 3`)
+
+Fix applied 16:32 with `playbooks/setup_opensm.yml` (reversible with `-e opensm_everywhere=true`): `PRIORITY=14` on Head-1 and `13` on Head-2 in `/etc/sysconfig/opensm` (the launcher passes it as `-p`), OpenSM stopped and disabled on the 8 computes. Heads first, so the higher-priority head takes over from whichever node was master; Head-1 logged `Entering MASTER`, Head-2 `Entering STANDBY` within 8 s; the cluster stayed HEALTHY (16 OST / 2 MDT). `reboot.yml` now also waits for the node's IB port to be ACTIVE before the Lustre mount check.
+
+Rolling reboot with the new layout (heads first, then Compute-1..8, serial, 3 loops, 16:32 to 17:50):
+
+| Loop | Result | Duration |
+|---|---|---|
+| 1 | all 10 nodes passed, HEALTHY | 1540 s |
+| 2 | all 10 nodes passed, HEALTHY | 1533 s |
+| 3 | all 10 nodes passed, HEALTHY | 1521 s |
+
+Before the fix: loop 1 passed, loop 2 failed (Head-2 IB port stuck in INIT). After: 3 of 3 passed. Evidence that the shared-SM layout was the cause is circumstantial (same test, 1 failure in 2 before, 0 in 3 after) and the sample is small; not proven. Open: why the old master (a compute) did not activate Head-2's port is still unexplained.
