@@ -167,3 +167,9 @@ Before the fix: loop 1 passed, loop 2 failed (Head-2 IB port stuck in INIT). Aft
 ## 2026-10-08, evening: soak not run
 
 A 6-hour soak (`just soak 6 --stop-on-fail`, mixed 70/30 fio on all computes) was started at 17:58 and stopped after about 30 s at the owner's request (the cluster cannot stay on that long today). No soak data exists; `benchmarks/stability/logs/soak_20261008T175853.log` only shows the healthy start state (16 OST, 2 MDT). The soak is still open (R4 long-run stability); planned for a session where the cluster can run for several hours. Cluster shut down gracefully (`just down`) at the end of the day.
+
+## 2026-10-08, evening: the "graceful" shutdown was in the wrong order
+
+`just down` (old `shutdown.yml`: `serial: 1`, heads first) shut Head-1 and Head-2 down first, then ran `umount -l /mnt/lustre` on Compute-1 against dead servers: the unmount hung for more than 6 minutes (`LNet: 1 local NIs in recovery`, no MGS/MDT), blocking the serial play, with 7 computes still to go. The playbook was killed and the computes were powered off with a plain parallel `shutdown`; all 10 nodes were down at 18:15 (two slow computes took about 8 minutes).
+- Fix (`playbooks/common/shutdown.yml`): (1) every node unmounts its Lustre client while all servers are up, (2) the computes (OSS) power off together and the play waits until they are gone, (3) the heads power off one at a time, Head-2 (MDT1) first and Head-1 (MGS + MDT0) last (`order: reverse_inventory`). Syntax-checked and task list verified; not yet run end to end.
+- The earlier `coldboot` runs that used the old graceful shutdown still came back with a complete pool, so the data path was fine; what this found is that the old shutdown took far longer than necessary and could stall.
