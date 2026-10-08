@@ -163,3 +163,7 @@ Rolling reboot with the new layout (heads first, then Compute-1..8, serial, 3 lo
 | 3 | all 10 nodes passed, HEALTHY | 1521 s |
 
 Before the fix: loop 1 passed, loop 2 failed (Head-2 IB port stuck in INIT). After: 3 of 3 passed. Evidence that the shared-SM layout was the cause is circumstantial (same test, 1 failure in 2 before, 0 in 3 after) and the sample is small; not proven. Open: why the old master (a compute) did not activate Head-2's port is still unexplained.
+
+## 2026-10-08, evening: soak not run
+
+A 6-hour soak (`just soak 6 --stop-on-fail`, mixed 70/30 fio on all computes) was started at 17:58 and stopped after about 30 s at the owner's request (the cluster cannot stay on that long today). No soak data exists; `benchmarks/stability/logs/soak_20261008T175853.log` only shows the healthy start state (16 OST, 2 MDT). The soak is still open (R4 long-run stability); planned for a session where the cluster can run for several hours. Cluster shut down gracefully (`just down`) at the end of the day.
