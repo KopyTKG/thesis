@@ -2328,7 +2328,7 @@
   {
    "id": "F13",
    "title": "Graceful shutdown order was wrong",
-   "result": "The old shutdown.yml powered the heads off first; the computes' umount of /mnt/lustre then hung more than 6 minutes against dead servers (serial play, 7 more nodes pending). New order: clients unmount everywhere, computes power off together, then Head-2, then Head-1 (MGS + MDT0) last. Not yet run end to end."
+   "result": "The old shutdown.yml powered the heads off first; the computes' umount of /mnt/lustre then hung more than 6 minutes against dead servers (serial play, 7 more nodes pending). New order: clients unmount everywhere, computes power off together, then Head-2, then Head-1 (MGS + MDT0) last. Verified 2026-10-15: whole cluster off in about 95 s, failed=0 on all 10 nodes."
   },
   {
    "id": "F14",

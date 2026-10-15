@@ -194,3 +194,7 @@ Mixed 70/30 random read/write, fio 1 MiB blocks, direct I/O, iodepth 8, 2 jobs, 
 - Per node about 2.9 Gbit/s of a 100 Gbit/s link (2.9%); per SSD about 1.4 Gbit/s of SATA III 4.8 Gbit/s. A deliberately gentle mixed load (single-stripe files, iodepth 8), not a throughput benchmark.
 - Data moved (estimate: rate x 300 s per round, not a fio byte counter): about 19.9 TiB read, 8.6 TiB written, 28.5 TiB total; about 548 GiB written per SSD. 3.0 h of fio load in 6.1 h wall clock.
 - The 6-hour length is what fit the session; a 24 h soak would cover rarer events. Open: the soak does not record per-node figures or fio byte counters.
+
+## 2026-10-15, 19:10: new shutdown order verified end to end (`just down`)
+
+Run after the 6 h soak with all 10 nodes up and Lustre mounted: clients unmounted everywhere (servers still up), the 8 computes powered off together and were gone within about 15 s, then Head-2, then Head-1. All 10 nodes were down at 19:12, `failed=0` on every node, about 95 s in total (old order: more than 8 minutes and a hung `umount`). The earlier finding (F13) is resolved.
