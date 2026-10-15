@@ -173,3 +173,24 @@ A 6-hour soak (`just soak 6 --stop-on-fail`, mixed 70/30 fio on all computes) wa
 `just down` (old `shutdown.yml`: `serial: 1`, heads first) shut Head-1 and Head-2 down first, then ran `umount -l /mnt/lustre` on Compute-1 against dead servers: the unmount hung for more than 6 minutes (`LNet: 1 local NIs in recovery`, no MGS/MDT), blocking the serial play, with 7 computes still to go. The playbook was killed and the computes were powered off with a plain parallel `shutdown`; all 10 nodes were down at 18:15 (two slow computes took about 8 minutes).
 - Fix (`playbooks/common/shutdown.yml`): (1) every node unmounts its Lustre client while all servers are up, (2) the computes (OSS) power off together and the play waits until they are gone, (3) the heads power off one at a time, Head-2 (MDT1) first and Head-1 (MGS + MDT0) last (`order: reverse_inventory`). Syntax-checked and task list verified; not yet run end to end.
 - The earlier `coldboot` runs that used the old graceful shutdown still came back with a complete pool, so the data path was fine; what this found is that the old shutdown took far longer than necessary and could stall.
+
+## 2026-10-15: 6-hour soak (`just soak 6 --stop-on-fail`, 13:04 to 19:08)
+
+Mixed 70/30 random read/write, fio 1 MiB blocks, direct I/O, iodepth 8, 2 jobs, 2 GiB files per node, on all 8 computes (default layout, stripe 1), 5-minute fio per round, health snapshot after each round (about 10 minutes per round). 36 rounds. Cold start the same day: 10/10 mounted, 0 retries, Head-1 OS up at 207 s, pool visible after 1 s; OpenSM layout (Head-1 master, Head-2 standby, off on computes) survived the week-long power-off. Raw: `benchmarks/stability/soak.csv`, `soak_summary.json`, `logs/soak_20261015T130358.log`.
+
+| Aggregate of the 8 computes | n | mean | stdev | CV | min - max |
+|---|---|---|---|---|---|
+| read, all rounds | 36 | 16.23 Gbit/s | 0.28 | 1.73% | 16.00 - 17.47 |
+| read, plateau (round 6 on) | 31 | 16.14 Gbit/s | 0.09 | 0.57% | 16.00 - 16.43 |
+| write, all rounds | 36 | 6.97 Gbit/s | 0.12 | 1.73% | 6.87 - 7.50 |
+| write, plateau | 31 | 6.93 Gbit/s | 0.04 | 0.58% | 6.87 - 7.05 |
+| combined, all rounds | 36 | 23.20 Gbit/s | 0.40 | 1.73% | 22.88 - 24.97 |
+| **combined, plateau** | 31 | **23.07 Gbit/s** | **0.13** | **0.57%** | 22.88 - 23.49 |
+
+(Units: fio reports KiB/s; the tool divides by 1024, so the columns in `soak.csv` named MBps are MiB/s; 1 MiB/s = 8.388608 Mbit/s.)
+
+- **Health: 36 of 36 rounds healthy; 8/8 nodes and 16 OSTs every round; 0 I/O errors, 0 new `dmesg` errors, 0 new IB errors.**
+- Throughput fell 7.3% from round 1 (24.97 Gbit/s combined) to round 36 (23.15), all of it in rounds 1-5; from round 6 on it is flat: plateau first half (r6-20) 23.07 vs second half (r21-36) 23.08 Gbit/s (+0.07%). No drift over 6 hours.
+- Per node about 2.9 Gbit/s of a 100 Gbit/s link (2.9%); per SSD about 1.4 Gbit/s of SATA III 4.8 Gbit/s. A deliberately gentle mixed load (single-stripe files, iodepth 8), not a throughput benchmark.
+- Data moved (estimate: rate x 300 s per round, not a fio byte counter): about 19.9 TiB read, 8.6 TiB written, 28.5 TiB total; about 548 GiB written per SSD. 3.0 h of fio load in 6.1 h wall clock.
+- The 6-hour length is what fit the session; a 24 h soak would cover rarer events. Open: the soak does not record per-node figures or fio byte counters.
