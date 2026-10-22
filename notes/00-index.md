@@ -28,6 +28,7 @@ Hardware constant across the whole story: 2 head nodes + 8 compute nodes (Superm
 | 14 | test plan | What to run to make the data and the system "stable" |
 | 15 | stability results | Cold boots, node loss, rolling reboot, soak (2026-10-01 to 10-15) |
 | 17 | HPL (LINPACK) | 6.75 TFLOPS on all 10 nodes, 94.6% scaling (2026-10-22) |
+| 18 | Lustre cache-controlled matrix | Reads drive-limited (94% of the drives), OSS cache inflates reads 10x, random 4k writes 4-8k IOPS, SATA link errors on 3 drives (2026-10-22) |
 
 ## Filesystem verdicts (final)
 

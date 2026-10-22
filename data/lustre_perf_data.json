@@ -1,0 +1,492 @@
+{
+ "metadata": {
+  "description": "Lustre 2.17.0 (o2ib RDMA) cache-controlled performance matrix, 8 computes as clients, 2026-10-22",
+  "tool": "tools/lustre_bench.py (fio 3.35, libaio, direct=1, 4 jobs per client, 4 GiB per job, 45 s runtime for the time-based phases)",
+  "configs": {
+   "default": "stripe 1 x 4 MiB, max_rpcs_in_flight 8, max_dirty_mb 2000, read-ahead 1024/256",
+   "tuned": "stripe 4 x 4 MiB, max_rpcs_in_flight 32, max_dirty_mb 64, read-ahead 256/128 (client side of the March 2026 tuning)"
+  },
+  "oss_cache": "read_cache_enable=0 and writethrough_cache_enable=0 as found; the control stage switched them on and restored 0",
+  "caveat": "The whole matrix ran with two SSDs (OST5 on Compute-3, OST13 on Compute-7) on a 3.0 Gbit/s SATA link and a third (OST4) intermittently resetting; read ceilings are therefore lower than the full-speed 16-drive figure. See hardware_finding.",
+  "units": "MiB/s as measured; Gbit/s = MiB/s x 8.388608 / 1000"
+ },
+ "matrix": [
+  {
+   "phase": "rand_read_4k",
+   "config": "default",
+   "clients": 1,
+   "n": 3,
+   "bw_mean": 756.8,
+   "bw_stdev": 13.36,
+   "iops_mean": 193744.67,
+   "lat_mean_us": 660.1,
+   "errors": 0,
+   "bw_gbit_s": 6.348
+  },
+  {
+   "phase": "rand_read_4k",
+   "config": "default",
+   "clients": 4,
+   "n": 3,
+   "bw_mean": 2627.6,
+   "bw_stdev": 111.5,
+   "iops_mean": 672657.33,
+   "lat_mean_us": 769.93,
+   "errors": 0,
+   "bw_gbit_s": 22.042
+  },
+  {
+   "phase": "rand_read_4k",
+   "config": "default",
+   "clients": 8,
+   "n": 3,
+   "bw_mean": 4095.2,
+   "bw_stdev": 29.16,
+   "iops_mean": 1048355.67,
+   "lat_mean_us": 986.5,
+   "errors": 0,
+   "bw_gbit_s": 34.353
+  },
+  {
+   "phase": "rand_read_4k",
+   "config": "tuned",
+   "clients": 1,
+   "n": 3,
+   "bw_mean": 676.03,
+   "bw_stdev": 47.92,
+   "iops_mean": 173064.33,
+   "lat_mean_us": 741.3,
+   "errors": 0,
+   "bw_gbit_s": 5.671
+  },
+  {
+   "phase": "rand_read_4k",
+   "config": "tuned",
+   "clients": 4,
+   "n": 3,
+   "bw_mean": 2437.63,
+   "bw_stdev": 35.22,
+   "iops_mean": 624030.33,
+   "lat_mean_us": 820.73,
+   "errors": 0,
+   "bw_gbit_s": 20.448
+  },
+  {
+   "phase": "rand_read_4k",
+   "config": "tuned",
+   "clients": 8,
+   "n": 3,
+   "bw_mean": 3836.63,
+   "bw_stdev": 273.73,
+   "iops_mean": 982157.33,
+   "lat_mean_us": 1054.23,
+   "errors": 0,
+   "bw_gbit_s": 32.184
+  },
+  {
+   "phase": "rand_write_4k",
+   "config": "default",
+   "clients": 1,
+   "n": 3,
+   "bw_mean": 2.6,
+   "bw_stdev": 0.53,
+   "iops_mean": 666,
+   "lat_mean_us": 196876.07,
+   "errors": 0,
+   "bw_gbit_s": 0.022
+  },
+  {
+   "phase": "rand_write_4k",
+   "config": "default",
+   "clients": 4,
+   "n": 3,
+   "bw_mean": 8.47,
+   "bw_stdev": 0.12,
+   "iops_mean": 2156,
+   "lat_mean_us": 238578.97,
+   "errors": 0,
+   "bw_gbit_s": 0.071
+  },
+  {
+   "phase": "rand_write_4k",
+   "config": "default",
+   "clients": 8,
+   "n": 3,
+   "bw_mean": 17.43,
+   "bw_stdev": 0.65,
+   "iops_mean": 4444.67,
+   "lat_mean_us": 232401.33,
+   "errors": 0,
+   "bw_gbit_s": 0.146
+  },
+  {
+   "phase": "rand_write_4k",
+   "config": "tuned",
+   "clients": 1,
+   "n": 3,
+   "bw_mean": 4.93,
+   "bw_stdev": 0.12,
+   "iops_mean": 1255.67,
+   "lat_mean_us": 101753.53,
+   "errors": 0,
+   "bw_gbit_s": 0.041
+  },
+  {
+   "phase": "rand_write_4k",
+   "config": "tuned",
+   "clients": 4,
+   "n": 3,
+   "bw_mean": 16.33,
+   "bw_stdev": 0.12,
+   "iops_mean": 4165.67,
+   "lat_mean_us": 122618.13,
+   "errors": 0,
+   "bw_gbit_s": 0.137
+  },
+  {
+   "phase": "rand_write_4k",
+   "config": "tuned",
+   "clients": 8,
+   "n": 3,
+   "bw_mean": 30.87,
+   "bw_stdev": 0.15,
+   "iops_mean": 7879.67,
+   "lat_mean_us": 129684.7,
+   "errors": 0,
+   "bw_gbit_s": 0.259
+  },
+  {
+   "phase": "seq_read",
+   "config": "default",
+   "clients": 1,
+   "n": 3,
+   "bw_mean": 1897.7,
+   "bw_stdev": 133.25,
+   "iops_mean": 1896.33,
+   "lat_mean_us": 33844.43,
+   "errors": 0,
+   "bw_gbit_s": 15.919
+  },
+  {
+   "phase": "seq_read",
+   "config": "default",
+   "clients": 4,
+   "n": 3,
+   "bw_mean": 6139.57,
+   "bw_stdev": 643.11,
+   "iops_mean": 6134.33,
+   "lat_mean_us": 43370.3,
+   "errors": 0,
+   "bw_gbit_s": 51.502
+  },
+  {
+   "phase": "seq_read",
+   "config": "default",
+   "clients": 8,
+   "n": 3,
+   "bw_mean": 7478.37,
+   "bw_stdev": 9.05,
+   "iops_mean": 7468,
+   "lat_mean_us": 70498.83,
+   "errors": 0,
+   "bw_gbit_s": 62.733
+  },
+  {
+   "phase": "seq_read",
+   "config": "tuned",
+   "clients": 1,
+   "n": 3,
+   "bw_mean": 5477.67,
+   "bw_stdev": 78.75,
+   "iops_mean": 5476.33,
+   "lat_mean_us": 11680.87,
+   "errors": 0,
+   "bw_gbit_s": 45.95
+  },
+  {
+   "phase": "seq_read",
+   "config": "tuned",
+   "clients": 4,
+   "n": 3,
+   "bw_mean": 5904.7,
+   "bw_stdev": 203.18,
+   "iops_mean": 5899.33,
+   "lat_mean_us": 43939.5,
+   "errors": 0,
+   "bw_gbit_s": 49.532
+  },
+  {
+   "phase": "seq_read",
+   "config": "tuned",
+   "clients": 8,
+   "n": 3,
+   "bw_mean": 6073.07,
+   "bw_stdev": 71.77,
+   "iops_mean": 6062.33,
+   "lat_mean_us": 87320.07,
+   "errors": 0,
+   "bw_gbit_s": 50.945
+  },
+  {
+   "phase": "seq_write",
+   "config": "default",
+   "clients": 1,
+   "n": 3,
+   "bw_mean": 440.57,
+   "bw_stdev": 36.0,
+   "iops_mean": 441,
+   "lat_mean_us": 126742.87,
+   "errors": 0,
+   "bw_gbit_s": 3.696
+  },
+  {
+   "phase": "seq_write",
+   "config": "default",
+   "clients": 4,
+   "n": 3,
+   "bw_mean": 1292.83,
+   "bw_stdev": 53.75,
+   "iops_mean": 1293,
+   "lat_mean_us": 162218.5,
+   "errors": 0,
+   "bw_gbit_s": 10.845
+  },
+  {
+   "phase": "seq_write",
+   "config": "default",
+   "clients": 8,
+   "n": 3,
+   "bw_mean": 2009.17,
+   "bw_stdev": 19.8,
+   "iops_mean": 2009,
+   "lat_mean_us": 220874.47,
+   "errors": 0,
+   "bw_gbit_s": 16.854
+  },
+  {
+   "phase": "seq_write",
+   "config": "tuned",
+   "clients": 1,
+   "n": 3,
+   "bw_mean": 926.27,
+   "bw_stdev": 14.62,
+   "iops_mean": 926.33,
+   "lat_mean_us": 63877.87,
+   "errors": 0,
+   "bw_gbit_s": 7.77
+  },
+  {
+   "phase": "seq_write",
+   "config": "tuned",
+   "clients": 4,
+   "n": 3,
+   "bw_mean": 1774.1,
+   "bw_stdev": 33.98,
+   "iops_mean": 1774,
+   "lat_mean_us": 128878.17,
+   "errors": 0,
+   "bw_gbit_s": 14.882
+  },
+  {
+   "phase": "seq_write",
+   "config": "tuned",
+   "clients": 8,
+   "n": 3,
+   "bw_mean": 2276.67,
+   "bw_stdev": 65.06,
+   "iops_mean": 2276.67,
+   "lat_mean_us": 206660.63,
+   "errors": 0,
+   "bw_gbit_s": 19.098
+  }
+ ],
+ "control": {
+  "oss_cache_off_seq_read": [
+   7950.8,
+   7905.3,
+   7529.5,
+   6047.9
+  ],
+  "oss_cache_off_seq_write": [
+   2618.8,
+   2247.1
+  ],
+  "oss_cache_on_seq_read": [
+   74759.6,
+   74713.0,
+   70894.2,
+   71188.4
+  ],
+  "oss_cache_on_seq_write": [
+   2267.6,
+   2260.2
+  ]
+ },
+ "baseline_raw_read_per_ssd": [
+  {
+   "node": "Rocky-Compute-1",
+   "device": "sda",
+   "seq_read_mib_s": 529.7,
+   "rand_read_4k_iops": 97545
+  },
+  {
+   "node": "Rocky-Compute-1",
+   "device": "sdc",
+   "seq_read_mib_s": 530.9,
+   "rand_read_4k_iops": 97500
+  },
+  {
+   "node": "Rocky-Compute-2",
+   "device": "sda",
+   "seq_read_mib_s": 531.4,
+   "rand_read_4k_iops": 97821
+  },
+  {
+   "node": "Rocky-Compute-2",
+   "device": "sdc",
+   "seq_read_mib_s": 531.5,
+   "rand_read_4k_iops": 97815
+  },
+  {
+   "node": "Rocky-Compute-3",
+   "device": "sda",
+   "seq_read_mib_s": 271.7,
+   "rand_read_4k_iops": 50926
+  },
+  {
+   "node": "Rocky-Compute-3",
+   "device": "sdc",
+   "seq_read_mib_s": 529.5,
+   "rand_read_4k_iops": 97227
+  },
+  {
+   "node": "Rocky-Compute-4",
+   "device": "sda",
+   "seq_read_mib_s": 528.0,
+   "rand_read_4k_iops": 98215
+  },
+  {
+   "node": "Rocky-Compute-4",
+   "device": "sdb",
+   "seq_read_mib_s": 530.0,
+   "rand_read_4k_iops": 97821
+  },
+  {
+   "node": "Rocky-Compute-5",
+   "device": "sda",
+   "seq_read_mib_s": 528.5,
+   "rand_read_4k_iops": 97542
+  },
+  {
+   "node": "Rocky-Compute-5",
+   "device": "sdb",
+   "seq_read_mib_s": 529.9,
+   "rand_read_4k_iops": 97352
+  },
+  {
+   "node": "Rocky-Compute-6",
+   "device": "sdb",
+   "seq_read_mib_s": 530.5,
+   "rand_read_4k_iops": 97246
+  },
+  {
+   "node": "Rocky-Compute-6",
+   "device": "sdc",
+   "seq_read_mib_s": 529.7,
+   "rand_read_4k_iops": 98036
+  },
+  {
+   "node": "Rocky-Compute-7",
+   "device": "sda",
+   "seq_read_mib_s": 531.3,
+   "rand_read_4k_iops": 97499
+  },
+  {
+   "node": "Rocky-Compute-7",
+   "device": "sdb",
+   "seq_read_mib_s": 271.6,
+   "rand_read_4k_iops": 50796
+  },
+  {
+   "node": "Rocky-Compute-8",
+   "device": "sdb",
+   "seq_read_mib_s": 531.4,
+   "rand_read_4k_iops": 98086
+  },
+  {
+   "node": "Rocky-Compute-8",
+   "device": "sdc",
+   "seq_read_mib_s": 531.4,
+   "rand_read_4k_iops": 97574
+  }
+ ],
+ "march_2026_bare_ssd_write_mib_s_per_node": [
+  257.4,
+  260.3,
+  250.7,
+  238.6,
+  247.5,
+  245.7,
+  249.9,
+  245.2
+ ],
+ "hardware_finding": {
+  "observed": "2026-10-22, read with dmesg/smartctl after the benchmark stages",
+  "summary": "Three SATA links showed errors when all 16 pool SSDs were driven at their ~530 MB/s limit; two were downshifted by the kernel to SATA II (3.0 Gbit/s). SMART CRC error counters (attribute 199) are non-zero exactly on the affected drives; uncorrectable/media errors are 0 everywhere; no filesystem or I/O errors in dmesg; fio saw 0 errors. Pattern = signal integrity on specific bays (cable, connector or backplane), not failing drives.",
+  "downshifted_to_3_0_gbit": [
+   {
+    "node": "Rocky-Compute-7",
+    "device": "sdb",
+    "ata": "ata6",
+    "downshift": "2026-10-22 14:43:37",
+    "crc_errors": 13,
+    "first_error": "14:40:05",
+    "failed_commands": 95,
+    "link_resets": 4,
+    "raw_seq_read_mib_s": 271.6
+   },
+   {
+    "node": "Rocky-Compute-3",
+    "device": "sda",
+    "ata": "ata6",
+    "ost": "OST5",
+    "downshift": "2026-10-22 14:44:02",
+    "crc_errors": 16,
+    "first_error": "14:41:24",
+    "failed_commands": 163,
+    "link_resets": 8,
+    "raw_seq_read_mib_s": 271.7
+   }
+  ],
+  "errors_but_still_6_0_gbit": [
+   {
+    "node": "Rocky-Compute-3",
+    "device": "sdc",
+    "ata": "ata7",
+    "crc_errors": 23,
+    "resets_during_matrix": [
+     "14:44:27",
+     "15:28:33",
+     "15:43:02",
+     "15:53:55"
+    ]
+   },
+   {
+    "node": "Rocky-Compute-1",
+    "device": "sda",
+    "ata": "ata7",
+    "ost": "OST0",
+    "crc_errors": 2,
+    "reset": "14:40:35"
+   },
+   {
+    "node": "Rocky-Compute-7",
+    "device": "sda",
+    "crc_errors": 1
+   }
+  ],
+  "clean": "Compute-2, 4, 5, 6, 8 and all other drives: 0 link errors, 0 CRC errors",
+  "context": "March 2026: all drives read 528-531 MiB/s. The 6 h soak (about 170 MB/s per drive) showed no link errors. The first errors came at 14:40, within minutes of the first full-speed read load (control stage), so the whole matrix (14:51 to about 16:00) ran with two drives at half speed.",
+  "action": "Reseat or replace the SATA cables/backplane connectors of Compute-3 (both pool bays), Compute-7 (sdb) and Compute-1 (sda), then re-run `tools/lustre_bench.py baseline` and the matrix; until then avoid driving all drives to saturation."
+ }
+}
