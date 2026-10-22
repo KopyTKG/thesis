@@ -26,6 +26,8 @@ Hardware constant across the whole story: 2 head nodes + 8 compute nodes (Superm
 | 12 | requirements | Cluster shape, constraints, goal R1-R10, candidate scoring | Base for thesis |
 | 16 | assignment | Reviewer comments on v6 and the changes in `zadani/v7.html` | Theory part adjusted |
 | 14 | test plan | What to run to make the data and the system "stable" |
+| 15 | stability results | Cold boots, node loss, rolling reboot, soak (2026-10-01 to 10-15) |
+| 17 | HPL (LINPACK) | 6.75 TFLOPS on all 10 nodes, 94.6% scaling (2026-10-22) |
 
 ## Filesystem verdicts (final)
 

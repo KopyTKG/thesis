@@ -1,0 +1,130 @@
+{
+ "metadata": {
+  "description": "HPL (LINPACK) double-precision benchmark on the UJEP-LAB cluster, 2026-10-22. Source: UJEP-LAB/benchmarks/hpl (hpl.csv, logs); playbooks opennebula/playbooks/hpl_setup.yml, hpl_run.yml; regenerate with tools/make_hpl_data.py.",
+  "hardware_per_node": "2 x Intel Xeon E5-2650 v4 (12 cores each, 24 cores, 48 threads), 64 GiB DDR4 (62.26 GiB visible), ConnectX-5 EDR 100 Gbit/s",
+  "nodes": "8 computes (Rocky-Compute-1..8) plus 2 heads (Rocky-Head-1/2, Lustre MGS/MDT servers)",
+  "software": {
+   "os": "Rocky Linux 9.7, kernel 5.14.0-611.13.1_lustre.el9",
+   "hpl": "2.3 (sha256 32c5c17d22330e6f2337b681aded51637fb6008d3f0eb7c277b163fadd612830)",
+   "mpi": "Open MPI 4.1.1 (distro), pml ucx over UCX 1.19.1 (rc_verbs/ud_verbs on mlx5_0, RDMA)",
+   "blas": "OpenBLAS 0.3.29, threaded build (libopenblasp), CBLAS interface",
+   "compiler": "gcc 11.5.0, -O3 -march=haswell"
+  },
+  "configuration": "one MPI rank per socket (2 per node), 12 BLAS threads per rank bound to the socket; NB=192; PFACT right, RFACT Crout, 1ring-modified broadcast, lookahead 1, mix swap; xhpl run from local disk on every node",
+  "matrix_size_rule": "N = sqrt(frac * node_memory * nodes / 8) rounded down to a multiple of NB; frac 0.75 for 1 and 5 nodes, 0.70 for 10 nodes",
+  "rpeak_note": "Rpeak = nodes x 24 cores x 16 DP FLOP/cycle x 2.2 GHz (nominal base). Observed clocks during the runs averaged about 2.5-2.6 GHz over all logical CPUs (including idle hyper-threads), so efficiency against the nominal figure is not a hard ceiling.",
+  "caveats": [
+   "The 10-node run includes the two Lustre servers (heads), used nice 10 and 70% memory for safety; Lustre stayed responsive (lfs df about 0.014 s).",
+   "Single runs, no repetitions; one block size (NB 192); distro OpenBLAS, not Intel MKL.",
+   "Power draw was not measured; the lab breaker limit was the reason for the 1 -> 5 -> 10 node ramp."
+  ]
+ },
+ "runs": [
+  {
+   "timestamp": "20261022T131909",
+   "nodes": 1,
+   "includes_heads": false,
+   "mpi_ranks": 2,
+   "threads_per_rank": 12,
+   "mpi_net": "ucx",
+   "N": 79104,
+   "NB": 192,
+   "grid_PxQ": [
+    1,
+    2
+   ],
+   "time_s": 462.52,
+   "gflops": 713.49,
+   "tflops": 0.713,
+   "gflops_per_node": 713.5,
+   "rpeak_gflops_at_2.2ghz": 844.8,
+   "efficiency_pct_of_rpeak_2.2ghz": 84.5,
+   "scaling_efficiency_vs_1_node_pct": 100.0,
+   "residual": "1.90306357e-03",
+   "residual_passed": true,
+   "mpirun_rc": 0,
+   "solve_start": "Thu Oct 22 13:20:19 2026",
+   "solve_end": "Thu Oct 22 13:28:02 2026",
+   "update_phase_s": 454.94,
+   "raw_output": "hpl/logs/hpl_20261022T131909_k1.txt"
+  },
+  {
+   "timestamp": "20261022T133913",
+   "nodes": 5,
+   "includes_heads": false,
+   "mpi_ranks": 10,
+   "threads_per_rank": 12,
+   "mpi_net": "ucx",
+   "N": 177024,
+   "NB": 192,
+   "grid_PxQ": [
+    2,
+    5
+   ],
+   "time_s": 1063.82,
+   "gflops": 3476.5,
+   "tflops": 3.477,
+   "gflops_per_node": 695.3,
+   "rpeak_gflops_at_2.2ghz": 4224.0,
+   "efficiency_pct_of_rpeak_2.2ghz": 82.3,
+   "scaling_efficiency_vs_1_node_pct": 97.5,
+   "residual": "1.17829889e-03",
+   "residual_passed": true,
+   "mpirun_rc": 0,
+   "solve_start": "Thu Oct 22 13:40:22 2026",
+   "solve_end": "Thu Oct 22 13:58:06 2026",
+   "update_phase_s": 1055.75,
+   "raw_output": "hpl/logs/hpl_20261022T133913_k5.txt"
+  },
+  {
+   "timestamp": "20261022T140324",
+   "nodes": 10,
+   "includes_heads": true,
+   "mpi_ranks": 20,
+   "threads_per_rank": 12,
+   "mpi_net": "ucx",
+   "N": 241728,
+   "NB": 192,
+   "grid_PxQ": [
+    4,
+    5
+   ],
+   "time_s": 1394.84,
+   "gflops": 6751.0,
+   "tflops": 6.751,
+   "gflops_per_node": 675.1,
+   "rpeak_gflops_at_2.2ghz": 8448.0,
+   "efficiency_pct_of_rpeak_2.2ghz": 79.9,
+   "scaling_efficiency_vs_1_node_pct": 94.6,
+   "residual": "1.10216852e-03",
+   "residual_passed": true,
+   "mpirun_rc": 0,
+   "solve_start": "Thu Oct 22 14:04:29 2026",
+   "solve_end": "Thu Oct 22 14:27:44 2026",
+   "update_phase_s": 1384.17,
+   "raw_output": "hpl/logs/hpl_20261022T140324_k10.txt"
+  }
+ ],
+ "findings": [
+  {
+   "id": "H1",
+   "title": "HPL scales almost linearly over InfiniBand",
+   "result": "713.5 GFLOPS on 1 node, 3,476.5 on 5 (97.5% scaling), 6,751.0 on all 10 nodes (94.6% scaling, 79.9% of the nominal 8.45 TFLOPS peak); all residual checks PASSED. The fabric and MPI over RDMA cost about 5% at 10 nodes."
+  },
+  {
+   "id": "H2",
+   "title": "Distro OpenBLAS: libopenblas.so is the serial build",
+   "result": "On Rocky 9 libopenblas.so is single-threaded; the threaded build is libopenblasp.so. Linking the former would have made each MPI rank use 1 core instead of 12 without any error."
+  },
+  {
+   "id": "H3",
+   "title": "firewalld blocks Open MPI by default",
+   "result": "ibs1 sits in the public zone with a port whitelist; Open MPI uses dynamic ports, so multi-node launches failed ('unable to complete a TCP connection'). Fixed with a rich rule accepting only the IB subnet 10.0.0.0/24. A 1-node run never notices because it stays on the node."
+  },
+  {
+   "id": "H4",
+   "title": "UID mismatch on Compute-3",
+   "result": "The `user` account has UID 1001 on Compute-3 and 1000 on all other nodes (heads included). Lustre identifies users by UID and the MDS does not know 1001, so `user` on Compute-3 gets 'Permission denied' below /mnt/lustre (root works). Worked around by staging xhpl and the run directory on local disk as root; the mismatch itself is not fixed and also matters for OpenNebula."
+  }
+ ]
+}
