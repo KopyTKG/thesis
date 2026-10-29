@@ -47,6 +47,8 @@ Dead-OST watchdog (`lustre-ost-watchdog`, 10 s timer on both MDS): an OSS is dea
 | start 1 | `/var/lib/one/datastores` empty on all 8 computes, every deploy "Cannot access storage file disk.0" | the bind-mount unit had `Requires=lustre-startup`; the first lustre-startup attempt failed on the computes (servers not ready), so the mount job failed for good ("Dependency failed") and a mount unit cannot retry | retrying `one-datastore-bind.service` (`Wants`, `Restart=on-failure`) replaces the mount unit (19) |
 | shutdown 1 and 2 | 3 of 10 nodes (Compute-3, Compute-7, Head-1; Head-1 alone in run 2) still powered after more than 6 minutes, had to be cut over IPMI | no persistent journal at first, so no log; after enabling it (`/var/log/journal`) the journal of the hung Head-1 showed MDT, MGS and MariaDB unmounted at 16:04:22.3, `Unmounting /var/lib/one/datastores...` logged and never `Unmounted`. A lazy `umount -l /mnt/lustre` leaves the bind mount holding the Lustre client, systemd then unmounts it after the servers are gone | the shutdown play stops oned/libvirt, unmounts the bind mount and `/mnt/lustre` for real (lazy only as a fallback) while the servers still answer |
 
+| start 3 | `just up` finished but no VM was running; they sat in SHUTDOWN_POWEROFF | the drain waited only until no VM was `runn`; libvirt was stopped (by the new unmount step) while the guests were still shutting down, so they never reached POWEROFF and the resume (POWEROFF only) skipped them | the drain waits for POWEROFF (ACPI first, `--hard` for stragglers) |
+
 Timings: `just down` with the VMs powered off first: 48 s for the play, all nodes off in about 75 s when nothing hangs; after the umount fix **all 10 nodes off 1 min 57 s after the command, no node cut by hand**. `just up` from fully off: power-on, Lustre mounted on all nodes in about 4 minutes (Head-1 takes about 3 min 20 s in its BIOS/network-boot ROMs before the disk boots: BIOS boot order, not a fault), all 16 OSTs visible from every node at about 9 min, Galera bootstrap, oned, hooks, agents and VMs back: **10 min, 0 failed tasks, no manual step** (run 2, 16:06:03 to 16:16:04); end state checked: Galera 3, 10 hosts on, 5 VMs running, 16 OSTs active, bind mount on all 10 nodes.
 
 Persistent journals were switched on for all nodes (`/var/log/journal`) because the first two shutdown hangs left no trace.
@@ -61,6 +63,10 @@ During the tests the SanDisk X600 (sda, OS disk) of Compute-5 dropped off the SA
 
 ## Open
 
-- Storage-node loss with a VM whose disk primary is on the lost node (watchdog only protects new objects); client-side failover; a third cold start after the shutdown fix is running as this is written.
+- Storage-node loss with a VM whose disk primary is on the lost node (watchdog only protects new objects); client-side failover; 
 - Mitigation for finding 1 and for the ~107 ms synced-write latency (`cache=writeback` and others), then re-measure.
 - Public range, student access model, LXC hosts, HA virtual router pair (needs the real uplink).
+
+## Result of the final cycle (2026-10-29, 16:25 to 16:32)
+
+`just down` then `just up`, nothing done by hand: shutdown 1 min 48 s until all 10 nodes were off (no node cut); cold start 5 min 10 s from power-on to a finished `just up` with 0 failed tasks; afterwards Galera 3, 10 hosts on, 16 OSTs active, hooks loaded, bind mount on all 10 nodes and **all 5 VMs running again by themselves** (powered off by the shutdown, resumed by the start). Four cycles were needed; each one exposed a defect the earlier ones could not show (table above). Not tested: a cold start after a power cut (no clean shutdown), and a cold start with a node missing.
