@@ -36,9 +36,24 @@ Test: hard power-off (`echo o > /proc/sysrq-trigger`) of a compute that runs a V
 
 Dead-OST watchdog (`lustre-ost-watchdog`, 10 s timer on both MDS): an OSS is dead when an OST import is not FULL and `lctl ping` fails for 35 s; its OSTs get `osp.<dev>.active=0` on each MDT, and `active=1` again after two successful pings. Cap: more than two dead OSS at once, do nothing. Measured: node cut, OSTs deactivated 68 s later; with the node still down **40 x 1 MiB file creates took 0.17 s and none landed on the dead OSTs** (objects spread over the other 14); node powered on 15:30:53, OSTs reactivated 15:33:07 (2 min 14 s). Scope: MDS side (new objects) only; clients keep reading the dead OST until the FLR mirror takes over, and mirrors of running VM disks are stale (finding 1), so a VM whose disk primary sits on the lost node still stalls.
 
-Boot-ordering defect found on the same day: the stage 13 bind-mount unit lacked `DefaultDependencies=no`, so systemd found an ordering cycle through `local-fs.target`, `lustre-startup` and `network-online.target` and deleted jobs, among them `systemd-tmpfiles-setup` (no `/run/mariadb`, MariaDB would not start) and the network ordering of `lustre-startup` (no o2ib on the heads, MDT0 would not mount; Compute-5 panicked twice in a Lustre target mount at boot). Found when the cluster was started from cold on 2026-10-29: the cluster did not start unattended. With the unit fixed, Compute-8 and Compute-7 cold-booted unattended later that day (Lustre mounted, bind mount present, no cycle in the journal). A full cluster cold start with the fix has **not** been repeated yet.
+### Cold start and shutdown (2026-10-29), measured
 
-Other observations: `onehost sync --force` was needed once after the oned restart before hosts reported monitoring; Galera has to be bootstrapped by hand (stage 11) after a full shutdown; the full shutdown needs the VMs stopped first (Compute-6/7 took minutes to power off, cause not confirmed).
+`just down` and `just up` were reworked and run three times. Each run found a defect that the previous runs could not show:
+
+| Run | Defect found | Cause | Fix |
+|---|---|---|---|
+| start 1 (after the ordering fix) | `just up` failed at oned: "Lost connection to MySQL server at 'reading initial communication packet'" | HAProxy (DB VIP) accepts the connection but has no healthy Galera backend for a few seconds after the join | wait with `mysqladmin -h <VIP> ping`, `reset-failed` (11) |
+| start 1 | clients saw 4 of 16 OSTs for minutes after Lustre was "mounted"; VMs resumed too early failed back to POWEROFF | OSTs are in recovery until clients reconnect (`ost_connect rc = -16` on every console) | `just up` waits until every node sees 16 OSTs before it restores oned and resumes the VMs (wait_cluster) |
+| start 1 | `/var/lib/one/datastores` empty on all 8 computes, every deploy "Cannot access storage file disk.0" | the bind-mount unit had `Requires=lustre-startup`; the first lustre-startup attempt failed on the computes (servers not ready), so the mount job failed for good ("Dependency failed") and a mount unit cannot retry | retrying `one-datastore-bind.service` (`Wants`, `Restart=on-failure`) replaces the mount unit (19) |
+| shutdown 1 and 2 | 3 of 10 nodes (Compute-3, Compute-7, Head-1; Head-1 alone in run 2) still powered after more than 6 minutes, had to be cut over IPMI | no persistent journal at first, so no log; after enabling it (`/var/log/journal`) the journal of the hung Head-1 showed MDT, MGS and MariaDB unmounted at 16:04:22.3, `Unmounting /var/lib/one/datastores...` logged and never `Unmounted`. A lazy `umount -l /mnt/lustre` leaves the bind mount holding the Lustre client, systemd then unmounts it after the servers are gone | the shutdown play stops oned/libvirt, unmounts the bind mount and `/mnt/lustre` for real (lazy only as a fallback) while the servers still answer |
+
+Timings: `just down` with the VMs powered off first: 48 s for the play, all nodes off in about 75 s when nothing hangs; after the umount fix **all 10 nodes off 1 min 57 s after the command, no node cut by hand**. `just up` from fully off: power-on, Lustre mounted on all nodes in about 4 minutes (Head-1 takes about 3 min 20 s in its BIOS/network-boot ROMs before the disk boots: BIOS boot order, not a fault), all 16 OSTs visible from every node at about 9 min, Galera bootstrap, oned, hooks, agents and VMs back: **10 min, 0 failed tasks, no manual step** (run 2, 16:06:03 to 16:16:04); end state checked: Galera 3, 10 hosts on, 5 VMs running, 16 OSTs active, bind mount on all 10 nodes.
+
+Persistent journals were switched on for all nodes (`/var/log/journal`) because the first two shutdown hangs left no trace.
+
+Earlier on the same day the stage 13 bind-mount unit lacked `DefaultDependencies=no`, so systemd found an ordering cycle through `local-fs.target`, `lustre-startup` and `network-online.target` and deleted jobs, among them `systemd-tmpfiles-setup` (no `/run/mariadb`, MariaDB would not start) and the network ordering of `lustre-startup` (no o2ib on the heads, MDT0 would not mount; Compute-5 panicked twice in a Lustre target mount at boot). That unit has since been replaced by the retrying service above.
+
+Other observations: `onehost sync --force` was needed once after the oned restart before hosts reported monitoring; Galera has to be bootstrapped by hand (stage 11) after a full shutdown; the shutdown powers the VMs off first and `just up` resumes the ones in POWEROFF (a VM the owner powered off on purpose is resumed too).
 
 ### Hardware: Compute-5 OS disk
 
@@ -46,6 +61,6 @@ During the tests the SanDisk X600 (sda, OS disk) of Compute-5 dropped off the SA
 
 ## Open
 
-- Storage-node loss with a VM whose disk primary is on the lost node (watchdog only protects new objects); client-side failover; full cluster cold start on the fixed ordering; stop VMs before shutdown.
+- Storage-node loss with a VM whose disk primary is on the lost node (watchdog only protects new objects); client-side failover; a third cold start after the shutdown fix is running as this is written.
 - Mitigation for finding 1 and for the ~107 ms synced-write latency (`cache=writeback` and others), then re-measure.
 - Public range, student access model, LXC hosts, HA virtual router pair (needs the real uplink).
