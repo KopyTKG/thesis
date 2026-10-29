@@ -22,12 +22,30 @@ Sources: `UJEP-LAB/opennebula/playbooks/stage11_restore_stack.yml` to `stage16_v
 2. Scheduler placed two VMs on one node when ranking by monitored free CPU; fixed with the `SCHED_RANK` above.
 3. `lfs df` listed every OST twice after the datastore bind mount; the health check now names `/mnt/lustre` explicitly.
 
-## Host-failure test: started, not finished
+## Host-failure recovery (2026-10-29): proven, after five defects were found and fixed
 
-Hard power-off (`sysrq o`) of Compute-5 (runs VM t2; holds OST8/9, i.e. all of its `pool_b` copy) at 18:15 with the `host_error` hook installed (`-r -p 2`: recreate on another host after 2 minutes). The follow-up step (deactivating the two dead OSTs on the MDTs, the manual stand-in for the missing watchdog) was blocked by the session's permission classifier, and the cluster was shut down for the day before OpenNebula marked the host failed. **No result yet** for VM recovery after host loss or storage-node loss with a VM running. Compute-5 needs a cold boot at the next start.
+Test: hard power-off (`echo o > /proc/sysrq-trigger`) of a compute that runs a VM, nothing done by hand afterwards. Final run: Compute-8 (VM t2) cut at 15:33:45; OpenNebula flags the host in error at 15:36:58 (3 min 13 s, two 180 s monitoring cycles); the `host_error` hook fences the host over IPMI and recreates the VM at 15:39:00; the unstick timer clears the cleanup; **t2 runs on Compute-4 at 15:39:17, guest agent answering: 5 min 32 s from power cut to a running VM, no manual step.** Earlier runs: Compute-8 (t2) 14 min with manual steps, Compute-7 (v1 + t2) recovered with manual steps, Compute-4 (t1 + virtual router) recovered unattended up to a Lustre stall (defect 5).
+
+| # | Defect found | Cause | Fix (stage) |
+|---|---|---|---|
+| 1 | The hook never ran on its own | `opennebula-hem` starts at boot while oned is still down, loads zero hooks (`Cannot get hook information`) and never reloads | restart `opennebula-hem` after oned answers (11) |
+| 2 | Hook crashed with `undefined method unpack1 for nil` (RC 1) | `ft/host_error.rb` reads its arguments from stdin; the hook definition lacked `ARGUMENTS_STDIN="yes"` | definition fixed (17) |
+| 3 | Hook could not fence | stock `ft/fence_host.sh` is a stub that exits 1 | IPMI power-off script, credentials from the vault in a 0600 oneadmin file, `FENCE_IP` on every host (17) |
+| 4 | VM stuck in CLEANUP_RESUBMIT for ever | cleanup runs `cancel` over ssh on the dead host | `one-ft-unstick.timer` (30 s) marks the step done, only for VMs on a host in ERROR that has a `FENCE_IP` (17) |
+| 5 | New VMs hang in PROLOG/BOOT after a node loss | the MDS keeps allocating new objects on the dead OSS's OSTs, so the `cp` into `datastores/.isofiles` stalls | dead-OST watchdog on both heads (18) |
+
+Dead-OST watchdog (`lustre-ost-watchdog`, 10 s timer on both MDS): an OSS is dead when an OST import is not FULL and `lctl ping` fails for 35 s; its OSTs get `osp.<dev>.active=0` on each MDT, and `active=1` again after two successful pings. Cap: more than two dead OSS at once, do nothing. Measured: node cut, OSTs deactivated 68 s later; with the node still down **40 x 1 MiB file creates took 0.17 s and none landed on the dead OSTs** (objects spread over the other 14); node powered on 15:30:53, OSTs reactivated 15:33:07 (2 min 14 s). Scope: MDS side (new objects) only; clients keep reading the dead OST until the FLR mirror takes over, and mirrors of running VM disks are stale (finding 1), so a VM whose disk primary sits on the lost node still stalls.
+
+Boot-ordering defect found on the same day: the stage 13 bind-mount unit lacked `DefaultDependencies=no`, so systemd found an ordering cycle through `local-fs.target`, `lustre-startup` and `network-online.target` and deleted jobs, among them `systemd-tmpfiles-setup` (no `/run/mariadb`, MariaDB would not start) and the network ordering of `lustre-startup` (no o2ib on the heads, MDT0 would not mount; Compute-5 panicked twice in a Lustre target mount at boot). Found when the cluster was started from cold on 2026-10-29: the cluster did not start unattended. With the unit fixed, Compute-8 and Compute-7 cold-booted unattended later that day (Lustre mounted, bind mount present, no cycle in the journal). A full cluster cold start with the fix has **not** been repeated yet.
+
+Other observations: `onehost sync --force` was needed once after the oned restart before hosts reported monitoring; Galera has to be bootstrapped by hand (stage 11) after a full shutdown; the full shutdown needs the VMs stopped first (Compute-6/7 took minutes to power off, cause not confirmed).
+
+### Hardware: Compute-5 OS disk
+
+During the tests the SanDisk X600 (sda, OS disk) of Compute-5 dropped off the SATA link ("rejecting I/O to offline device", XFS shut down on the root volumes, sshd resetting connections, OSTs on the Samsung drives kept serving). SMART passed before and after (0 reallocated, 0 CRC), 10 link resets in the counters; it came back after the owner reseated it. Timing: about 25 s after SMART short self-tests were started on all three drives, so a trigger by the test cannot be excluded. Same pattern as Compute-3, Compute-7 and sdb of Compute-5 (6 CRC errors): connector/cable/backplane, not media. Treat as unreliable until the cable is replaced.
 
 ## Open
 
-- Host-failure and storage-node-failure recovery with a VM; dead-OST watchdog.
+- Storage-node loss with a VM whose disk primary is on the lost node (watchdog only protects new objects); client-side failover; full cluster cold start on the fixed ordering; stop VMs before shutdown.
 - Mitigation for finding 1 and for the ~107 ms synced-write latency (`cache=writeback` and others), then re-measure.
 - Public range, student access model, LXC hosts, HA virtual router pair (needs the real uplink).
