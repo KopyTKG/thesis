@@ -70,3 +70,22 @@ During the tests the SanDisk X600 (sda, OS disk) of Compute-5 dropped off the SA
 ## Result of the final cycle (2026-10-29, 16:25 to 16:32)
 
 `just down` then `just up`, nothing done by hand: shutdown 1 min 48 s until all 10 nodes were off (no node cut); cold start 5 min 10 s from power-on to a finished `just up` with 0 failed tasks; afterwards Galera 3, 10 hosts on, 16 OSTs active, hooks loaded, bind mount on all 10 nodes and **all 5 VMs running again by themselves** (powered off by the shutdown, resumed by the start). Four cycles were needed; each one exposed a defect the earlier ones could not show (table above). Not tested: a cold start after a power cut (no clean shutdown), and a cold start with a node missing.
+
+## Storage-node loss with a running VM (2026-11-05)
+
+Setup: the node that holds the disk primary of a running VM, on a different host from the VM, was hard powered off (`sysrq o`); the dead-OST watchdog and the FLR mirrors were in place. Victim Compute-2 (OST2, OST3), which runs no VM: it holds the primary of the virtual router's main disk (router on Compute-3) and of t1's context disk. Placement per VM was read with `lfs getstripe` (primary mirror first): t1 OST0, t2 OST5, v1 OST1, v2 OST1, router OST2; the second mirrors of running VMs are stale (a running qemu keeps the file open, so `lfs mirror resync` cannot get its lease).
+
+| Time | Event |
+|---|---|
+| 13:23:52 | Compute-2 cut. |
+| about 13:24:30 | router guest stops answering the guest agent (0.04 s before); its disk writes hang; qemu and OpenNebula keep reporting RUNNING, nothing flags it. t1 (disk on live OSTs): write + fsync 0.075 s throughout |
+| about 13:25 | watchdog deactivates OST2/OST3 on both MDTs (about 68 s): new files are protected, the open router disk is not |
+| 13:25 to 13:35 | router frozen: block counters do not move (2332 reads, 134 writes), even `virsh domblkstat` times out. No I/O error reaches the guest, the I/O blocks |
+| 13:28:52 | first IPMI power-on of Compute-2 did **not** boot it (its journal has no boot between 13:22:37 and 13:34:53); a second power-on at 13:33:23 did |
+| 13:34:53 | Compute-2 boots, Lustre mounted, watchdog reactivates the OSTs at 13:35:24 |
+| about 13:37:50 | OST recovery COMPLETE (client in REPLAY_WAIT until then) |
+| 13:38:49 | router guest answers again, **same boot (uptime unchanged), write + fsync 0.077 s, 2 I/O-error-like lines in the guest kernel log, no remount**, writes counter moving (134 to 147) |
+
+Result: a lost storage node **freezes** the VMs that keep their only live copy there and does not fail them; they resume by themselves once the node is back and its OST recovery is complete (here 4 min after the boot, 14 min after the cut, most of it the node being down, including a 5 min deliberate hold and a failed first power-on). No data loss seen; guest filesystem integrity was not checked with fsck. VMs whose disks live on other OSTs are not affected at all.
+
+Consequences for the thesis claim: (1) the pool survives a node loss without corruption, but a VM does not stay available while the node is down: FLR mirrors cannot help a running VM, because a mirror only becomes usable after a resync and a running VM prevents the resync. (2) The freeze is invisible to OpenNebula (VM state RUNNING, the host is fine), so nothing would restart such a VM elsewhere. (3) To make a VM survive a storage-node loss, the disk copy must be current at the moment of loss; Lustre 2.17 has only delayed mirroring, so this needs another mechanism (for example a periodic copy of a consistent snapshot, or a different storage layout for VM disks).
