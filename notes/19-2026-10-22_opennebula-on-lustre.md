@@ -129,3 +129,22 @@ Head-1 runs the MGS, MDT0, oned, the scheduler, the hook manager, MariaDB/Galera
 Numbers: 4 min 18 s from power-on to everything normal, 16 min 18 s from the cut including the 11.5 min hold.
 
 What it means: (1) running VMs ride out a loss of the head for several minutes because their disk traffic goes to the OSTs, not to the metadata server; (2) nothing that creates files under MDT0 works while it is down (VM deploys, resumes, snapshots, anything in the root); (3) OpenNebula has no management during the outage (one oned, on Head-1; `RAFT = SOLO`), so a host failure during it would not be recovered (not tested); (4) the intermittent stalls after about 9 minutes are an open question, and a short outage (under about 9 min) did not show them; (5) metadata is not redundant: FLR mirrors data, not the namespace, and DNE spreads directories over the two MDTs instead of mirroring them.
+
+## Head-2 loss with running VMs, and a correction to the Head-1 test (2026-11-05)
+
+Where the metadata lives (`lfs getdirstripe -m`): the filesystem root, `one/datastores` and the image datastore 101 are on **MDT0 (Head-1)**; `one`, the system datastore 100 and **every VM directory (`datastores/100/N`) are on MDT1 (Head-2)**. This explains why the Head-1 loss did not hurt the running VMs for the first minutes.
+
+Head-2 hard powered off at 14:59:52 with the 5 VMs running, powered on at 15:08:23 (an 8.5 min hold):
+
+| Time | Observation |
+|---|---|
+| +0 to +3 min | guests write normally; Galera 2 of 3; creating a file in a directory on MDT1 hangs |
+| from about +3 min | guest agents stop answering, first on two VMs, then on all five. **Confirmed with all my probing stopped for 90 s** (so not an artefact of the probes): on all five domains `virsh domstate` still says `running`, but `domblkstat` hangs for more than 8 s and the guest agent times out. Reading: the qemu main loop is blocked, most likely in a Lustre metadata call on MDT1 (not verified); whether the guests' own disk I/O was stuck as well cannot be seen from outside |
+| 15:08:23 | Head-2 powered on; pingable 15:10:13 |
+| 15:10:13 to 15:11:20 | the five guests answer again one after the other (router first, t2 last); write + fsync 0.075 to 0.08 s on all five at 15:11:27; Galera 3, 10 hosts on, 5 VMs running, 16 OSTs |
+
+Unresponsive window: about 15:03 to 15:11 (7 to 8 min), 2 min 57 s from power-on to the last guest answering. A loss of **Head-2 makes every VM unmanageable within minutes**, Head-1's loss did not (for at least 9 min); either way nothing flags it in OpenNebula, which shows RUNNING throughout.
+
+Correction to the Head-1 test above: its "intermittent stalls after about 9 minutes" were measured with the probe that calls `virsh` without a timeout, while a second observer ran at the same time for part of the run. In the Head-2 test the same pattern was reproduced and then confirmed with no probing running, so the effect is real there; for Head-1 it was not separated from the probing and should be treated as unconfirmed.
+
+Consequence for the thesis: both metadata servers are single points of failure for the VMs on this layout (MDT1 for the VM directories, MDT0 for the namespace root and the image datastore, plus oned and the database). FLR does not mirror the namespace and there is no shared storage between the heads that would allow an MDT failover pair. What can be done within the constraint: keep the heads' uptime high, spread nothing on the heads that the VMs need, and accept a recovery of about 3 to 4 min after a head power-on (boot about 3 min, then Lustre startup).
