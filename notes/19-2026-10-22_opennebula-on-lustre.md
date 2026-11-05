@@ -89,3 +89,18 @@ Setup: the node that holds the disk primary of a running VM, on a different host
 Result: a lost storage node **freezes** the VMs that keep their only live copy there and does not fail them; they resume by themselves once the node is back and its OST recovery is complete (here 4 min after the boot, 14 min after the cut, most of it the node being down, including a 5 min deliberate hold and a failed first power-on). No data loss seen; guest filesystem integrity was not checked with fsck. VMs whose disks live on other OSTs are not affected at all.
 
 Consequences for the thesis claim: (1) the pool survives a node loss without corruption, but a VM does not stay available while the node is down: FLR mirrors cannot help a running VM, because a mirror only becomes usable after a resync and a running VM prevents the resync. (2) The freeze is invisible to OpenNebula (VM state RUNNING, the host is fine), so nothing would restart such a VM elsewhere. (3) To make a VM survive a storage-node loss, the disk copy must be current at the moment of loss; Lustre 2.17 has only delayed mirroring, so this needs another mechanism (for example a periodic copy of a consistent snapshot, or a different storage layout for VM disks).
+
+## Guest sync-write latency and the disk cache mode (2026-11-05)
+
+Method: Alpine guests on a qcow2 disk on the mirrored Lustre datastore, identical except for the libvirt disk `cache=` (OpenNebula `DISK/CACHE`). Inside the guest, 200 times `dd bs=4k count=1 conv=notrunc` at increasing offsets, once without and once with `fsync`; the difference per write is the cost of a synced write (the no-fsync run, about 1.6 ms per write for spawning `dd`, is the control). Driven through the qemu guest agent from the host; three runs per mode.
+
+| cache= | fsync cost per 4 KiB write | note |
+|---|---|---|
+| `none` (OpenNebula default here) | 10.7 ms | |
+| `writethrough` | 9.4 to 10.7 ms | no gain |
+| `writeback` | 5.9 to 7.1 ms (about 37% less) | the guest's flush still reaches Lustre, durability semantics unchanged |
+| `unsafe` | 0 ms | flushes are ignored, no durability: not an option |
+
+The earlier figure of about 107 ms per synced overwrite (500 overwrites in 53.5 s) did not reproduce in any mode (all at most 11 ms); the conditions of that run could not be reconstructed (guest, tool, state of the OSS caches), so it should not be quoted. Mistakes made on the way, kept because they change what the numbers mean: the first runs used `dd oflag=dsync`, which busybox ignores (0.4 ms per write), and the first template variants all received `cache=writeback` because the XML tree was shared between iterations (only `writeback` had been measured at first). The effect of `writeback` on a host failure is not measured: with `cache=writeback` the unflushed part of the guest's data lives in the host page cache and is lost with the host, as with any disk cache.
+
+Recommendation: set `CACHE="writeback"` in the VM template disks (about 6 ms saved per synced write); not applied to the existing VMs yet.
