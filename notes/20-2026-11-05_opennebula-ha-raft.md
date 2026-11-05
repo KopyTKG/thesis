@@ -59,3 +59,17 @@ The `host_error` hook was set up with `-r` (recreate). In `ft/host_error.rb` tha
 | same, with the **VIP guard** (`one-vip-guard.timer`, every 5 s: a node that holds the VIP and reaches no other frontend on 2633 for 3 checks releases the VIP and stops its scheduler; restores the scheduler when a majority is reachable again) | partition 17:01:10, majority elected 17:01:28, the isolated old leader released the VIP at 17:01:47 (two nodes held the VIP for 19 s instead of for the whole partition), scheduler stopped there, and after healing it started again by itself; same log index (744) on all three afterwards, no divergence |
 | **Three schedulers** (one per frontend), six VMs queued at once | all six running within 40 s, **exactly one placement record per VM**, no double dispatch; only the leader's scheduler dispatched; the followers' schedulers only log errors (their local oned refuses writes: 227 error lines on Head-2), noise but harmless |
 | **Leader killed (SIGKILL of oned) while four VMs are being deployed and t2 is live-migrating** | new leader (Head-2) within seconds; the four queued VMs were deployed by it and ran within 57 s; **t2 stayed in MIGRATE although the migration had finished** (its domain was running on the target host and the agent answered, gone from the source): the driver's completion message went to the dead oned and the monitoring did not reconcile it; repaired by hand with `onevm recover --success`. In-flight operations whose result goes to the old leader are lost |
+
+## Are acknowledged writes lost when a host is cut? (2026-11-05, evening)
+
+Method: one Alpine guest per disk cache mode. A writer in the guest appends a record to a file, `sync`s, and only then writes the record number to an ack file; a poller on the host reads the ack through the guest agent about 4 times a second and logs it on the host's local disk. The host is then hard powered off (`sysrq o`); the hook (`-m`) reschedules the VM, which boots again from its own disk. Pass: the last record in the data file after recovery (L) is at least the last acknowledged number the poller saw before the cut (U). Placement was chosen so that no VM's disk primary sat on a host that was cut with it.
+
+| cache= | U (last acknowledged seen) | L (after recovery) | Result |
+|---|---|---|---|
+| `none` | 1310 | 1310 | nothing lost |
+| `writeback` | 4543 | 4547 | nothing lost |
+| `unsafe` (control: guest flushes are ignored) | 22135 | 22385 | nothing lost |
+
+Reading: no acknowledged write was lost in any mode in this single trial per mode. **The control did not fail, so the test cannot yet tell the modes apart**: Lustre's client writes dirty pages out within about a second, which is shorter than the polling gap, so even `unsafe` had nothing left to lose; a test that separates them needs a write rate and a cut timing that leave data in the host cache (not built). What the three trials do support: with the hook mode `-m` the disk contents that had reached a `sync` survive a host failure for `none` and `writeback` alike. The recovered VM boots again (crash-consistent), the writer is gone, and every record up to the last sync is there.
+
+Side observation of the same run: the dat-wb VM (disk primary on Compute-4) was frozen from the cut of Compute-4 at 17:09 until its OST recovery finished (guest agent answered again 17:20:23, 3 min after the node's return), the same behaviour as the router in note 19.
