@@ -38,3 +38,14 @@ Note 19: oned, the scheduler, the hook manager and the UI ran on Head-1 only. Wh
 - A returning MDT can make the datastore monitoring fail transiently and flag healthy hosts; the ssh veto prevents the fencing, the host state has to be cleared (disable/enable) by hand or by the next successful probe.
 - Running VMs and their disks are unchanged: a loss of Head-2 still makes every VM unmanageable within minutes (note 19), because the VM directories are on MDT1.
 - Not verified: the scheduler running on all three frontends at once (no duplicate dispatch seen, not provoked), OneFlow/OneGate through the VIP, a cold start with one frontend missing (two of three is enough in theory), the exact rewritten playbook `stage20_one_ha.yml` from the Galera state onward (the setup was built step by step on the live system and the playbook was rewritten afterwards from the steps that worked; its join order has not been run as code).
+
+## Correction and measurement: what the host-failure recovery really restored (2026-11-05, evening)
+
+The `host_error` hook was set up with `-r` (recreate). In `ft/host_error.rb` that is `vm.delete(true)`: the VM is **redeployed from its image, its state is lost** (the script says so in its header). Every "VM came back" in note 19 and in the tests above was such a fresh VM from the same template; with stateless Alpine guests this was not visible. Measured with a marker file written and synced inside t2 before the host was cut:
+
+| Hook mode | After the host failure |
+|---|---|
+| `-r` recreate (what ran until now) | t2 up on another host after about 6 min, guest `up 2 min`, **marker file gone**: a fresh VM |
+| `-m` reschedule (shared datastore only) | hook: `Fencing success`, `states: 3, 5, 8`, `resched 1` at 16:50:13; t2 running on another host 16:50:17, **5 min 25 s after the power cut** (cut 16:44:52, host flagged 16:48:09), guest `up 0 min` and **marker file present**: the VM restarted from its own disk, crash-consistent |
+
+`-m` is therefore the right mode for this layout (the system datastore is shared on Lustre) and is now the hook definition (stage 17). No unstick step and no scheduler round trip with a fresh clone were needed. What `-m` does not give: it is a crash restart (the guest OS boots again, memory is lost), with the disk state of whatever had reached Lustre (the marker had been `sync`ed; a write that was only in the guest's or host's cache is lost, as after a power cut of a real machine).
