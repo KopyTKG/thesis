@@ -44,12 +44,12 @@
     <li>analyzovat možnosti konfigurace IPoIB na linuxových distribucích,</li>
     <li>otestovat vybraná řešení virtualizace a distribuovaných úložišť v prostředí s IPoIB a vyhodnotit jejich limity,</li>
     <li>implementovat nejvhodnější řešení na základě výsledků testování,</li>
-    <li>prokázat stabilitu a výkon finálního řešení v kontextu izolovaného testovacího prostředí.</li>
+    <li>ověřit stabilitu a výkon finálního řešení zátěžovými testy a měřením propustnosti sítě a úložiště.</li>
   </ul>
 
   <p>Výstupy práce budou:</p>
   <ul>
-    <li>funkční prototyp virtualizačního clusteru pro izolované testovací prostředí,</li>
+    <li>funkční prototyp clusteru umožňující vytvářet a spouštět virtuální stroje v prostředí s IPoIB,</li>
     <li>srovnávací analýza testovaných řešení virtualizace a distribuovaných úložišť na daném hardwaru,</li>
     <li>technická dokumentace a zpráva o měření výkonu.</li>
   </ul>
@@ -60,18 +60,18 @@
   <ol>
     <li>
       principy a standardy tvorby infrastruktury pro izolovaná virtualizovaná prostředí (izolace virtuálních strojů, síťová segmentace,
-      bezpečnostní požadavky, infrastruktura jako služba)
+      bezpečnostní požadavky, infrastruktura jako služba) [1, 4, 6]
     </li>
-    <li>IP over InfiniBand (IPoIB): stručný úvod do InfiniBandu a specifika IPoIB</li>
-    <li>open-source technologie pro virtualizaci a clusterovou infrastrukturu</li>
-    <li>přehled systémů distribuovaného úložiště a jejich architektura</li>
+    <li>IP over InfiniBand (IPoIB): stručný úvod do InfiniBandu a specifika IPoIB [2]</li>
+    <li>open-source technologie pro virtualizaci a clusterovou infrastrukturu [5]</li>
+    <li>přehled systémů distribuovaného úložiště a jejich architektura [3]</li>
   </ol>
 
   <p><strong>Praktická část</strong></p>
   <ol>
-    <li>analýza současného stavu a dostupného hardwaru</li>
+    <li>analýza požadavků, současného stavu a dostupného hardwaru</li>
     <li>návrh cílové architektury clusteru</li>
-    <li>konfigurace sítě a implementace protokolu IPoIB na zvolené linuxové distribuci</li>
+    <li>konfigurace sítě, implementace protokolu IPoIB na zvolené linuxové distribuci a návrh síťové izolace virtuálních strojů</li>
     <li>testování a srovnání vybraných virtualizačních platforem a systémů distribuovaného úložiště</li>
     <li>implementace zvoleného řešení</li>
     <li>finální měření výkonu a zhodnocení výsledků</li>
@@ -80,27 +80,27 @@
   <p><strong>Literatura</strong></p>
   <ol>
     <li>
-      CHANDRAMOULI, Ramaswamy. <i>Secure Virtual Network Configuration for Virtual Machine (VM) Protection (NIST SP 800-125B)</i> [online]. National Institute of Standards and Technology, 2016. DOI:
+      CHANDRAMOULI, Ramaswamy. <i>Secure Virtual Network Configuration for Virtual Machine (VM) Protection</i> [online]. NIST Special Publication 800-125B. Gaithersburg: National Institute of Standards and Technology, 2016. DOI:
       <a href="https://doi.org/10.6028/NIST.SP.800-125B">10.6028/NIST.SP.800-125B</a>
     </li>
     <li>
-      CHU, Jerry a KASHYAP, Vivek. <i>Transmission of IP over InfiniBand (IPoIB) (RFC 4391)</i> [online]. IETF, 2006. DOI:
+      CHU, Jerry a KASHYAP, Vivek. <i>Transmission of IP over InfiniBand (IPoIB)</i> [online]. Request for Comments 4391. Internet Engineering Task Force, 2006. DOI:
       <a href="https://doi.org/10.17487/RFC4391">10.17487/RFC4391</a>
     </li>
     <li>
-      LUSTRE. <i>Lustre Software Release 2.x: Operations Manual</i> [online]. [cit. 2026-10-01]. Dostupné z:
+      <i>Lustre Software Release 2.x: Operations Manual</i> [online]. Whamcloud, 2026 [cit. 2026-11-25]. Dostupné z:
       <a href="https://doc.lustre.org/lustre_manual.xhtml">https://doc.lustre.org/lustre_manual.xhtml</a>
     </li>
     <li>
-      MELL, Peter a GRANCE, Tim. <i>The NIST Definition of Cloud Computing (NIST SP 800-145)</i> [online]. National Institute of Standards and Technology, 2011. DOI:
+      MELL, Peter a GRANCE, Timothy. <i>The NIST Definition of Cloud Computing</i> [online]. NIST Special Publication 800-145. Gaithersburg: National Institute of Standards and Technology, 2011. DOI:
       <a href="https://doi.org/10.6028/NIST.SP.800-145">10.6028/NIST.SP.800-145</a>
     </li>
     <li>
-      OPENNEBULA SYSTEMS. <i>OpenNebula Documentation</i> [online]. 2025 [cit. 2025-11-20]. Dostupné z:
-      <a href="https://docs.opennebula.io/">https://docs.opennebula.io/</a>
+      OPENNEBULA SYSTEMS. <i>OpenNebula 6.10 Documentation</i> [online]. OpenNebula Project, 2024 [cit. 2026-11-25]. Dostupné z:
+      <a href="https://docs.opennebula.io/6.10/">https://docs.opennebula.io/6.10/</a>
     </li>
     <li>
-      SCARFONE, Karen; SOUPPAYA, Murugiah a HOFFMAN, Paul. <i>Guide to Security for Full Virtualization Technologies (NIST SP 800-125)</i> [online]. National Institute of Standards and Technology, 2011. DOI:
+      SCARFONE, Karen; SOUPPAYA, Murugiah a HOFFMAN, Paul. <i>Guide to Security for Full Virtualization Technologies</i> [online]. NIST Special Publication 800-125. Gaithersburg: National Institute of Standards and Technology, 2011. DOI:
       <a href="https://doi.org/10.6028/NIST.SP.800-125">10.6028/NIST.SP.800-125</a>
     </li>
   </ol>
